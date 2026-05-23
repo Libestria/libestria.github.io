@@ -1,49 +1,251 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="fr">
 <head>
-
   <meta charset="UTF-8">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Libestria.fr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --nostr: #9277EB;
+      --simplex: #2EC9DF;
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e6f0;
+      --muted: #7a7890;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 860px;
+      padding: 80px 24px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 56px;
+    }
+
+    /* Logo */
+    .logo-wrap {
+      animation: fadeUp 0.7s ease both;
+    }
+    .logo-wrap img {
+      width: min(580px, 90vw);
+      height: auto;
+      display: block;
+    }
+
+    /* Soon badge */
+    .soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .soon-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--nostr);
+      box-shadow: 0 0 8px var(--nostr);
+      animation: pulse 2s infinite;
+    }
+
+    /* Services */
+    .services {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border: 1px solid;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pill:hover { transform: translateY(-2px); }
+    .pill-nostr {
+      color: var(--nostr);
+      border-color: rgba(146,119,235,0.35);
+      background: rgba(146,119,235,0.08);
+    }
+    .pill-nostr:hover { box-shadow: 0 4px 24px rgba(146,119,235,0.2); }
+    .pill-simplex {
+      color: var(--simplex);
+      border-color: rgba(46,201,223,0.35);
+      background: rgba(46,201,223,0.08);
+    }
+    .pill-simplex:hover { box-shadow: 0 4px 24px rgba(46,201,223,0.2); }
+
+    /* Divider */
+    .divider {
+      width: 40px; height: 1px;
+      background: var(--border);
+    }
+
+    /* NIP-05 card */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      animation: fadeUp 0.7s 0.3s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--nostr), var(--simplex), transparent);
+      opacity: 0.5;
+    }
+    .card-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .nip05 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+      background: rgba(146,119,235,0.1);
+      border: 1px solid rgba(146,119,235,0.25);
+      border-radius: 8px;
+      padding: 12px 24px;
+      color: var(--nostr);
+      letter-spacing: 0.03em;
+    }
+
+    /* Contact */
+    .contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .contact-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .contact a {
+      color: var(--simplex);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(46,201,223,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .contact a:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      position: relative; z-index: 1;
+      padding: 0 0 32px;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    @media (max-width: 560px) {
+      main { padding: 48px 16px 40px; gap: 36px; }
+      .card { padding: 28px 20px; }
+    }
+  </style>
 </head>
+<body>
+  <main>
+    <div class="logo-wrap">
+      <img src="676330BD-E396-4E71-983E-8CE1D268C18D.png" alt="Libestria">
+    </div>
 
-<body style="background:#000;color:#fff;text-align:center;padding-top:80px;font-family:sans-serif;">
+    <span class="soon-badge">Relais privés à venir</span>
 
-  <img src="676330BD-E396-4E71-983E-8CE1D268C18D.png" width="780">
+    <div class="services">
+      <div class="pill pill-nostr">⚡ Nostr</div>
+      <div class="pill pill-simplex">💬 SimpleX Chat</div>
+    </div>
 
-  <h1>Relais privés
+    <div class="divider"></div>
 
-  <span style="color:#9277EB;">Nostr</span>
+    <div class="card">
+      <span class="card-label">Identité décentralisée</span>
+      <p class="card-title">Demande l'enregistrement de ton identifiant NIP-05 Nostr</p>
+      <div class="nip05">ton-pseudo@id.libestria.fr</div>
+    </div>
 
-  et
+    <div class="contact">
+      <span class="contact-label">Contact</span>
+      <a href="mailto:artefact@libestria.fr">artefact@libestria.fr</a>
+    </div>
+  </main>
 
-  <span style="color:#2EC9DF;">SimpleX Chat</span>
-
-  à venir</h1>
-
-  <h1>• • •</h1>
-  
-  <h1>Demande l'enregistrement de ton NIP-05 Nostr</h1>
-
-    <h1></h1>ton-pseudo@id.libestria.fr</h1>
-
-  <h1>   </h1>
-  
-  <h1>Contact:
-
-  <a href="mailto:artefact@libestria.fr"
-
-   style="color:#703FBF;text-decoration:underline;">
-
-   artefact@libestria.fr
-
-   </a>
-
-  </h1>
-  
+  <footer>© Libestria.fr</footer>
 </body>
-
 </html>
