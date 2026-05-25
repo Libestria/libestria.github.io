@@ -98,8 +98,8 @@
       animation: fadeUp 0.7s 0.25s ease both;
     }
 
-
-    .card {
+    /* Bloc partagé : card + section-block */
+    .card, .section-block {
       width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -113,7 +113,7 @@
       overflow: hidden;
       animation: fadeUp 0.7s 0.3s ease both;
     }
-    .card::before {
+    .card::before, .section-block::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -121,13 +121,16 @@
       background: linear-gradient(90deg, transparent, var(--violet), var(--blue), transparent);
       opacity: 0.5;
     }
-    .card-label {
+
+    /* Labels de titre des blocs */
+    .card-label, .section-label {
       font-family: 'Share Tech Mono', monospace;
       font-size: clamp(1rem, 3vw, 1.2rem);
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--blue);
     }
+
     .card-intro {
       font-size: clamp(0.9rem, 2.5vw, 1.05rem);
       text-align: center;
@@ -153,35 +156,6 @@
       letter-spacing: 0.04em;
     }
 
-    .section-block {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 40px 48px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      position: relative;
-      overflow: hidden;
-      animation: fadeUp 0.7s 0.4s ease both;
-    }
-    .section-block::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--violet), var(--blue), transparent);
-      opacity: 0.5;
-    }
-    .section-label {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(1rem, 3vw, 1.2rem);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--blue);
-    }
     .section-block a:not(.btn-zap) {
       font-family: 'Share Tech Mono', monospace;
       font-size: clamp(1rem, 3vw, 1.2rem);
@@ -232,7 +206,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid rgba(139,63,217,0.2);
       border-radius: 8px;
       padding: 8px 16px;
@@ -313,7 +287,6 @@
       La date de déploiement de ces relais n'est pas encore connue.
     </p>
 
-
     <div class="card">
       <span class="card-label">• Identité Décentralisée •</span>
       <p class="card-intro">Au-delà des relais, Libestria.fr propose également, et dès à présent, de délivrer gratuitement des identifiants NIP-05 vérifiés</p>
@@ -329,6 +302,7 @@
 
     <div class="section-block">
       <span class="section-label">• Soutien / Donation •</span>
+      <p class="card-intro">Soutiens Libestria.fr en envoyant quelques Lightning Sats</p>
       <a class="btn-zap" href="lightning:brownrabbit19@primal.net" target="_blank">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
           <path d="M13 2L4.5 13.5H11L10 22L20.5 10H14L13 2Z"/>
