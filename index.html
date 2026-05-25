@@ -19,7 +19,7 @@
       --border:       rgba(255,255,255,0.07);
       --text:         #e8e6f0;
       --muted:        #6a6880;
-      --logo-height:  44px;
+      --logo-height:  57px;
     }
 
     html { scroll-behavior: smooth; }
@@ -57,7 +57,7 @@
       border-radius: 999px;
       padding: 7px 20px;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.82rem;
+      font-size: 1rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--blue);
@@ -91,7 +91,7 @@
     .relay-desc {
       text-align: center;
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       line-height: 1.8;
       letter-spacing: 0.03em;
       max-width: 560px;
@@ -123,10 +123,17 @@
     }
     .card-label {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--blue);
+    }
+    .card-intro {
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      text-align: center;
+      line-height: 1.6;
+      color: var(--muted);
+      letter-spacing: 0.02em;
     }
     .card-title {
       font-size: clamp(1rem, 3vw, 1.2rem);
@@ -147,22 +154,37 @@
     }
 
     .section-block {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 40px 48px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
       animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .section-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet), var(--blue), transparent);
+      opacity: 0.5;
     }
     .section-label {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--blue);
     }
     .section-block a:not(.btn-zap) {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.88rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       color: var(--violet-light);
       text-decoration: none;
       border-bottom: 1px solid rgba(168,85,247,0.3);
@@ -217,7 +239,7 @@
     }
     .lightning-address span {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.75rem;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
       color: var(--muted);
       letter-spacing: 0.05em;
     }
@@ -230,7 +252,7 @@
       border-radius: 6px;
       padding: 4px 10px;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.6rem;
+      font-size: 0.8rem;
       letter-spacing: 0.08em;
       color: var(--violet-light);
       cursor: pointer;
@@ -243,7 +265,7 @@
     footer {
       padding: 44px 0 32px;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.6rem;
+      font-size: 0.85rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--muted);
@@ -261,7 +283,7 @@
 
     @media (max-width: 560px) {
       main { padding: 48px 16px 36px; gap: 48px; }
-      .card { padding: 28px 18px; }
+      .card, .section-block { padding: 28px 18px; }
       .btn-zap { padding: 13px 28px; font-size: 0.9rem; }
     }
   </style>
@@ -270,7 +292,7 @@
   <main>
 
     <div class="logo-wrap">
-      <img src="36107281-5595-4484-B4DC-BD929AB12451.png" alt="Libestria">
+      <img src="36107281-5595-4484-B4DC-BD929AB12451.jpeg" alt="Libestria">
     </div>
 
     <span class="soon-badge">Relais privés à venir</span>
@@ -286,12 +308,16 @@
     </div>
 
     <p class="relay-desc">
-      L'attribution des droits d'accès à ces relais sera effectuée de manière sélective. L'objectif sera de maintenir des relais fiables, réservés à des utilisateurs de confiance. L'administrateur se réservera le droit d'accepter ou de refuser chaque demande d'accès.
+      Les droits d'accès à ces relais seront accordés de manière sélective à des utilisateurs de confiance (invitation ou white-list).<br>
+      L'objectif sera de maintenir des relais fiables et sécurisés, et d'éviter les contenus illicites et le spam.<br>
+      L'administrateur se réservera le droit d'accepter ou de refuser des demandes d'utilisateurs non-invités.<br>
+      La date de déploiement de ces relais n'est pas encore connue.
     </p>
 
 
     <div class="card">
       <span class="card-label">• Identité Décentralisée •</span>
+      <p class="card-intro">Au-delà des relais, Libestria.fr propose également, et dès à présent, de délivrer gratuitement des NIP-05 vérifiés.</p>
       <p class="card-title">Obtiens ton identifiant NIP-05 vérifié</p>
       <div class="nip05">ton-pseudo@id.libestria.fr</div>
       <p class="card-title">en envoyant une demande par mail</p>
