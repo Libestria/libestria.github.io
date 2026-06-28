@@ -1,4 +1,4 @@
 Contact: mailto:artefact@libestria.fr
 Expires: 2027-06-29T00:00:00.000Z
-Canonical: https://libestria.fr/.well-known/security.txt
+Canonical: https://id.libestria.fr/.well-known/security.txt
 Preferred-Languages: fr, en
