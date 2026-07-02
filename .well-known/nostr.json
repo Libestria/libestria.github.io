@@ -11,6 +11,11 @@
       "wss://nos.lol",
       "wss://relay.damus.io",
       "wss://relay.primal.net"
+    ],
+    "1e9776a23fb84504bacc29a02c55457f836d6875ba1e4a905d420402716ab484": [
+      "wss://relay.decentralia.fr",
+      "wss://relay.nostrmap.net",
+      "wss://relay.damus.io"
     ]
   }
 }
