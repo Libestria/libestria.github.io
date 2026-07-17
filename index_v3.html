@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Libestria.fr propose des services liés au protocole Nostr." name="description"/>
+<meta content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" http-equiv="Content-Security-Policy"/>
+<title>Libestria.fr</title>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/favicon.png" rel="apple-touch-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
+<meta content="https://libestria.fr/favicon.png" property="og:image"/>
+<style>*, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --violet: #8b3fd9;
+      --violet-light: #a855f7;
+      --blue: #1a8fe8;
+      --bg: #000;
+      --surface: #090912;
+      --surface-soft: #0d0d18;
+      --border: rgb(255 255 255 / 10%);
+      --text: #f2f0f7;
+      --muted: #9693aa;
+    }
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Exo 2", sans-serif;
+    }
+    main {
+      width: 100%;
+      max-width: 820px;
+      padding: 72px 24px 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 64px;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+    .logo-wrap {
+      animation: fade-up 0.7s ease both;
+    }
+    .logo-wrap img {
+      width: min(520px, 88vw);
+      height: auto;
+      display: block;
+    }
+    .site-intro {
+      width: 100%;
+      max-width: 720px;
+      color: #bdb9cf;
+      font-size: clamp(1rem, 2.8vw, 1.12rem);
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+      text-align: center;
+      animation: fade-up 0.7s 0.15s ease both;
+    }
+    .section-block {
+      position: relative;
+      width: 100%;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top, rgb(139 63 217 / 8%), transparent 44%),
+        linear-gradient(180deg, var(--surface-soft), var(--surface));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 18px 50px rgb(0 0 0 / 34%), inset 0 1px 0 rgb(255 255 255 / 2.5%);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      animation: fade-up 0.7s 0.3s ease both;
+    }
+    .section-block::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet), var(--blue), transparent);
+      opacity: 0.72;
+    }
+    .section-block:hover {
+      transform: translateY(-2px);
+      border-color: rgb(168 85 247 / 22%);
+      box-shadow:
+        0 22px 58px rgb(0 0 0 / 42%),
+        0 0 28px rgb(139 63 217 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 3.5%);
+    }
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      transition: color 0.25s ease, text-shadow 0.25s ease;
+      text-shadow:
+        0 0 6px rgb(26 143 232 / 35%),
+        0 0 14px rgb(26 143 232 / 22%),
+        0 0 28px rgb(139 63 217 / 12%);
+    }
+    .section-block:hover .section-label {
+      text-shadow:
+        0 0 8px rgb(26 143 232 / 45%),
+        0 0 18px rgb(26 143 232 / 28%),
+        0 0 36px rgb(139 63 217 / 18%);
+    }
+    .card-intro {
+      color: #bdb9cf;
+      font-size: clamp(1rem, 2.8vw, 1.12rem);
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .service-cards,
+    .recommended-relays {
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+    .service-logo{
+  display:block;
+  margin:0 auto;
+}
+    .service-logo img {
+      height: 48px;
+      width: auto;
+      display: block;
+    }
+    .relay-item {
+      width: 100%;
+      min-width: 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgb(255 255 255 / 2.5%);
+      border: 1px solid rgb(255 255 255 / 7%);
+      border-radius: 12px;
+    }
+    .relay-heading {
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .relay-item h3 {
+      color: var(--blue);
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .relay-item p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .status-dot {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .status-dot--green {
+      background: #22c55e;
+      box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%);
+      animation: flash-green-dot 1.2s ease-in-out infinite;
+    }
+    .status-dot--red {
+      background: #ef4444;
+      box-shadow: 0 0 7px rgb(239 68 68 / 95%), 0 0 16px rgb(239 68 68 / 62%);
+    }
+    .service-status {
+      margin-top: auto;
+      padding: 7px 12px;
+      color: var(--blue);
+      background: rgb(26 143 232 / 10%);
+      border: 1px solid rgb(26 143 232 / 28%);
+      border-radius: 999px;
+      font-family: "Share Tech Mono", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .nip05-example {
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .nip05-example strong {
+      color: var(--blue);
+      font-weight: 700;
+    }
+    .link-icon {
+      display: inline-block;
+      width: 1.4em;
+      margin-right: 0.2em;
+      vertical-align: middle;
+      text-align: center;
+      text-decoration: none !important;
+      border-bottom: none !important;
+    }
+    .section-block a {
+      padding-bottom: 2px;
+      color: var(--violet-light);
+      border-bottom: 1px solid rgb(168 85 247 / 30%);
+      font-family: "Share Tech Mono", monospace;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .section-block a:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+    .relay-links > div {
+      display: flex;
+      align-items: center;
+      gap: 0.2em;
+    }
+    .relay-links {
+      width: 100%;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .section-block .relay-info-link,
+    .section-block .contact-email-link {
+      font-family: "Exo 2", sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+    .contact-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .contact-row,
+    .copy-row {
+      max-width: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-entry-label {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-family: "Share Tech Mono", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .copy-box {
+      min-width: 0;
+      height: 40px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--bg);
+      border: 1px solid rgb(168 85 247 / 25%);
+      border-radius: 9px;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
+    }
+    .copy-value {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--violet-light);
+      font-family: "Share Tech Mono", monospace;
+      font-size: clamp(0.82rem, 2.1vw, 0.92rem);
+      letter-spacing: 0.025em;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .copy-row--auto .copy-box {
+      max-width: min(58vw, 360px);
+    }
+    .copy-row--auto .copy-value {
+      max-width: min(52vw, 330px);
+    }
+    .copy-row--npub .copy-box {
+      width: clamp(140px, 32vw, 180px);
+      flex: 0 0 clamp(140px, 32vw, 180px);
+    }
+    .copy-btn {
+      flex: 0 0 auto;
+      height: 34px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid rgb(255 255 255 / 14%);
+      border-radius: 4px;
+      font-family: "Share Tech Mono", monospace;
+      font-size: 0.68rem;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .copy-btn svg {
+      width: 9px;
+      height: 9px;
+    }
+    .copy-btn:hover {
+      color: var(--blue);
+      background: rgb(255 255 255 / 5%);
+      border-color: var(--blue);
+    }
+    .copy-btn.copied {
+      color: #6ee7b7;
+      background: rgb(110 231 183 / 8%);
+      border-color: rgb(110 231 183 / 40%);
+    }
+    footer {
+      padding: 44px 0 32px;
+      color: var(--muted);
+      font-family: "Share Tech Mono", monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      animation: fade-up 0.7s 0.6s ease both;
+    }
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes flash-green-dot {
+      0%, 100% {
+        opacity: 1;
+        box-shadow:
+          0 0 7px rgb(34 197 94 / 95%),
+          0 0 16px rgb(34 197 94 / 62%),
+          0 0 28px rgb(34 197 94 / 28%);
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.18;
+        box-shadow: none;
+        transform: scale(0.55);
+      }
+    }
+    @media (max-width: 560px) {
+      main {
+        padding: 48px 16px 36px;
+        gap: 48px;
+      }
+      .section-block {
+        padding: 28px 18px;
+      }
+      .relay-item {
+        padding: 20px;
+      }
+      .copy-value {
+        font-size: 0.82rem;
+        letter-spacing: 0.015em;
+      }
+      .copy-box {
+        padding-inline: 10px;
+      }
+      .contact-row,
+      .copy-row {
+        gap: 8px;
+      }
+      .contact-entry-label {
+        font-size: 0.68rem;
+      }
+      .copy-row--npub .copy-box {
+        width: clamp(100px, 34vw, 140px);
+        flex-basis: clamp(100px, 34vw, 140px);
+      }
+      .copy-btn {
+        padding-inline: 8px;
+        font-size: 0.66rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+.section-icon{
+  font-size:36px;
+  line-height:36px;
+  margin:2px 0;
+  text-align:center;
+}
+.service-logo{
+  display:block;
+  margin:0 auto;
+}
+.exo-text{font-family:'Exo 2',sans-serif;font-size:1rem;}
+.footer-author{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:12px;font-family:"Exo 2",sans-serif;font-size:1rem;color:var(--text);}
+.footer-author img{height:36px;width:36px;border-radius:50%;display:block;}
+
+.footer-author-text{
+  color:#bdb9cf;
+  font-family:"Exo 2",sans-serif;
+  font-size:clamp(1rem,2.8vw,1.12rem);
+  line-height:1.75;
+  letter-spacing:.02em;
+  text-transform:none;
+}
+
+footer{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.footer-author{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+</style>
+</head>
+<body>
+<main>
+<div class="logo-wrap">
+<img alt="Libestria" src="36107281-5595-4484-B4DC-BD929AB12451.jpeg"/>
+<h1 class="visually-hidden">Libestria</h1>
+</div>
+<p class="site-intro">Libestria est dédié à l’écosystème Nostr et à la messagerie SimpleX Chat.<br/><br/>Ces deux projets partagent une même philosophie : des communications libres, sans autorité centrale, respectueuses de la vie privée et de la souveraineté des utilisateurs.<br/><br/>L’objectif de Libestria est de proposer et mettre en avant des services utiles contribuant à la démocratisation et à l’adoption d’un numérique plus libre, plus souverain et plus respectueux de la vie privée.</p>
+<section aria-labelledby="services-libestria-title" class="section-block">
+<h2 class="section-label" id="services-libestria-title">Services Libestria</h2>
+<p class="card-intro">Découvre les services proposés par Libestria.</p>
+<div class="service-cards">
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Identité NIP-05 vérifiée</h3>
+</div>
+<p>Obtiens gratuitement une identité NIP-05 vérifiée sur le domaine <strong>libestria.fr</strong>.</p>
+<p class="nip05-example">     <strong>ton-pseudo@libestria.fr</strong> ✔️</p>
+<p>
+            Demande l’enregistrement de ton NIP-05 en précisant :<br/>
+                • le pseudo souhaité,<br/>
+                • ta clé publique (npub ou hex).<br/><br/>
+            → Contacts Libestria en bas de page.
+          </p>
+</article><article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Le QG des Nostrishes 🇫🇷</h3>
+</div>
+<p>Groupe de discussion sur SimpleX rassemblant des francophones qui gravitent autour de Nostr et de SimpleX, et au sein duquel chacun peut apprendre des autres.</p>
+<div class="relay-links">
+<div><span class="link-icon">💬</span><a class="relay-info-link" href="https://im.decentralia.fr/g#V_tuuIeNoMizktPXqm2NOjccK2V4k3M90-UO1SApSnA?c=dFkrLokibYyatYOuhlNL0y-5lxj9X8NMQF6PA45IA8c" rel="noopener noreferrer" target="_blank">Rejoindre le groupe</a></div>
+</div>
+</article><article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--red"></span>
+<h3>Relais Nostr Libestria</h3>
+</div>
+<div class="service-logo">
+<a href="https://nostr.org" rel="noopener noreferrer" target="_blank"><img alt="Nostr" src="IMG_7155.png"/></a>
+</div>
+<p>Relais privé Nostr avec liste blanche destiné à offrir un espace de confiance préservé du spam, des arnaques et des contenus illicites.</p>
+<span class="service-status">En projet</span>
+</article>
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--red"></span>
+<h3>Serveur SimpleX Libestria</h3>
+</div>
+<div class="service-logo">
+<a href="https://simplex.chat/fr/" rel="noopener noreferrer" target="_blank"><img alt="SimpleX" src="IMG_7165.png"/></a>
+</div>
+<p>Serveur de messages (SMP) SimpleX destiné à offrir un espace de communication sécurisé, confidentiel et respectueux de la vie privée.</p>
+<span class="service-status">En projet</span>
+</article></div>
+</section>
+<section aria-labelledby="recommended-services-title" class="section-block">
+<h2 class="section-label" id="recommended-services-title">Relais Nostr recommandés</h2>
+<div class="section-icon">🌐</div><p class="card-intro">Libestria te recommande ces relais Nostr opérés et gérés par des membres sérieux de la communauté francophone.</p>
+<div class="recommended-relays">
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Relais Nostr Map</h3>
+</div>
+<p>Relais public francophone, ouvert à tous, sans inscription.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">wss://relay.nostrmap.net</span>
+</div>
+<button aria-label="Copier l’adresse du relais Nostr Map" class="copy-btn" data-copy-target="relay-address-1" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+<div class="relay-links">
+<div><span class="link-icon">ℹ️</span><a class="relay-info-link" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">Infos sur le relais</a></div>
+<div><span class="link-icon">🔗</span> <a class="relay-info-link" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">Page officielle du relais</a></div>
+</div>
+</article>
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Relais Decentralia</h3>
+</div>
+<p>Relais public francophone, ouvert à tous, sans inscription.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">wss://relay.decentralia.fr</span>
+</div>
+<button aria-label="Copier l’adresse du relais Decentralia" class="copy-btn" data-copy-target="relay-address-2" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+<div class="relay-links">
+<div><span class="link-icon">ℹ️</span><a class="relay-info-link" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">Infos sur le relais</a></div>
+<div><span class="link-icon">🔗</span> <a class="relay-info-link" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">Page officielle du relais</a></div>
+</div>
+</article>
+</div>
+</section>
+<section aria-labelledby="recommended-simplex-title" class="section-block">
+<h2 class="section-label" id="recommended-simplex-title">Serveurs SimpleX recommandés</h2>
+<div class="section-icon">🌐</div><p class="card-intro">Libestria te recommande ces serveurs SimpleX opérés et gérés par des membres sérieux de la communauté francophone.</p>
+<div class="recommended-relays">
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Serveur SMP Nostr Map</h3>
+</div>
+<p>Serveur de messages, ouvert à tous, sans inscription.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-1" title="smp://4KEmkgCQfwY-rSCzLR2EglzLPDZIR7XkXUcEMHeaAzo=@simplex.nostrmap.fr">smp://4KEmkgCQfwY-rSCzLR2EglzLPDZIR7XkXUcEMHeaAzo=@simplex.nostrmap.fr</span>
+</div>
+<button aria-label="Copier l’adresse du serveur SMP" class="copy-btn" data-copy-target="simplex-address-1" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+<div class="relay-links">
+<div><span class="link-icon">ℹ️</span><a class="relay-info-link" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank">Infos sur le serveur</a></div>
+</div>
+</article>
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Serveur XFTP Nostr Map</h3>
+</div>
+<p>Serveur de fichiers et de médias, ouvert à tous, sans inscription.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-2" title="xftp://1oaS7-7j1kXZD1q_D5P6BRht6i1LTwf6YcQ7pHx4FVg=@simplex.nostrmap.fr:5443">xftp://1oaS7-7j1kXZD1q_D5P6BRht6i1LTwf6YcQ7pHx4FVg=@simplex.nostrmap.fr:5443</span>
+</div>
+<button aria-label="Copier l’adresse du serveur XFTP" class="copy-btn" data-copy-target="simplex-address-2" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+<div class="relay-links">
+<div><span class="link-icon">ℹ️</span><a class="relay-info-link" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank">Infos sur le serveur</a></div>
+</div>
+</article><article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Serveur SMP Decentralia</h3>
+</div>
+<p>Serveur de messages, ouvert à tous, sans inscription.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-3" title="smp://dFkrLokibYyatYOuhlNL0y-5lxj9X8NMQF6PA45IA8c=@im.decentralia.fr">smp://dFkrLokibYyatYOuhlNL0y-5lxj9X8NMQF6PA45IA8c=@im.decentralia.fr</span>
+</div>
+<button aria-label="Copier l’adresse du serveur SMP" class="copy-btn" data-copy-target="simplex-address-3" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+<div class="relay-links"><div><span class="link-icon">ℹ️</span><span class="relay-info-link exo-text" style="line-height:1.65;color:var(--muted);">NC</span></div></div>
+</article></div>
+</section><section aria-labelledby="nostrord-title" class="section-block">
+<h2 class="section-label" id="nostrord-title">Groupes Nostrord recommandés</h2>
+<div class="section-icon">💬</div><p class="card-intro">Libestria t’invite à rejoindre ces groupes de discussion sur Nostrord. Ils sont gérés par des membres actifs de la communauté Nostr francophone.</p>
+<div class="recommended-relays">
+<article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>French community 🇨🇵</h3>
+</div>
+<p>Un espace francophone convivial où l’on discute de tout.</p>
+<div class="relay-links">
+<div><span class="link-icon">💬</span><a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com/3a31db4acbe65b8cb02cebc9da0a9a1e" rel="noopener noreferrer" target="_blank">Rejoindre le groupe</a></div>
+</div>
+</article><article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>Nostr_FR 🇫🇷</h3>
+</div>
+<p>Discussions sur tout ce qui concerne l’écosystème Nostr.</p>
+<div class="relay-links">
+<div><span class="link-icon">💬</span><a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com&amp;group=8bc1480a021842ff72fbd85c3f70aed2" rel="noopener noreferrer" target="_blank">Rejoindre le groupe</a></div>
+</div>
+</article><article class="relay-item">
+<div class="relay-heading">
+<span aria-hidden="true" class="status-dot status-dot--green"></span>
+<h3>SimpleX_FR 🇫🇷</h3>
+</div>
+<p>Discussions sur tout ce qui concerne la messagerie sécurisée SimpleX Chat.</p>
+<div class="relay-links">
+<div><span class="link-icon">💬</span><a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com&amp;group=c28d1a35655bbaa940d6652d6fd69469" rel="noopener noreferrer" target="_blank">Rejoindre le groupe</a></div>
+</div>
+</article></div>
+</section>
+<section aria-labelledby="contact-title" class="section-block">
+<h2 class="section-label" id="contact-title">Contacter Libestria</h2>
+<div class="section-icon">✉️</div><p class="card-intro">Pour toute question, suggestion ou demande d’enregistrement d’un NIP-05, envoie-moi un e-mail ou un message privé sur Nostr.</p>
+<div class="contact-list">
+<div class="contact-row">
+<span class="contact-entry-label">E-mail :</span>
+<a class="contact-email-link" href="mailto:artefact@libestria.fr">artefact@libestria.fr</a>
+</div>
+<div class="contact-row">
+<span class="contact-entry-label">npub :</span>
+<div class="copy-row copy-row--npub">
+<div class="copy-box">
+<span class="copy-value" id="contact-npub" title="npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp">npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp</span>
+</div>
+<button aria-label="Copier le npub Nostr d’Artefact" class="copy-btn" data-copy-target="contact-npub" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="support-title" class="section-block">
+<h2 class="section-label" id="support-title">Soutenir Libestria</h2>
+<div class="section-icon">⚡️</div><p class="card-intro">Libestria est un projet indépendant. Si tu souhaites contribuer à son développement, tu peux envoyer quelques sats à cette adresse Lightning.</p>
+<div class="copy-row copy-row--auto">
+<div class="copy-box">
+<span class="copy-value" id="ln-address">artefact@coinos.io</span>
+</div>
+<button aria-label="Copier l’adresse Lightning" class="copy-btn" data-copy-target="ln-address" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>
+<span>Copier</span>
+</button>
+</div>
+</section>
+</main>
+<footer><div class="footer-author"><img alt="Avatar Artefact" src="IMG/Avatar-Artefact.jpg"/><span class="footer-author-text">Créé et maintenu par <strong>Artefact</strong></span></div>© 2026 Libestria.fr</footer>
+<script>
+    document.addEventListener('click', async ({ target }) => {
+      const button = target.closest('[data-copy-target]');
+      if (!button) return;
+
+      const valueElement = document.getElementById(button.dataset.copyTarget);
+      const label = button.querySelector('span');
+      if (!valueElement || !label) return;
+
+      const originalLabel = label.textContent;
+
+      try {
+        await navigator.clipboard.writeText(valueElement.textContent.trim());
+        label.textContent = 'Copié';
+        button.classList.add('copied');
+      } catch {
+        label.textContent = 'Échec';
+      }
+
+      window.setTimeout(() => {
+        label.textContent = originalLabel;
+        button.classList.remove('copied');
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
