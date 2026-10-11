@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
 <meta content="Guide pour sauvegarder et restaurer ses discussions sur SimpleX Chat." name="description"/>
-<title>Sauvegarder ses discussions sur SimpleX Chat — Tutoriel Libestria</title>
+<title>Sauvegarder ses discussions sur SimpleX Chat — Tutoriel</title>
 <style>
 :root{color-scheme:dark;--ink:#f2f0f7;--muted:#bdb9cf;--accent:#1a8fe8;--bg:#000;--border:rgba(255,255,255,.10);--hero-bg:radial-gradient(ellipse at 15% 10%,rgba(139,63,217,.36),transparent 54%),radial-gradient(ellipse at 90% 85%,rgba(26,143,232,.26),transparent 57%),linear-gradient(125deg,#171027 0%,#101a32 55%,#090912 100%)}
 *{box-sizing:border-box}
@@ -23,12 +23,12 @@ p{margin:0 0 14px}li{margin:8px 0}ol,ul{padding-left:24px}
 .note,.warning{background:rgba(139,63,217,.13);border-left:4px solid #a855f7;color:#f2f0f7;padding:16px 18px;border-radius:7px;margin:18px 0}
 .checklist label{display:block;margin:8px 0}.checklist input{accent-color:var(--accent);margin-right:10px}
 table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border-bottom:1px solid var(--border);text-align:left;padding:12px}th{background:#151426;color:#f2f0f7}
-a{color:#a855f7}a:hover{color:#fff}a:focus-visible,button:focus-visible{outline:2px solid #a855f7;outline-offset:3px}
-footer{text-align:center;color:#9693aa;font: .96rem/1.7 'Share Tech Mono',monospace;padding:22px}
+a{color:#fff}a:hover{color:var(--accent)}a:focus-visible,button:focus-visible{outline:2px solid #a855f7;outline-offset:3px}
+footer{text-align:center;color:#fff;font: .96rem/1.7 'Share Tech Mono',monospace;padding:22px}
 .toolbar{text-align:right;margin:12px 0}.toolbar button{padding:7px 12px;color:#fff;background:rgba(26,143,232,.10);border:1px solid rgba(26,143,232,.28);border-radius:999px;cursor:pointer;font: .78rem/1.65 'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,border-color .2s,color .2s}
 .toolbar button:hover,.toolbar button:focus-visible{background:rgba(26,143,232,.18);border-color:#1a8fe8;color:#fff}
 @media(hover:hover){main>section:hover,.toc:hover{transform:translateY(-2px);border-color:rgba(168,85,247,.22);box-shadow:0 22px 58px rgba(0,0,0,.42),0 0 28px rgba(139,63,217,.08)}}
-@media(prefers-reduced-motion:reduce){main>section,.toc,.toolbar button{transition:none}}
+@media(prefers-reduced-motion:reduce){main>section,.toc,.toolbar button{transition:none}main>section:hover,.toc:hover{transform:none}}
 @media(max-width:600px){.wrap{margin:15px auto;padding:0 12px}.hero{padding:28px 24px}main{gap:14px}main>section,.toc{padding:28px 18px}table{font-size:.94rem}}
 @media print{
  :root{color-scheme:light;--ink:#1b2b44;--muted:#5b6b80;--border:#dce6f2}
@@ -44,18 +44,18 @@ footer{text-align:center;color:#9693aa;font: .96rem/1.7 'Share Tech Mono',monosp
  .note,.warning{background:#f3ecfc!important;color:#1b2b44!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
  .note strong,.warning strong{color:#1b2b44!important}
  th{background:#eaf3ff!important;color:#1b2b44!important}td,th{border-color:#dce6f2}
- .checklist input{print-color-adjust:exact;-webkit-print-color-adjust:exact} a{color:#245fa5!important}footer{color:#5b6b80!important}
+ .checklist input{print-color-adjust:exact;-webkit-print-color-adjust:exact} a{color:#245fa5!important}footer{color:#1b2b44!important}
 }
 
 
 
 /* Sommaire : les styles de carte et de titre sont partagés avec les sections. */
-.toc{margin:22px 0 0;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
-.toc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;row-gap:10px;list-style:none;padding:0;margin:0}
+.toc{margin:22px 0 0}
+.toc-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;list-style:none;padding:0;margin:0}
 .toc-list li{margin:0;min-width:0}
-.toc-list a{display:block;padding:5px 0;color:#a855f7;text-decoration:underline;text-underline-offset:3px;font-size:1rem;line-height:1.7}
-.toc-list a:hover,.toc-list a:focus-visible{color:#fff}
-@media(max-width:650px){.toc-list{grid-template-columns:1fr;row-gap:5px}}
+.toc-list a{display:block;padding:5px 0;color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:1rem;line-height:1.7}
+.toc-list a:hover,.toc-list a:focus-visible{color:var(--accent)}
+@media(max-width:650px){.toc-list{row-gap:5px}}
 @media print{.hero{break-inside:avoid;page-break-inside:avoid}.toc-list a{color:#245fa5!important}li,tr{break-inside:avoid}thead{display:table-header-group}}
 </style>
 </head>
