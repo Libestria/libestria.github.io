@@ -545,17 +545,16 @@
 .rubrique-controls select { appearance:none; width:100%; padding:17px 54px 17px 20px; border:1px solid rgba(168,85,247,.55); border-radius:12px; color:var(--text-primary); background-color:#10101d; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23a855f7' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 18px center; font:600 1rem "Exo 2",sans-serif; cursor:pointer; box-shadow:0 0 22px rgba(139,63,217,.10); }
 .rubrique-controls select:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
 .rubrique-controls option { background:#10101d; color:#f2f0f7; }
-.rubrique-fenetre { width:100%; border:2px solid transparent; border-radius:18px; background:linear-gradient(#070711,#070711) padding-box,linear-gradient(135deg,#b45cff 0%,#f26adf 33%,#8e7bff 62%,#39c8ff 100%) border-box; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 32px rgba(139,63,217,.18),0 0 18px rgba(57,200,255,.08); }
+.rubrique-fenetre { width:100%; border-style:solid; border-color:transparent; border-width:1px 1px 2px 2px; border-radius:18px; background:linear-gradient(#070711,#070711) padding-box,linear-gradient(135deg,#b45cff 0%,#f26adf 33%,#8e7bff 62%,#39c8ff 100%) border-box; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 22px rgba(139,63,217,.12),0 0 12px rgba(57,200,255,.05); }
 .fenetre-bar { min-height:55px; display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid rgba(168,85,247,.28); background:linear-gradient(90deg,#181025,#0b1425); }
 .fenetre-menu-icon svg { display:block; width:21px; height:21px; filter:drop-shadow(0 0 5px rgba(57,200,255,.28)); }
 .fenetre-menu-icon { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; color:#39c8ff; font-family:inherit; font-size:1.65rem; font-weight:400; line-height:1; text-shadow:0 0 9px rgba(57,200,255,.28); }
-.fenetre-titre { color:#eee6ff; font-family:"Share Tech Mono",monospace; font-size:clamp(1rem,1.5vw,1.15rem); font-weight:600; line-height:1.35; letter-spacing:.035em; overflow-wrap:anywhere; }
-.fenetre-indicator { margin-left:auto; color:#9693aa; font: .72rem "Share Tech Mono",monospace; letter-spacing:.1em; }
+.fenetre-titre { color:#d9a4ff; font-family:"Share Tech Mono",monospace; font-size:clamp(1.1rem,1.75vw,1.3rem); font-weight:600; line-height:1.35; letter-spacing:.035em; overflow-wrap:anywhere; background:var(--libestria-title-gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .fenetre-content { padding:20px; }
 .fenetre-content .section { width:100%; animation:none; box-shadow:none; border:1px solid rgba(255,255,255,.07); transform:none !important; }
 .fenetre-content .section:hover { box-shadow:none; }
 .rubrique-panel[hidden] { display:none !important; }
-@media(max-width:560px) { .fenetre-content { padding:10px; } .fenetre-bar { padding:12px; gap:10px; } .fenetre-indicator { display:none; } .rubrique-controls { margin-top:-8px; } }
+@media(max-width:560px) { .fenetre-content { padding:10px; } .fenetre-bar { padding:12px; gap:10px; } .rubrique-controls { margin-top:-8px; } }
 main { max-width:1040px; gap:32px; padding-top:42px; }
 .identity-banner { width:100%; display:grid; grid-template-columns:minmax(185px, 34%) 1fr; align-items:center; gap:28px; padding:28px 32px; border:1px solid rgba(155,94,224,.46); border-radius:18px; background:radial-gradient(circle at 8% 12%,rgba(125,52,202,.17),transparent 50%),linear-gradient(115deg,#100c1d,#0a1221 85%); box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.04); position:relative; overflow:hidden; }
 .identity-banner::before {content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#a855f7,#1a8fe8,transparent);}
@@ -746,7 +745,7 @@ body > footer.site-footer {
   text-align: center;
   white-space: nowrap;
   font-family: "Share Tech Mono", monospace;
-  font-size: clamp(.52rem, 1.7vw, .72rem);
+  font-size: clamp(.60rem, 1.9vw, .80rem);
   font-weight: 400;
   letter-spacing: 0;
   word-spacing: normal;
@@ -798,6 +797,27 @@ body > footer.site-footer a.footer-author-text:focus {
   .fenetre-content .service-cards > .card,
   .fenetre-content .card-grid > .card { padding: 20px 8px; }
 }
+
+/* Cartes : alignement cohérent des textes et titres, y compris les en-têtes flex. */
+.fenetre-content .card,
+.fenetre-content .card :is(h2, h3, h4, p, ul, ol, li),
+.fenetre-content .card .card-header {
+  text-align: left !important;
+  text-align-last: left !important;
+}
+.fenetre-content .card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start !important;
+  align-items: center;
+  margin-inline: 0 !important;
+}
+.fenetre-content .card .card-header :is(h3, h4) {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  width: auto;
+  flex: 0 1 auto;
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -822,7 +842,7 @@ body > footer.site-footer a.footer-author-text:focus {
      Libestria
     </h1>
 </div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Ouvrir le menu" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0">☰</label></section>
-<div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">Accueil</span><span aria-hidden="true" class="fenetre-indicator">LIBESTRIA</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
+<div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">Accueil</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
 <h2 class="section-label" id="accueil-title">Accueil</h2>
 <div class="accueil-description"><p class="card-intro">Libestria est dédié à l’écosystème Nostr et à la messagerie SimpleX Chat.</p><p class="card-intro">Ces deux projets partagent une même philosophie : des communications libres, sans autorité centrale, respectueuses de la vie privée et de la souveraineté des utilisateurs.</p><p class="card-intro">L’objectif de Libestria est de proposer et mettre en avant des services utiles contribuant à la démocratisation et à l’adoption d’un numérique plus libre, plus souverain et plus respectueux de la vie privée.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
 <h2 class="section-label" id="services-libestria-title" translate="no">
