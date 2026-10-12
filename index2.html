@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Libestria propose des services francophones autour de Nostr et SimpleX : identité NIP-05, communautés et outils respectueux de la vie privée." name="description"/>
+<meta content="#000000" name="theme-color"/>
+<link href="https://libestria.fr/" rel="canonical"/>
+<meta content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" http-equiv="Content-Security-Policy"/>
+<title>
+   Libestria — Services Nostr et SimpleX francophones
+  </title>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/favicon.png" rel="apple-touch-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link as="image" href="IMG/IMG_Libestria.png" rel="preload"/>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
+<style>
+   /* Variables et styles globaux */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --violet: #8b3fd9;
+        --violet-light: #a855f7;
+        --blue: #1a8fe8;
+        --background: #000;
+        --surface: #090912;
+        --surface-soft: #0d0d18;
+        --border: rgb(255 255 255 / 10%);
+        --text-primary: #f2f0f7;
+        --text-muted: #9693aa;
+        --text-secondary: #bdb9cf;
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+        background: var(--background);
+        color: var(--text-primary);
+        font-family: "Exo 2", sans-serif;
+      }
+      main {
+        width: 100%;
+        max-width: 820px;
+        padding: 72px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 64px;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+      /* En-tête et introduction */
+      .logo-wrap {
+        animation: fade-up 0.7s ease both;
+      }
+      .logo-wrap img {
+        width: min(520px, 88vw);
+        height: auto;
+        display: block;
+      }
+      .site-intro {
+        width: 100%;
+        max-width: 720px;
+        color: var(--text-secondary);
+        font-size: clamp(1rem, 2.8vw, 1.12rem);
+        line-height: 1.75;
+        letter-spacing: 0.02em;
+        text-align: center;
+        animation: fade-up 0.7s 0.15s ease both;
+      }
+      /* Blocs principaux */
+      .section {
+        position: relative;
+        width: 100%;
+        padding: 40px 48px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at top, rgb(139 63 217 / 8%), transparent 44%),
+          linear-gradient(180deg, var(--surface-soft), var(--surface));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow:
+          0 18px 50px rgb(0 0 0 / 34%),
+          inset 0 1px 0 rgb(255 255 255 / 2.5%);
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          box-shadow 0.22s ease;
+        animation: fade-up 0.7s 0.3s ease both;
+      }
+      .section::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--violet),
+          var(--blue),
+          transparent
+        );
+        opacity: 0.72;
+      }
+      .section:hover {
+        transform: translateY(-2px);
+        border-color: rgb(168 85 247 / 22%);
+        box-shadow:
+          0 22px 58px rgb(0 0 0 / 42%),
+          0 0 28px rgb(139 63 217 / 8%),
+          inset 0 1px 0 rgb(255 255 255 / 3.5%);
+      }
+      .section-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--blue);
+        transition:
+          color 0.25s ease,
+          text-shadow 0.25s ease;
+        text-shadow:
+          0 0 2px rgb(26 143 232 / 18%),
+          0 0 6px rgb(26 143 232 / 10%),
+          0 0 10px rgb(139 63 217 / 5%);
+      }
+      .section:hover .section-label {
+        text-shadow:
+          0 0 3px rgb(26 143 232 / 24%),
+          0 0 8px rgb(26 143 232 / 14%),
+          0 0 14px rgb(139 63 217 / 8%);
+      }
+      .card-intro {
+        color: var(--text-secondary);
+        font-size: clamp(1rem, 2.8vw, 1.12rem);
+        line-height: 1.75;
+        letter-spacing: 0.02em;
+        text-align: center;
+      }
+      /* Cartes de services et relais */
+      .service-cards,
+      .card-grid {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+      }
+      .service-logo {
+        display: block;
+        margin: 0 auto;
+      }
+      .service-logo img {
+        height: 48px;
+        width: auto;
+        display: block;
+      }
+      .service-logo--large img {
+        height: 72px;
+      }
+      .service-logo--small img {
+        height: 40px;
+      }
+      .card {
+        width: 100%;
+        min-width: 0;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        background: rgb(255 255 255 / 2.5%);
+        border: 1px solid rgb(255 255 255 / 7%);
+        border-radius: 12px;
+      }
+      .card-header {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .card h3 {
+        color: var(--blue);
+        font-size: 1.08rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-shadow:
+          0 0 2px rgb(26 143 232 / 18%),
+          0 0 6px rgb(26 143 232 / 10%),
+          0 0 10px rgb(139 63 217 / 5%);
+        transition: text-shadow 0.25s ease;
+      }
+
+      .card:hover h3 {
+        text-shadow:
+          0 0 3px rgb(26 143 232 / 24%),
+          0 0 8px rgb(26 143 232 / 14%),
+          0 0 14px rgb(139 63 217 / 8%);
+      }
+      .card p {
+        color: var(--text-muted);
+        line-height: 1.65;
+      }
+      .status-dot {
+        flex: 0 0 auto;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+      .status-dot--green {
+        background: #22c55e;
+        box-shadow:
+          0 0 7px rgb(34 197 94 / 95%),
+          0 0 16px rgb(34 197 94 / 62%);
+        animation: flash-green-dot 1.2s ease-in-out infinite;
+      }
+      .status-dot--red {
+        background: #ef4444;
+        box-shadow:
+          0 0 7px rgb(239 68 68 / 95%),
+          0 0 16px rgb(239 68 68 / 62%);
+      }
+      .service-status {
+        margin-top: auto;
+        padding: 7px 12px;
+        color: var(--blue);
+        background: rgb(26 143 232 / 10%);
+        border: 1px solid rgb(26 143 232 / 28%);
+        border-radius: 999px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .nip05-example {
+        color: var(--text-primary);
+        font-size: 1rem;
+      }
+      .nip05-example strong {
+        color: var(--blue);
+        font-weight: 700;
+      }
+      .link-icon {
+        display: inline-block;
+        width: 1.4em;
+        margin-right: 0.2em;
+        vertical-align: middle;
+        text-align: center;
+        text-decoration: none !important;
+        border-bottom: none !important;
+      }
+      .section a {
+        padding-bottom: 2px;
+        color: var(--violet-light);
+        border-bottom: 1px solid rgb(168 85 247 / 30%);
+        font-family: "Share Tech Mono", monospace;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        text-decoration: none;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .section a:hover {
+        color: #fff;
+        border-color: #fff;
+      }
+      .card-links > div {
+        display: flex;
+        align-items: center;
+        gap: 0.2em;
+      }
+      .card-links {
+        width: 100%;
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .section .relay-info-link,
+      .section .contact-email-link {
+        font-family: "Exo 2", sans-serif;
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+      .contact-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .contact-row,
+      .copy-row {
+        max-width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .contact-entry-label {
+        flex: 0 0 auto;
+        color: var(--text-muted);
+        font-family: "Share Tech Mono", monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .copy-box {
+        min-width: 0;
+        height: 40px;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: var(--background);
+        border: 1px solid rgb(168 85 247 / 25%);
+        border-radius: 9px;
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
+      }
+      .copy-value {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--violet-light);
+        font-family: "Share Tech Mono", monospace;
+        font-size: clamp(0.82rem, 2.1vw, 0.92rem);
+        letter-spacing: 0.025em;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .copy-row--wide .copy-box {
+        max-width: min(58vw, 360px);
+      }
+      .copy-row--wide .copy-value {
+        max-width: min(52vw, 330px);
+      }
+      .copy-row--compact .copy-box {
+        width: clamp(140px, 32vw, 180px);
+        flex: 0 0 clamp(140px, 32vw, 180px);
+      }
+      /* Boutons de copie */
+      .copy-btn {
+        flex: 0 0 auto;
+        height: 34px;
+        padding: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        color: var(--text-muted);
+        background: transparent;
+        border: 1px solid rgb(255 255 255 / 14%);
+        border-radius: 4px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 0.68rem;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .copy-btn svg {
+        width: 9px;
+        height: 9px;
+      }
+      .copy-btn:hover {
+        color: var(--blue);
+        background: rgb(255 255 255 / 5%);
+        border-color: var(--blue);
+      }
+      .copy-btn.copied {
+        color: #6ee7b7;
+        background: rgb(110 231 183 / 8%);
+        border-color: rgb(110 231 183 / 40%);
+      }
+      /* Pied de page */
+      footer {
+        padding: 44px 0 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-family: "Share Tech Mono", monospace;
+        font-size: 0.85rem;
+        letter-spacing: 0.18em;
+        text-align: center;
+        text-transform: uppercase;
+        animation: fade-up 0.7s 0.6s ease both;
+      }
+
+      .footer-author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .footer-author img {
+        width: 30px;
+        height: 30px;
+        display: block;
+        border-radius: 50%;
+      }
+
+      .footer-author-text {
+        color: var(--text-muted);
+        font-family: "Exo 2", sans-serif;
+        font-size: clamp(1rem, 2.8vw, 1.12rem);
+        line-height: 1.75;
+        letter-spacing: 0.02em;
+        text-transform: none;
+      }
+
+      .footer-author-text a {
+        color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+        text-decoration: none;
+        border-bottom: none;
+      }
+
+      .footer-author-text a:hover {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: none;
+      }
+      /* Animations */
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes flash-green-dot {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow:
+            0 0 7px rgb(34 197 94 / 95%),
+            0 0 16px rgb(34 197 94 / 62%),
+            0 0 28px rgb(34 197 94 / 28%);
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.18;
+          box-shadow: none;
+          transform: scale(0.55);
+        }
+      }
+      /* Adaptation mobile */
+      @media (max-width: 560px) {
+        main {
+          padding: 48px 16px 36px;
+          gap: 48px;
+        }
+
+        .logo-wrap img {
+          width: min(560px, 96vw);
+        }
+        /* Blocs principaux */
+        .section {
+          padding: 28px 18px;
+        }
+        .card {
+          padding: 20px;
+        }
+        .copy-value {
+          font-size: 0.82rem;
+          letter-spacing: 0.015em;
+        }
+        .copy-box {
+          padding-inline: 10px;
+        }
+        .contact-row,
+        .copy-row {
+          gap: 8px;
+        }
+        .contact-entry-label {
+          font-size: 0.68rem;
+        }
+        .copy-row--compact .copy-box {
+          width: clamp(100px, 34vw, 140px);
+          flex-basis: clamp(100px, 34vw, 140px);
+        }
+        /* Boutons de copie */
+        .copy-btn {
+          padding-inline: 8px;
+          font-size: 0.66rem;
+        }
+      }
+      /* Accessibilité : réduction des animations */
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      .section-icon {
+        font-size: 36px;
+        line-height: 36px;
+        margin: 2px 0;
+        text-align: center;
+      }
+      .exo-text {
+        font-family: "Exo 2", sans-serif;
+        font-size: 1rem;
+      }
+
+      .relay-info-unavailable {
+        color: var(--text-muted);
+        line-height: 1.65;
+      }
+
+      .qr-code {
+        display: block;
+        width: 180px;
+        max-width: 100%;
+        height: auto;
+        margin: 8px auto 0;
+      }
+  
+
+/* Navigation par rubriques et fenêtre intégrée */
+.rubrique-controls { width:100%; max-width:720px; display:flex; flex-direction:column; gap:12px; margin-top:-18px; }
+.rubrique-controls label { color:var(--blue); font-family:"Share Tech Mono",monospace; font-size:.92rem; letter-spacing:.13em; text-transform:uppercase; }
+.rubrique-controls select { appearance:none; width:100%; padding:17px 54px 17px 20px; border:1px solid rgba(168,85,247,.55); border-radius:12px; color:var(--text-primary); background-color:#10101d; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23a855f7' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 18px center; font:600 1rem "Exo 2",sans-serif; cursor:pointer; box-shadow:0 0 22px rgba(139,63,217,.10); }
+.rubrique-controls select:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+.rubrique-controls option { background:#10101d; color:#f2f0f7; }
+.rubrique-fenetre { width:100%; border:1px solid rgba(168,85,247,.50); border-radius:18px; background:#070711; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 32px rgba(139,63,217,.14); }
+.fenetre-bar { min-height:55px; display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid rgba(168,85,247,.28); background:linear-gradient(90deg,#181025,#0b1425); }
+.fenetre-dots { display:flex; gap:7px; flex-shrink:0; }
+.fenetre-dots span { display:block; width:9px; height:9px; border-radius:50%; background:#8b3fd9; box-shadow:0 0 7px rgba(139,63,217,.45); }
+.fenetre-dots span:nth-child(2) { background:#1a8fe8; }
+.fenetre-dots span:nth-child(3) { background:#22c55e; }
+.fenetre-titre { color:#f2f0f7; font:600 .91rem "Exo 2",sans-serif; overflow-wrap:anywhere; }
+.fenetre-indicator { margin-left:auto; color:#9693aa; font: .72rem "Share Tech Mono",monospace; letter-spacing:.1em; }
+.fenetre-content { padding:20px; }
+.fenetre-content .section { width:100%; animation:none; box-shadow:none; border:1px solid rgba(255,255,255,.07); transform:none !important; }
+.fenetre-content .section:hover { box-shadow:none; }
+.rubrique-panel[hidden] { display:none !important; }
+@media(max-width:560px) { .fenetre-content { padding:10px; } .fenetre-bar { padding:12px; gap:10px; } .fenetre-indicator { display:none; } .rubrique-controls { margin-top:-8px; } }
+
+/* Aperçu du nouveau bandeau identitaire et de la navigation terminal */
+main { max-width:1040px; gap:32px; padding-top:42px; }
+.identity-banner { width:100%; display:grid; grid-template-columns:minmax(185px, 34%) 1fr; align-items:center; gap:28px; padding:28px 32px; border:1px solid rgba(155,94,224,.46); border-radius:18px; background:radial-gradient(circle at 8% 12%,rgba(125,52,202,.17),transparent 50%),linear-gradient(115deg,#100c1d,#0a1221 85%); box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.04); position:relative; overflow:hidden; }
+.identity-banner::before {content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#a855f7,#1a8fe8,transparent);}
+.identity-banner .logo-wrap {width:100%; display:flex; align-items:center; justify-content:center; animation:none;}
+.identity-banner .logo-wrap img { width:100%; max-width:275px; height:auto; }
+.identity-banner .site-intro {max-width:none; margin:0; text-align:left; font-size:clamp(.88rem,1.65vw,1.02rem);line-height:1.7; animation:none;}
+.terminal-navigation {width:100%;max-width:none; padding:18px 22px 14px; display:flex;flex-direction:column;gap:12px; border:1px solid #304862; border-radius:10px; background:linear-gradient(135deg,#080d17,#0b1020);box-shadow:0 0 28px rgba(26,143,232,.08),inset 0 1px rgba(255,255,255,.04);margin:0;}
+.terminal-heading {display:flex;align-items:center;gap:12px;}
+.terminal-prompt {font:700 1.1rem 'Share Tech Mono',monospace;color:#54b9ff;text-shadow:0 0 12px rgba(26,143,232,.5);}
+.terminal-navigation label {color:#82caff;font:.79rem 'Share Tech Mono',monospace;letter-spacing:.13em;}
+.terminal-status {margin-left:auto;color:#4ed6a1;font:.68rem 'Share Tech Mono',monospace;letter-spacing:.07em;}
+.terminal-select-wrap {position:relative;}
+.terminal-navigation select {appearance:none;width:100%;padding:16px 48px 16px 19px;border:1px solid #315579;border-radius:6px;background:#0c1728;color:#e8f5ff;font:600 1rem 'Share Tech Mono',monospace;cursor:pointer;box-shadow:inset 3px 0 #a855f7;}
+.terminal-navigation select:hover {border-color:#599de0;background:#102039;}
+.terminal-navigation select:focus-visible {outline:2px solid #6bbcff;outline-offset:3px;}
+.terminal-navigation select option {background:#0c1728;color:#f3f4ff;}
+.terminal-chevron {position:absolute;right:19px;top:50%;transform:translateY(-58%);color:#b886ff;font:1.6rem 'Share Tech Mono',monospace;pointer-events:none;}
+.terminal-foot {color:#637e9d;font:.68rem 'Share Tech Mono',monospace;letter-spacing:.11em;}
+.rubrique-fenetre {border-color:rgba(93,132,185,.45);}
+@media(max-width:650px){main{padding:24px 14px;gap:22px}.identity-banner{grid-template-columns:1fr;gap:12px;padding:20px 18px}.identity-banner .logo-wrap img{max-width:225px}.identity-banner .site-intro{text-align:left;font-size:.94rem}.terminal-navigation{padding:15px}.terminal-navigation label{font-size:.69rem}.terminal-status{font-size:.57rem}.terminal-navigation select{font-size:.85rem}}
+
+/* Aperçu index.html : bandeau sans bordure, toujours côte à côte */
+main { max-width:1180px; width:100%; margin-inline:auto; gap:26px; padding:36px clamp(14px,3vw,38px) 48px; }
+.identity-banner, .identity-banner:hover { display:grid; grid-template-columns:minmax(140px,28%) minmax(0,1fr); align-items:center; gap:clamp(18px,3.5vw,48px); width:100%; padding:8px 0 18px; margin:0; border:0!important; border-radius:0; background:none!important; box-shadow:none!important; overflow:visible; }
+.identity-banner::before, .identity-banner::after { display:none!important; content:none!important; }
+.identity-banner .logo-wrap { width:100%; min-width:0; margin:0; padding:0; }
+.identity-banner .logo-wrap img { display:block; width:100%; max-width:265px; height:auto; object-fit:contain; filter:drop-shadow(0 0 18px rgba(139,63,217,.16)); }
+.identity-banner .site-intro { min-width:0; max-width:unset; text-align:left; margin:0; font-size:clamp(.86rem,1.25vw,1.04rem); line-height:1.72; }
+.terminal-navigation { border-radius:9px; }
+.rubrique-fenetre { width:100%; min-width:0; }
+.fenetre-content { padding:clamp(10px,2vw,24px); }
+@media(max-width:650px) {
+ main { padding:18px 12px 32px; gap:19px; }
+ .identity-banner { grid-template-columns:minmax(86px,29%) minmax(0,1fr)!important; gap:clamp(10px,3vw,18px); padding:4px 0 12px; }
+ .identity-banner .logo-wrap img { max-width:155px; }
+ .identity-banner .site-intro { font-size:clamp(.68rem,2.7vw,.88rem); line-height:1.47; }
+ .identity-banner .site-intro br + br { display:none; }
+ .terminal-navigation { padding:13px; }
+ .fenetre-bar { padding:11px 12px; }
+}
+@media(max-width:360px) {
+ .identity-banner { grid-template-columns:minmax(75px,27%) minmax(0,1fr)!important; gap:9px; }
+ .identity-banner .site-intro { font-size:.67rem; line-height:1.4; }
+}
+
+/* Aperçu largeur étendue : PC 90% / 1600px, mobile ~96% */
+main { width:90%; max-width:1600px; box-sizing:border-box; padding:36px 0 52px; }
+.identity-banner, .terminal-navigation, .rubrique-fenetre { width:100%; box-sizing:border-box; }
+.fenetre-content .section { width:100%; box-sizing:border-box; }
+@media (min-width:1100px) {
+  .fenetre-content .service-cards, .fenetre-content .card-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .fenetre-content .section { padding:34px clamp(22px,3vw,48px); }
+}
+@media (min-width:700px) and (max-width:1099px) {
+  .fenetre-content .service-cards, .fenetre-content .card-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .fenetre-content .section { padding:26px 20px; }
+}
+@media (max-width:699px) {
+  main { width:96%; max-width:none; padding:18px 0 32px; gap:19px; }
+  .fenetre-content .service-cards, .fenetre-content .card-grid { grid-template-columns:minmax(0,1fr); }
+  .fenetre-content .section { padding:18px 12px; }
+  .fenetre-content { padding:8px; }
+  .identity-banner { grid-template-columns:minmax(75px,27%) minmax(0,1fr)!important; }
+}
+
+/* Layout application : seul le panneau central défile */
+html,body {height:100%;height:100dvh;overflow:hidden!important;overscroll-behavior:none;}
+body {display:flex!important;flex-direction:column!important;min-height:0!important;margin:0!important;}
+body > main {box-sizing:border-box;width:90%!important;max-width:1600px!important;height:100%;height:100dvh;min-height:0!important;flex:1 1 auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:clamp(10px,1.6vh,20px)!important;padding:clamp(10px,2vh,24px) 0!important;margin:0 auto!important;overflow:hidden!important;}
+main > .identity-banner {flex:0 0 auto!important;min-height:0!important;}
+main > .terminal-navigation {flex:0 0 auto!important;min-height:0!important;}
+main > .rubrique-fenetre {flex:1 1 0!important;min-height:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;}
+.rubrique-fenetre > .fenetre-bar {flex:0 0 auto!important;}
+.rubrique-fenetre > .fenetre-content {flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#7854b4 #10101a;-webkit-overflow-scrolling:touch;}
+.fenetre-content > footer {padding:28px 10px 18px;}
+@media(max-width:700px){body > main {width:96%!important;padding:8px 0!important;gap:9px!important;} .identity-banner {padding:8px 4px!important;} .terminal-navigation {padding:10px 12px!important;} .fenetre-bar {min-height:40px!important;padding:8px 10px!important;} .fenetre-content {padding:9px!important;}}
+@media(max-height:620px){body > main{gap:6px!important;padding:5px 0!important;} .identity-banner {padding-top:4px!important;padding-bottom:4px!important;} .terminal-navigation {padding-top:7px!important;padding-bottom:7px!important;}}
+
+/* Ajustement demandé : logo moyen, sans modifier les autres composants. */
+.identity-banner .logo-wrap img { width:100px!important; max-width:100px!important; height:auto!important; }
+@media (max-width:699px) { .identity-banner .logo-wrap img { width:65px!important; max-width:65px!important; height:auto!important; } }
+
+/* Bandeau logo seul et descriptif dans un bloc fixe distinct */
+main > .identity-banner {display:flex!important;align-items:center!important;justify-content:center!important;padding:3px 0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;}
+.identity-banner .logo-wrap {width:auto!important;max-width:none!important;display:flex!important;justify-content:center!important;}
+main > .description-panel {flex:0 0 auto!important;min-height:0!important;box-sizing:border-box;width:100%;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,28px);background:linear-gradient(115deg,rgba(27,21,42,.94),rgba(13,16,30,.96));border:1px solid rgba(119,83,169,.48);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.15);}
+.description-panel .site-intro {margin:0!important;max-width:none!important;text-align:left!important;font-size:clamp(.78rem,1.1vw,.98rem)!important;line-height:1.5!important;animation:none!important;}
+.description-panel .site-intro br + br {display:none!important;}
+@media(max-width:699px){
+  main > .description-panel {padding:8px 11px!important;border-radius:10px;}
+  .description-panel .site-intro {font-size:clamp(.66rem,2.45vw,.79rem)!important;line-height:1.32!important;}
+  .description-panel .site-intro br {display:none!important;}
+}
+@media(max-height:650px){main > .description-panel {padding-top:6px!important;padding-bottom:6px!important;} .description-panel .site-intro {line-height:1.23!important;}}
+
+/* Logo aligné à gauche et signature à sa droite */
+main > .identity-banner {justify-content:flex-start!important;gap:clamp(14px,2.3vw,30px)!important;text-align:left!important;}
+.identity-banner .logo-wrap {flex:0 0 auto!important;justify-content:flex-start!important;}
+.identity-wordmark {display:block;color:#eee6ff;font-family:'Share Tech Mono',monospace;font-size:clamp(1.5rem,3.2vw,3.1rem);font-weight:600;line-height:1.1;letter-spacing:.035em;text-shadow:0 0 17px rgba(151,90,244,.35),0 0 32px rgba(50,140,235,.14);white-space:nowrap;}
+@media(max-width:699px){main > .identity-banner {gap:12px!important;}.identity-wordmark{font-size:clamp(1.15rem,5vw,1.8rem);letter-spacing:0;}}
+
+/* Menu compact intégré au bandeau logo, à droite */
+main > .identity-banner {display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;width:100%!important;gap:clamp(9px,1.8vw,22px)!important;min-width:0!important;}
+.identity-banner .identity-wordmark {flex:0 1 auto;min-width:0;}
+main > .identity-banner .terminal-navigation {margin-left:auto!important;width:auto!important;max-width:min(42%,340px)!important;min-width:170px!important;flex:0 1 290px!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;display:block!important;}
+.simple-menu-wrap {position:relative;width:100%;}
+.identity-banner .terminal-navigation select {appearance:none!important;-webkit-appearance:none!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:12px 33px 12px 14px!important;border:1px solid rgba(151,119,195,.5)!important;border-radius:8px!important;background:#171423!important;color:#e7dff5!important;box-shadow:none!important;font:400 clamp(.76rem,1.1vw,.95rem) 'Share Tech Mono',monospace!important;letter-spacing:0!important;cursor:pointer!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.identity-banner .terminal-navigation select:hover {border-color:#ad8ce8!important;background:#211a32!important;}
+.identity-banner .terminal-navigation select:focus-visible {outline:2px solid #7ca8ff!important;outline-offset:2px!important;}
+.simple-menu-chevron {position:absolute;right:12px;top:50%;transform:translateY(-57%);pointer-events:none;color:#b991f3;font-size:1.35rem;}
+@media(max-width:699px) {
+ main > .identity-banner {gap:8px!important;}
+ .identity-banner .identity-wordmark {font-size:clamp(.96rem,3.7vw,1.45rem)!important;}
+ main > .identity-banner .terminal-navigation {min-width:0!important;max-width:40%!important;flex:0 1 40%!important;}
+ .identity-banner .terminal-navigation select {padding:10px 25px 10px 8px!important;font-size:clamp(.62rem,2.4vw,.8rem)!important;}
+ .simple-menu-chevron {right:7px;}
+}
+
+/* Menu latéral Libestria — panneau coulissant */
+.identity-banner .drawer-trigger{margin-left:auto;flex-shrink:0;width:48px;height:48px;display:grid;place-items:center;border:1px solid #3c3453;border-radius:13px;background:#15131e;color:#e9e5f4;font-size:26px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
+.identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible{background:#211b30;border-color:#8b63d8}
+.drawer-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.drawer-overlay[hidden]{display:none!important}
+.libestria-drawer{position:fixed;top:0;right:0;bottom:0;z-index:1001;width:min(86vw,380px);background:#121119;border-left:1px solid #3a324d;box-shadow:-16px 0 60px rgba(0,0,0,.5);transform:translateX(105%);transition:transform .26s ease;display:flex;flex-direction:column;padding:25px 23px 22px;overflow-y:auto;overscroll-behavior:contain}
+.libestria-drawer.is-open{transform:translateX(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid #373144;gap:12px}
+.drawer-brand{font-family:'Share Tech Mono',monospace;font-size:clamp(19px,4vw,25px);font-weight:600;background:linear-gradient(100deg,#9b6bf2,#48a9db);background-clip:text;-webkit-background-clip:text;color:transparent}
+.drawer-close{height:42px;width:42px;border:1px solid #393344;border-radius:10px;background:#1b1924;color:#a9a5b9;font-size:28px;cursor:pointer}
+.drawer-links{display:flex;flex-direction:column;gap:6px;padding:26px 0}
+.drawer-link{width:100%;display:flex;align-items:center;gap:17px;padding:15px 12px;border:0;border-radius:10px;text-align:left;background:transparent;color:#e3dfeb;font:inherit;font-size:clamp(14px,2.8vw,17px);cursor:pointer;transition:background .18s,color .18s}
+.drawer-link:hover,.drawer-link:focus-visible{background:#211b2d;color:#bca0ff}
+.drawer-link.active{color:#ac80ff;background:#211a30}
+.drawer-icon{flex:0 0 25px;font-size:23px;text-align:center;color:#8e87a5}
+.drawer-link.active .drawer-icon{color:#ad87f9}
+.drawer-foot{margin-top:auto;padding-top:20px;border-top:1px solid #373144;font:12px 'Share Tech Mono',monospace;letter-spacing:1px;color:#777188}
+.drawer-foot span{color:#50d7a0;float:right}
+@media(max-width:600px){.identity-banner .drawer-trigger{width:43px;height:43px;font-size:23px}.libestria-drawer{padding:22px 19px}}
+@media(prefers-reduced-motion:reduce){.libestria-drawer{transition:none}}
+
+
+/* Menu latéral : état unique, contrôlé par JavaScript. */
+.drawer-overlay{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease}
+.drawer-overlay.is-open{opacity:1;visibility:visible;pointer-events:auto}
+.drawer-close{display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.drawer-trigger:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible{outline:2px solid #9b6bf2;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.drawer-overlay{transition:none}}
+
+body.menu-open{overflow:hidden}
+
+/* Ouverture fiable, même dans les aperçus sans JavaScript. */
+.nav-toggle{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#nav-toggle:checked ~ .drawer-overlay{opacity:1;visibility:visible;pointer-events:auto}
+#nav-toggle:checked ~ .libestria-drawer{transform:translateX(0);visibility:visible;pointer-events:auto}
+.libestria-drawer{visibility:hidden;pointer-events:none;transition:transform .26s ease,visibility .26s}
+#nav-toggle:checked ~ main .drawer-trigger{border-color:#9b6bf2;background:#211b30}
+.drawer-trigger,.drawer-close{user-select:none;-webkit-user-select:none}
+
+/* Logo dans l’en-tête du menu latéral */
+.drawer-brand-logo{display:block;width:48px;max-width:calc(100% - 60px);height:auto;max-height:48px;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 10px rgba(139,63,217,.16))}
+@media(max-width:600px){.drawer-brand-logo{width:42px;max-height:42px}}
+
+/* Identité du menu : favicon et titre, comme dans le bandeau d’accueil. */
+.drawer-brand{display:flex;align-items:center;gap:13px;min-width:0;flex:1}
+.drawer-brand .drawer-brand-logo{flex:none;max-width:none}
+.drawer-brand-title{color:#eee6ff;font-family:'Share Tech Mono',monospace;font-size:clamp(1.15rem,2.5vw,1.65rem);font-weight:600;letter-spacing:.035em;line-height:1.1;white-space:nowrap;text-shadow:0 0 17px rgba(151,90,244,.35),0 0 32px rgba(50,140,235,.14)}
+@media(max-width:600px){.drawer-brand{gap:10px}.drawer-brand-title{font-size:1.2rem}}
+
+/* Titre du bandeau d’accueil : plus grand, dégradé violet / rose / bleu. */
+main > .identity-banner .identity-wordmark {
+  font-size:clamp(2rem,4.3vw,4.1rem)!important;
+  font-weight:700;
+  line-height:1.12;
+  background:linear-gradient(105deg,#c29aff 5%,#a66cf0 42%,#d18bdc 66%,#64b8ed 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  text-shadow:none;
+  filter:drop-shadow(0 0 11px rgba(154,96,238,.24));
+}
+@media(max-width:699px){
+  main > .identity-banner .identity-wordmark {
+    font-size:clamp(1.35rem,5.3vw,2.2rem)!important;
+    letter-spacing:-.035em;
+  }
+}
+@media(max-width:380px){
+  main > .identity-banner .identity-wordmark {font-size:clamp(1.15rem,5vw,1.4rem)!important;}
+}
+
+/* Même dégradé pour le titre du menu latéral. */
+.drawer-brand-title {
+  background:linear-gradient(105deg,#c29aff 5%,#a66cf0 42%,#d18bdc 66%,#64b8ed 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  text-shadow:none;
+  filter:drop-shadow(0 0 11px rgba(154,96,238,.24));
+}
+</style>
+<meta content="website" property="og:type"/>
+<meta content="fr_FR" property="og:locale"/>
+<meta content="Libestria" property="og:site_name"/>
+<meta content="https://libestria.fr/" property="og:url"/>
+<meta content="Libestria — Services Nostr et SimpleX francophones" property="og:title"/>
+<meta content="Services francophones autour de Nostr et SimpleX : identité NIP-05, communautés et outils respectueux de la vie privée." property="og:description"/>
+<meta content="https://libestria.fr/IMG/IMG_Libestria.png" property="og:image"/>
+<meta content="Logo de Libestria" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Libestria — Services Nostr et SimpleX francophones" name="twitter:title"/>
+<meta content="Services francophones autour de Nostr et SimpleX : identité NIP-05, communautés et outils respectueux de la vie privée." name="twitter:description"/>
+<meta content="https://libestria.fr/IMG/IMG_Libestria.png" name="twitter:image"/>
+<style>
+/* Pictogrammes SVG intégrés : aucune dépendance externe. */
+.drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}.drawer-icon svg{display:block;width:21px;height:21px}
+</style></head>
+<body>
+<input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
+<main>
+<!-- Présentation -->
+<section aria-label="Présentation permanente de Libestria" class="identity-banner"><div class="logo-wrap">
+<img alt="Logo de Libestria, services francophones autour de Nostr et SimpleX" fetchpriority="high" src="IMG/IMG_Libestria.png"/>
+<h1 class="visually-hidden" translate="no">
+     Libestria
+    </h1>
+</div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Ouvrir le menu" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0">☰</label></section><section aria-label="Description permanente de Libestria" class="description-panel"><p class="site-intro">
+    Libestria est dédié à l’écosystème Nostr et à la messagerie SimpleX
+        Chat.
+    <br/>
+<br/>
+    Ces deux projets partagent une même philosophie : des
+        communications libres, sans autorité centrale, respectueuses de la vie
+        privée et de la souveraineté des utilisateurs.
+    <br/>
+<br/>
+    L’objectif de
+        Libestria est de proposer et mettre en avant des services utiles
+        contribuant à la démocratisation et à l’adoption d’un numérique plus
+        libre, plus souverain et plus respectueux de la vie privée.
+   </p></section>
+<div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><div aria-hidden="true" class="fenetre-dots"><span></span><span></span><span></span></div><span class="fenetre-titre" id="fenetre-titre">Services Libestria</span><span aria-hidden="true" class="fenetre-indicator">LIBESTRIA</span></div><div class="fenetre-content"><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title">
+<h2 class="section-label" id="services-libestria-title" translate="no">
+     Services Libestria
+    </h2>
+<p class="card-intro">
+     Découvre les services proposés par Libestria.
+    </p>
+<div class="service-cards">
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Identité NIP-05 vérifiée
+       </h3>
+</div>
+<div class="service-logo service-logo--large">
+<img alt="Logo NIP-05 Verified" decoding="async" loading="lazy" src="IMG/Logo_NIP-05-Verified.png"/>
+</div>
+<p>
+       Obtiens gratuitement une identité NIP-05 vérifiée sur le domaine
+       <strong>
+        libestria.fr
+       </strong>
+       .
+      </p>
+<p class="nip05-example">
+            
+       <strong>
+        ton-pseudo@libestria.fr
+       </strong>
+        ✔️
+      </p>
+<p>
+       Demande l’enregistrement de ton NIP-05 en précisant :
+       <br/>
+           • le pseudo souhaité,
+       <br/>
+           • ta clé publique (npub ou hex).
+       <br/>
+<br/>
+       → Contacts Libestria en bas de page.
+      </p>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Le QG des Nostriches 🇫🇷
+       </h3>
+</div>
+<div class="service-logo service-logo--large">
+<img alt="Logo du QG des Nostriches" decoding="async" loading="lazy" src="IMG/Logo_QG-Nostriches.png"/>
+</div>
+<p>
+       Groupe de discussion sur SimpleX rassemblant des francophones qui
+              gravitent autour de Nostr et de SimpleX, et au sein duquel chacun
+              peut apprendre des autres.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="qg-nostrishes-link" title="https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs">
+https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
+    </span>
+</div>
+<button aria-label="Copier le lien du groupe Le QG des Nostriches" class="copy-btn" data-copy-target="qg-nostrishes-link" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path>
+</svg>
+<span>Copier</span>
+</button>
+</div>
+<img alt="QR Code pour rejoindre le groupe Le QG des Nostriches" class="qr-code" decoding="async" height="180" loading="lazy" src="IMG/QR/QR_QG-Nostriches.png" width="180"/>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--red">
+</span>
+<h3 translate="no">
+        Relais Nostr Libestria
+       </h3>
+</div>
+<div class="service-logo">
+<a href="https://nostr.org" rel="noopener noreferrer" target="_blank">
+<img alt="Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/>
+</a>
+</div>
+<p>
+       Relais privé Nostr avec liste blanche destiné à offrir un espace
+              de confiance préservé du spam, des arnaques et des contenus
+              illicites.
+      </p>
+<span class="service-status">
+       En projet
+      </span>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--red">
+</span>
+<h3 translate="no">
+        Serveur SimpleX Libestria
+       </h3>
+</div>
+<div class="service-logo service-logo--small">
+<a href="https://simplex.chat/fr/" rel="noopener noreferrer" target="_blank">
+<img alt="SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/>
+</a>
+</div>
+<p>
+       Serveur de messages (SMP) SimpleX destiné à offrir un espace de
+              communication sécurisé, confidentiel et respectueux de la vie
+              privée.
+      </p>
+<span class="service-status">
+       En projet
+      </span>
+</article>
+</div>
+</section><section aria-labelledby="recommended-services-title" class="section rubrique-panel" data-rubrique="recommended-services-title" hidden="hidden">
+<h2 class="section-label" id="recommended-services-title" translate="no">
+     Relais Nostr recommandés
+    </h2>
+<div class="section-icon">
+     🌐
+    </div>
+<p class="card-intro">
+     Libestria te recommande ces relais Nostr opérés et gérés par des
+          membres sérieux de la communauté francophone.
+    </p>
+<div class="card-grid">
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Relais Nostr Map
+       </h3>
+</div>
+<p>
+       Relais public francophone, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
+         wss://relay.nostrmap.net
+        </span>
+</div>
+<button aria-label="Copier l’adresse du relais Nostr Map" class="copy-btn" data-copy-target="relay-address-1" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">
+         Infos sur le relais
+        </a>
+</div>
+<div>
+<span class="link-icon">
+         🔗
+        </span>
+<a class="relay-info-link" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">
+         Page officielle du relais
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3>
+        Relais Decentralia
+       </h3>
+</div>
+<p>
+       Relais public francophone, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
+         wss://relay.decentralia.fr
+        </span>
+</div>
+<button aria-label="Copier l’adresse du relais Decentralia" class="copy-btn" data-copy-target="relay-address-2" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">
+         Infos sur le relais
+        </a>
+</div>
+<div>
+<span class="link-icon">
+         🔗
+        </span>
+<a class="relay-info-link" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">
+         Page officielle du relais
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3>
+        Relais Noeud Libre
+       </h3>
+</div>
+<p>
+       Relais public francophone, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
+         wss://relay.noeudlibre.fr
+        </span>
+</div>
+<button aria-label="Copier l’adresse du relais Noeud Libre" class="copy-btn" data-copy-target="relay-address-3" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank">
+         Infos sur le relais
+        </a>
+</div>
+<div>
+<span class="link-icon">
+         🔗
+        </span>
+<a class="relay-info-link" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">
+         Page officielle du relais
+        </a>
+</div>
+</div>
+</article>
+</div>
+</section><section aria-labelledby="recommended-simplex-title" class="section rubrique-panel" data-rubrique="recommended-simplex-title" hidden="hidden">
+<h2 class="section-label" id="recommended-simplex-title" translate="no">
+     Serveurs SimpleX recommandés
+    </h2>
+<div class="section-icon">
+     🌐
+    </div>
+<p class="card-intro">
+     Libestria te recommande ces serveurs SimpleX opérés et gérés par des
+          membres sérieux de la communauté francophone.
+    </p>
+<div class="card-grid">
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Serveur SMP Nostr Map
+       </h3>
+</div>
+<p>
+       Serveur de messages, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-1" title="smp://4KEmkgCQfwY-rSCzLR2EglzLPDZIR7XkXUcEMHeaAzo=@simplex.nostrmap.fr">
+         smp://4KEmkgCQfwY-rSCzLR2EglzLPDZIR7XkXUcEMHeaAzo=@simplex.nostrmap.fr
+        </span>
+</div>
+<button aria-label="Copier l’adresse du serveur SMP" class="copy-btn" data-copy-target="simplex-address-1" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<img alt="QR Code du serveur SMP Nostr Map" class="qr-code" decoding="async" height="180" loading="lazy" src="IMG/QR/QR_NostrMap-SMP.png" width="180"/>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank">
+         Infos sur le serveur
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Serveur XFTP Nostr Map
+       </h3>
+</div>
+<p>
+       Serveur de fichiers et de médias, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-2" title="xftp://1oaS7-7j1kXZD1q_D5P6BRht6i1LTwf6YcQ7pHx4FVg=@simplex.nostrmap.fr:5443">
+         xftp://1oaS7-7j1kXZD1q_D5P6BRht6i1LTwf6YcQ7pHx4FVg=@simplex.nostrmap.fr:5443
+        </span>
+</div>
+<button aria-label="Copier l’adresse du serveur XFTP" class="copy-btn" data-copy-target="simplex-address-2" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<img alt="QR Code du serveur XFTP Nostr Map" class="qr-code" decoding="async" height="180" loading="lazy" src="IMG/QR/QR_NostrMap-XFTP.png" width="180"/>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank">
+         Infos sur le serveur
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3>
+        Serveur SMP Decentralia
+       </h3>
+</div>
+<p>
+       Serveur de messages, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-3" title="smp://dFkrLokibYyatYOuhlNL0y-5lxj9X8NMQF6PA45IA8c=@im.decentralia.fr">
+         smp://dFkrLokibYyatYOuhlNL0y-5lxj9X8NMQF6PA45IA8c=@im.decentralia.fr
+        </span>
+</div>
+<button aria-label="Copier l’adresse du serveur SMP" class="copy-btn" data-copy-target="simplex-address-3" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<img alt="QR Code du serveur SMP Decentralia" class="qr-code" decoding="async" height="180" loading="lazy" src="IMG/QR/QR_Decentralia-SMP.png" width="180"/>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<span class="relay-info-link exo-text relay-info-unavailable">
+         Aucune info sur le serveur
+        </span>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Serveur SMP Noeud Libre
+       </h3>
+</div>
+<p>
+       Serveur de messages, ouvert à tous, sans inscription.
+      </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="simplex-address-4" title="smp://FxrIJnDK5I2FDHnfR8yr13n2SCt-_dVLcY6XIZ6j-Lo=@simplex.noeudlibre.fr:5223">
+         smp://FxrIJnDK5I2FDHnfR8yr13n2SCt-_dVLcY6XIZ6j-Lo=@simplex.noeudlibre.fr:5223
+        </span>
+</div>
+<button aria-label="Copier l’adresse du serveur SMP" class="copy-btn" data-copy-target="simplex-address-4" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+<img alt="QR Code du serveur SMP Noeud Libre" class="qr-code" decoding="async" height="180" loading="lazy" src="IMG/QR/QR_NoeudLibre-SMP.png" width="180"/>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         ℹ️
+        </span>
+<a class="relay-info-link" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">
+         Infos sur le serveur
+        </a>
+</div>
+</div>
+</article>
+</div>
+</section><section aria-labelledby="nostrord-title" class="section rubrique-panel" data-rubrique="nostrord-title" hidden="hidden">
+<h2 class="section-label" id="nostrord-title" translate="no">
+     Groupes Nostrord recommandés
+    </h2>
+<div class="section-icon">
+     💬
+    </div>
+<p class="card-intro">
+     Libestria t’invite à rejoindre ces groupes de discussion sur Nostrord.
+          Ils sont gérés par des membres actifs de la communauté Nostr
+          francophone.
+    </p>
+<div class="card-grid">
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3>
+        Le Village Gaulois 🐓🇨🇵
+       </h3>
+</div>
+<p>
+       Un espace francophone convivial où l’on discute de tout.
+      </p>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         💬
+        </span>
+<a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com&amp;group=3a31db4acbe65b8cb02cebc9da0a9a1e" rel="noopener noreferrer" target="_blank">
+         Rejoindre le groupe
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        Nostr_FR 🇫🇷
+       </h3>
+</div>
+<p>
+       Discussions sur tout ce qui concerne l’écosystème Nostr.
+      </p>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         💬
+        </span>
+<a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com&amp;group=8bc1480a021842ff72fbd85c3f70aed2" rel="noopener noreferrer" target="_blank">
+         Rejoindre le groupe
+        </a>
+</div>
+</div>
+</article>
+<article class="card">
+<div class="card-header">
+<span aria-hidden="true" class="status-dot status-dot--green">
+</span>
+<h3 translate="no">
+        SimpleX_FR 🇫🇷
+       </h3>
+</div>
+<p>
+       Discussions sur tout ce qui concerne la messagerie sécurisée
+              SimpleX Chat.
+      </p>
+<div class="card-links">
+<div>
+<span class="link-icon">
+         💬
+        </span>
+<a class="relay-info-link" href="https://nostrord.com/open/?relay=groups.0xchat.com&amp;group=c28d1a35655bbaa940d6652d6fd69469" rel="noopener noreferrer" target="_blank">
+         Rejoindre le groupe
+        </a>
+</div>
+</div>
+</article>
+</div>
+</section><section aria-labelledby="contact-title" class="section rubrique-panel" data-rubrique="contact-title" hidden="hidden">
+<h2 class="section-label" id="contact-title" translate="no">
+     Contacter Libestria
+    </h2>
+<div class="section-icon">
+     ✉️
+    </div>
+<p class="card-intro">
+     Pour toute question, suggestion ou demande d’enregistrement d’un
+          NIP-05, envoie-moi un e-mail ou un message privé sur Nostr.
+    </p>
+<div class="contact-list">
+<div class="contact-row">
+<span class="contact-entry-label">
+       E-mail :
+      </span>
+<a class="contact-email-link" href="mailto:artefact@libestria.fr">
+       artefact@libestria.fr
+      </a>
+</div>
+<div class="contact-row">
+<span class="contact-entry-label">
+       npub :
+      </span>
+<div class="copy-row copy-row--compact">
+<div class="copy-box">
+<span class="copy-value" id="contact-npub" title="npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp">
+         npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp
+        </span>
+</div>
+<button aria-label="Copier le npub Nostr d’Artefact" class="copy-btn" data-copy-target="contact-npub" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+         Copier
+        </span>
+</button>
+</div>
+</div>
+</div>
+</section><section aria-labelledby="support-title" class="section rubrique-panel" data-rubrique="support-title" hidden="hidden">
+<h2 class="section-label" id="support-title" translate="no">
+     Soutenir Libestria
+    </h2>
+<div class="section-icon">
+     ⚡️
+    </div>
+<p class="card-intro">
+     Libestria est un projet indépendant. Si tu souhaites contribuer à son
+          développement, tu peux envoyer quelques sats à cette adresse
+          Lightning.
+    </p>
+<div class="copy-row copy-row--wide">
+<div class="copy-box">
+<span class="copy-value" id="ln-address">
+       artefact@coinos.io
+      </span>
+</div>
+<button aria-label="Copier l’adresse Lightning" class="copy-btn" data-copy-target="ln-address" type="button">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
+</path>
+</svg>
+<span>
+       Copier
+      </span>
+</button>
+</div>
+</section><footer>
+<div class="footer-author">
+<span class="footer-author-text">
+     Créé et maintenu par
+    </span>
+<img alt="Avatar Artefact" decoding="async" loading="lazy" src="IMG/Avatar-Artefact.jpg"/>
+<span class="footer-author-text">
+<a href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp" rel="me noopener noreferrer" target="_blank">
+<strong>
+       Artefact
+      </strong>
+</a>
+</span>
+</div>
+   © 2026 Libestria.fr
+  </footer></div></div>
+<!-- Services Libestria -->
+<!-- Relais Nostr recommandés -->
+<!-- Serveurs SimpleX recommandés -->
+<!-- Groupes Nostrord -->
+<!-- Contact -->
+<!-- Soutien -->
+</main>
+<!-- Pied de page -->
+<script>
+// Copie des identifiants : Clipboard API avec repli pour les aperçus locaux.
+document.addEventListener('click', async event => {
+  const button = event.target.closest('[data-copy-target]');
+  if (!button) return;
+  const source = document.getElementById(button.dataset.copyTarget);
+  const label = button.querySelector('span');
+  if (!source || !label) return;
+  const text = source.textContent.trim();
+  const original = label.textContent;
+  let copied = false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      copied = true;
+    }
+  } catch (_) { /* Environnement local ou permission refusée. */ }
+  if (!copied) {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.cssText = 'position:fixed;left:-9999px;top:0';
+    document.body.appendChild(field);
+    field.select();
+    try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+    field.remove();
+  }
+  label.textContent = copied ? 'Copié' : 'Échec';
+  button.classList.toggle('copied', copied);
+  window.setTimeout(() => { label.textContent = original; button.classList.remove('copied'); }, 2000);
+});
+</script>
+<label aria-label="Fermer le menu" class="drawer-overlay" for="nav-toggle" id="drawer-overlay"></label><aside aria-hidden="true" aria-label="Navigation Libestria" class="libestria-drawer" id="libestria-drawer"><div class="drawer-head"><div class="drawer-brand"><img class="drawer-brand-logo" src="/favicon.png" alt="Favicon Libestria" loading="eager" /><span class="drawer-brand-title">Libestria.fr</span></div><label aria-label="Fermer le menu" class="drawer-close" for="nav-toggle" id="drawer-close" role="button" tabindex="0">×</label></div><nav aria-label="Rubriques" class="drawer-links"><!-- links --><button aria-current="page" class="drawer-link active" data-target="services-libestria-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span>Services Libestria</span></button><button aria-current="false" class="drawer-link" data-target="recommended-services-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span><span>Relais Nostr recommandés</span></button><button aria-current="false" class="drawer-link" data-target="recommended-simplex-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span><span>Serveurs SimpleX recommandés</span></button><button aria-current="false" class="drawer-link" data-target="nostrord-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span>Groupes Nostrord recommandés</span></button><button aria-current="false" class="drawer-link" data-target="contact-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="20" x="2" y="4"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span>Contacter Libestria</span></button><button aria-current="false" class="drawer-link" data-target="support-title" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></svg></span><span>Soutenir Libestria</span></button></nav><div class="drawer-foot">LIBESTRIA / NAVIGATION <span aria-hidden="true">●</span></div></aside><script>
+(() => {
+  const toggle = document.getElementById('nav-toggle');
+  const opener = document.getElementById('drawer-open');
+  const closer = document.getElementById('drawer-close');
+  const links = Array.from(document.querySelectorAll('.drawer-link'));
+  const panels = Array.from(document.querySelectorAll('.rubrique-panel'));
+  const title = document.getElementById('fenetre-titre');
+  const scroller = document.querySelector('.fenetre-content');
+  function sync() { opener.setAttribute('aria-expanded', String(toggle.checked)); }
+  toggle.addEventListener('change', sync);
+  for (const label of [opener, closer]) {
+    label.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.checked = !toggle.checked; sync(); }
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && toggle.checked) { toggle.checked = false; sync(); opener.focus(); }
+  });
+  links.forEach(link => link.addEventListener('click', () => {
+    const id = link.dataset.target;
+    if (!panels.some(panel => panel.dataset.rubrique === id)) return;
+    panels.forEach(panel => { panel.hidden = panel.dataset.rubrique !== id; });
+    links.forEach(item => {
+      item.classList.toggle('active', item === link);
+      if (item === link) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    if (title) title.textContent = link.textContent.trim();
+    if (scroller) scroller.scrollTop = 0;
+    toggle.checked = false;
+    sync();
+    opener.focus();
+  }));
+  sync();
+})();
+</script></body>
+</html>
