@@ -961,8 +961,7 @@ body > footer.site-footer a.footer-author-text:focus {
   font-size: 1em;
 }
 
-/* Séparateurs de groupes du menu : même trait que le bas du cadre. */
-/* Traits de séparation communs aux trois groupes du menu. */
+/* Séparateurs du menu : même trait que le bas du cadre. */
 .drawer-group-divider,.drawer-section-divider{border-top:1px solid #373144;margin:5px 0 1px}
 .drawer-group-divider{padding-top:8px;display:flex;align-items:center;justify-content:flex-start}
 .drawer-group-divider img{display:block;width:auto;max-width:100%;height:25px;object-fit:contain}
@@ -977,6 +976,7 @@ body > footer.site-footer a.footer-author-text:focus {
   }
   .fenetre-content [data-rubrique="recommended-services-title"] > .card-grid > .card {
     min-width: 0;
+    border-top: 0 !important;
   }
 }
 @media (max-width: 899px) {
@@ -994,6 +994,21 @@ body > footer.site-footer a.footer-author-text:focus {
   flex: 0 0 auto; font-family: inherit; font-size: inherit; font-weight: inherit;
   letter-spacing: inherit; line-height: inherit;
 }
+
+/* Introduction des relais : même logo, typographie et rythme que NIP-05. */
+.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > p {
+  margin: 0 0 1rem !important;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 2.8vw, 1.12rem);
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  text-align: left !important;
+  hyphens: none !important;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > :last-child { margin-bottom: 0 !important; }
+.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > .accueil-logos { margin: 0 0 1rem !important; }
+.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
+
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1013,24 +1028,20 @@ body > footer.site-footer a.footer-author-text:focus {
   color: #fff !important;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide {
-  display: flex; align-items: center; width: 100%; gap: 8px; min-width: 0;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; width: 100%; gap: 8px; min-width: 0;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide .copy-box {
-  flex: 1 1 auto; width: 0; max-width: none; min-width: 0; padding: 0 8px;
-  justify-content: flex-start; gap: 7px;
-}
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-favicon {
-  width: 19px; height: 19px; object-fit: contain; flex: 0 0 19px;
+  flex: 0 1 auto; width: auto; max-width: 100%; min-width: 0; gap: 0;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide .copy-value {
   color: var(--cyan) !important; font-weight: 700 !important; text-align: left !important;
-  max-width: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 100%; min-width: 0;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide .copy-btn {
   flex: 0 0 auto;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links {
-  display: flex; flex-wrap: wrap; flex-direction: row; align-items: flex-start; gap: 8px;
+  display: flex; flex-wrap: wrap; flex-direction: row; align-items: flex-start; justify-content: flex-start; gap: 8px;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links > div {
   display: flex; min-width: 0;
@@ -1101,10 +1112,13 @@ body > footer.site-footer a.footer-author-text:focus {
 <h2 class="section-label visually-hidden" id="recommended-services-title" translate="no">
      Relais Nostr recommandés
     </h2>
-<p class="card-intro">
-     Libestria te recommande ces relais Nostr opérés et gérés par des
-          membres sérieux de la communauté francophone.
-    </p><p class="card-intro">Pour ajouter un relais dans votre client Nostr, rendez-vous dans les paramètres de configuration de vos relais et ajoutez l'adresse.</p>
+<div class="relay-introduction nip05-information">
+  <div class="accueil-logos" aria-label="Logo Nostr"><img src="IMG/Logo_Nostr.png" alt="Logo Nostr" loading="lazy" decoding="async"></div>
+  <p>Nostr est un protocole de communication décentralisé : contrairement aux réseaux sociaux traditionnels, il ne dépend pas d'une plateforme ou d'un serveur central. Les messages circulent grâce à des relais indépendants, qui permettent de publier, stocker et diffuser les événements Nostr. Tu peux te connecter à plusieurs relais pour améliorer la diffusion de tes publications et retrouver les contenus des personnes que tu suis.</p>
+  <p>Libestria te recommande une sélection de relais Nostr publics francophones, accessibles à tous et sans inscription.</p>
+  <p>Ces relais sont hébergés et entretenus par des membres engagés de la communauté Nostr francophone (#nostrfr).</p>
+  <p>Pour les utiliser, ouvre les paramètres de ton client Nostr, accède à la gestion des relais et ajoute simplement leurs adresses à ta liste.</p>
+</div>
 <div class="card-grid">
 <article class="card">
 <div class="card-header">
@@ -1118,7 +1132,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://nostrmap.fr/favicon.ico"/>
+<div class="copy-box">
 <span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
          wss://relay.nostrmap.net
         </span>
@@ -1154,7 +1168,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://decentralia.fr/favicon.ico"/>
+<div class="copy-box">
 <span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
          wss://relay.decentralia.fr
         </span>
@@ -1190,7 +1204,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://www.noeudlibre.fr/favicon.ico"/>
+<div class="copy-box">
 <span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
          wss://relay.noeudlibre.fr
         </span>
