@@ -1005,16 +1005,6 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > .accueil-logos { margin: 0 0 1rem !important; }
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
-
-/* Logos à droite des adresses, sans éloigner les boutons Copier. */
-[data-rubrique="recommended-services-title"] .relay-card-logo {
-  display: block; height: 50px; width: auto; max-width: 100%;
-  object-fit: contain; object-position: center; margin-right: 8px;
-  flex: 0 1 auto;
-}
-[data-rubrique="recommended-services-title"] .copy-row--wide .relay-card-logo {
-  max-width: min(100%, 130px);
-}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1087,6 +1077,38 @@ body > footer.site-footer a.footer-author-text:focus {
   text-overflow: clip;
   overflow: visible;
 }
+
+/* Relais Nostr : logos de 50 px juste après les titres. */
+.fenetre-content [data-rubrique="recommended-services-title"] .card-header {
+  height: auto;
+  min-height: 50px;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .card-header h3 {
+  margin-right: 0 !important;
+  flex: 0 1 auto;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .card-header .relay-card-logo {
+  height: 50px;
+  width: auto;
+  max-width: min(36%, 130px);
+  object-fit: contain;
+  flex: 0 1 auto;
+  margin: 0;
+}
+/* Même pictogramme que la rubrique Relais Nostr, en cyan. */
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-address-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  flex: 0 0 21px;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-address-icon svg {
+  width: 21px;
+  height: 21px;
+}
 </style></head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
@@ -1133,9 +1155,9 @@ body > footer.site-footer a.footer-author-text:focus {
 <h3 translate="no">
         Relais Nostr Map
        </h3>
-</div>
-<div class="copy-row copy-row--wide"><img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/>
-<div class="copy-box">
+<img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/></div>
+<div class="copy-row copy-row--wide">
+<span aria-hidden="true" class="relay-address-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span><div class="copy-box">
 <span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
          wss://relay.nostrmap.net
         </span>
@@ -1162,9 +1184,9 @@ body > footer.site-footer a.footer-author-text:focus {
 <h3>
         Relais Decentralia
        </h3>
-</div>
-<div class="copy-row copy-row--wide"><img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/>
-<div class="copy-box">
+<img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/></div>
+<div class="copy-row copy-row--wide">
+<span aria-hidden="true" class="relay-address-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span><div class="copy-box">
 <span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
          wss://relay.decentralia.fr
         </span>
@@ -1191,9 +1213,9 @@ body > footer.site-footer a.footer-author-text:focus {
 <h3>
         Relais Noeud Libre
        </h3>
-</div>
-<div class="copy-row copy-row--wide"><img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
-<div class="copy-box">
+<img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/></div>
+<div class="copy-row copy-row--wide">
+<span aria-hidden="true" class="relay-address-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span><div class="copy-box">
 <span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
          wss://relay.noeudlibre.fr
         </span>
