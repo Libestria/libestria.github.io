@@ -549,7 +549,7 @@
 .fenetre-bar { min-height:55px; display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid rgba(168,85,247,.28); background:linear-gradient(105deg,#302044 0%,#281d40 28%,#20264a 65%,#10364b 100%); }
 .fenetre-menu-icon svg { display:block; width:21px; height:21px; filter:drop-shadow(0 0 5px rgba(57,200,255,.28)); }
 .fenetre-menu-icon { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; color:#39c8ff; font-family:inherit; font-size:1.65rem; font-weight:400; line-height:1; text-shadow:0 0 9px rgba(57,200,255,.28); }
-.fenetre-titre { color:#fff; font-family:"Share Tech Mono",monospace; font-size:clamp(1.3rem,2.2vw,1.55rem); font-weight:600; line-height:1.35; letter-spacing:.035em; overflow-wrap:anywhere; background:none; -webkit-background-clip:border-box; background-clip:border-box; -webkit-text-fill-color:#fff; }
+.fenetre-titre { color:#fff; font-family:"Share Tech Mono",monospace; font-size:clamp(1.3rem,2.2vw,1.55rem); font-weight:600; line-height:1.35; letter-spacing:.035em; overflow-wrap:normal; background:none; -webkit-background-clip:border-box; background-clip:border-box; -webkit-text-fill-color:#fff; }
 .fenetre-content { padding:20px; }
 .fenetre-content .section { width:100%; animation:none; box-shadow:none; border:1px solid rgba(255,255,255,.07); transform:none !important; }
 .fenetre-content .section:hover { box-shadow:none; }
@@ -665,12 +665,13 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
  .identity-banner .terminal-navigation select {padding:10px 25px 10px 8px!important;font-size:clamp(.62rem,2.4vw,.8rem)!important;}
  .simple-menu-chevron {right:7px;}
 }
-.identity-banner .drawer-trigger{margin-left:auto;flex-shrink:0;width:48px;height:48px;display:grid;place-items:center;border:1px solid #3c3453;border-radius:13px;background:#15131e;color:#e9e5f4;font-size:26px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
-.identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible{background:#211b30;border-color:#8b63d8}
+.identity-banner .drawer-trigger,.nip05-contact-link{flex-shrink:0;width:48px;height:48px;display:grid;place-items:center;border:1px solid #3c3453;border-radius:13px;background:#15131e;color:#e9e5f4;font-size:26px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
+.identity-banner .drawer-trigger{margin-left:auto}
+.nip05-contact-link{width:max-content;max-width:100%;padding:0 18px;font-size:inherit;font-family:inherit;white-space:normal;text-align:center}
+.identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible,.nip05-contact-link:hover,.nip05-contact-link:focus-visible{background:#211b30;border-color:#8b63d8}
 .drawer-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 .drawer-overlay[hidden]{display:none!important}
 .libestria-drawer{position:fixed;top:0;right:0;bottom:0;z-index:1001;width:min(86vw,380px);background:#121119;border-left:1px solid #3a324d;box-shadow:-16px 0 60px rgba(0,0,0,.5);transform:translateX(105%);transition:transform .26s ease;display:flex;flex-direction:column;padding:25px 23px 22px;overflow-y:auto;overscroll-behavior:contain}
-.libestria-drawer.is-open{transform:translateX(0)}
 .drawer-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid #373144;gap:12px}
 .drawer-brand{font-family:'Share Tech Mono',monospace;font-size:clamp(19px,4vw,25px);font-weight:600;background:linear-gradient(100deg,#9b6bf2,#48a9db);background-clip:text;-webkit-background-clip:text;color:transparent}
 .drawer-close{height:42px;width:42px;border:1px solid #393344;border-radius:10px;background:#1b1924;color:#a9a5b9;font-size:28px;cursor:pointer}
@@ -685,9 +686,8 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
 @media(max-width:600px){.identity-banner .drawer-trigger{width:43px;height:43px;font-size:23px}.libestria-drawer{padding:22px 19px}}
 @media(prefers-reduced-motion:reduce){.libestria-drawer{transition:none}}
 .drawer-overlay{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease}
-.drawer-overlay.is-open{opacity:1;visibility:visible;pointer-events:auto}
 .drawer-close{display:grid;place-items:center;cursor:pointer;flex-shrink:0}
-.drawer-trigger:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible{outline:2px solid #9b6bf2;outline-offset:3px}
+.drawer-trigger:focus-visible,.nip05-contact-link:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible{outline:2px solid #9b6bf2;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.drawer-overlay{transition:none}}
 body.menu-open{overflow:hidden}
 .nav-toggle{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -695,7 +695,7 @@ body.menu-open{overflow:hidden}
 #nav-toggle:checked ~ .libestria-drawer{transform:translateX(0);visibility:visible;pointer-events:auto}
 .libestria-drawer{visibility:hidden;pointer-events:none;transition:transform .26s ease,visibility .26s}
 #nav-toggle:checked ~ main .drawer-trigger{border-color:#9b6bf2;background:#211b30}
-.drawer-trigger,.drawer-close{user-select:none;-webkit-user-select:none}
+.drawer-trigger,.nip05-contact-link,.drawer-close{user-select:none;-webkit-user-select:none}
 .drawer-brand-logo{display:block;width:48px;max-width:calc(100% - 60px);height:auto;max-height:48px;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 10px rgba(139,63,217,.16))}
 @media(max-width:600px){.drawer-brand-logo{width:42px;max-height:42px}}
 .drawer-brand{display:flex;align-items:center;gap:13px;min-width:0;flex:1}
@@ -734,8 +734,8 @@ main > .identity-banner .identity-wordmark {
 }
 .drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}.drawer-icon svg{display:block;width:21px;height:21px}
 /* Accueil : paragraphes justifiés, dernière ligne alignée à gauche */
-.accueil-description { width: 100%; text-align: justify; text-align-last: left; }
-.accueil-description .card-intro { text-align: justify; text-align-last: left; hyphens: auto; overflow-wrap: break-word; }
+.accueil-description { width: 100%; }
+.accueil-description .card-intro { }
 .accueil-description .card-intro + .card-intro { margin-top: 1em; }
 
 /* Footer global : typographie uniforme, espaces naturels et lien non souligné. */
@@ -798,13 +798,7 @@ body > footer.site-footer a.footer-author-text:focus {
   .fenetre-content .card-grid > .card { padding: 20px 8px; }
 }
 
-/* Cartes : alignement cohérent des textes et titres, y compris les en-têtes flex. */
-.fenetre-content .card,
-.fenetre-content .card :is(h2, h3, h4, p, ul, ol, li),
-.fenetre-content .card .card-header {
-  text-align: left !important;
-  text-align-last: left !important;
-}
+/* En-têtes des cartes alignés sur le bord gauche. */
 .fenetre-content .card .card-header {
   display: flex;
   flex-direction: row;
@@ -885,11 +879,43 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 
 /* Présentation sobre de la carte NIP-05 et accès direct aux contacts. */
-.nip05-information p { margin: 0 0 1em; line-height: 1.65; }
-.nip05-information ul { margin: 0 0 1em; padding-left: 1.7em; line-height: 1.65; font: inherit; color: inherit; }
+.nip05-information p { margin: 0 0 1em; line-height: 1.65;  }
+.nip05-information ul { margin: 0 0 1em; padding-left: 1.7em; line-height: 1.65; font: inherit; color: inherit; text-align: left; text-align-last: left; }
 .nip05-information li { font: inherit; color: inherit; }
-.nip05-information li::marker { color: currentColor; font-size: 1em; }
-.nip05-contact-link { display:inline-flex; align-items:center; justify-content:center; width:auto; max-width:100%; min-height:48px; padding:10px 18px; box-sizing:border-box; font:inherit; font-weight:600; line-height:1.3; color:#e9e5f4; background:#15131e; border:1px solid #3c3453; border-radius:13px; text-decoration:none; cursor:pointer; transition:background .2s,border-color .2s; } .nip05-contact-link:hover, .nip05-contact-link:focus-visible { color:#fff; background:#211b30; border-color:#8b63d8; } .nip05-contact-link:focus-visible { outline:2px solid #27dfff; outline-offset:3px; }
+.fenetre-content #services-libestria-title {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+/* Même police et même couleur pour les éléments et marqueurs de liste. */
+.fenetre-content .nip05-information ul,
+.fenetre-content .nip05-information li {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+.fenetre-content .nip05-information li::marker {
+  color: inherit !important;
+  font-size: 1em;
+}
+
+/* Règle unique : textes des rubriques et cartes alignés à gauche, sans césure. */
+.fenetre-content .rubrique-panel :is(p, li, ul, ol, h2, h3, h4),
+.fenetre-content .rubrique-panel :is(.card, .card-intro, .accueil-description, .nip05-information) {
+  text-align: left !important;
+  text-align-last: left !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -916,7 +942,7 @@ body > footer.site-footer a.footer-author-text:focus {
 </div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Ouvrir le menu" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0">☰</label></section>
 <div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">À propos de Libestria</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
 <div class="accueil-description"><p class="card-intro" id="accueil-title">Libestria est un espace francophone dédié à la découverte et à l’utilisation de Nostr et SimpleX, deux écosystèmes qui ouvrent de nouvelles perspectives en matière de communication, de liberté numérique, d’autonomie et de respect de la vie privée.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div><p class="card-intro">Son objectif est de rendre ces technologies plus accessibles, de faciliter leur prise en main et de favoriser le partage de connaissances au sein de la communauté francophone.</p><p class="card-intro">Tu trouveras sur Libestria des tutoriels pratiques, des explications et une sélection de ressources utiles pour découvrir Nostr et SimpleX, comprendre leur fonctionnement et approfondir leur utilisation.</p><p class="card-intro">Le site rassemble également des recommandations de relais Nostr, de serveurs SimpleX et de groupes de discussion francophones, afin de t’aider à trouver des points d’accès et des espaces d’échange adaptés à tes besoins.</p><p class="card-intro">Libestria met aussi en lumière les sites, projets et initiatives de membres de la communauté francophone présents sur Nostr, pour encourager la découverte, les échanges et le partage d’expériences.</p><p class="card-intro">Enfin, Libestria propose un service d’identité NIP-05 personnalisée sous le domaine libestria.fr, permettant d’associer ton profil Nostr à une adresse facilement reconnaissable.</p><p class="card-intro">Libestria se veut avant tout un espace indépendant, accessible et convivial, animé par la volonté de partager des connaissances, de valoriser les initiatives francophones et de contribuer à une utilisation plus libre et décentralisée des outils de communication.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
-<h2 class="section-label" id="services-libestria-title" translate="no">
+<h2 class="section-label visually-hidden" id="services-libestria-title" translate="no">
      NIP-05 @libestria.fr
     </h2>
 <div class="service-cards">
@@ -1526,7 +1552,7 @@ document.addEventListener('click', async event => {
   toggle.addEventListener('change', () => { sync(); if (toggle.checked) { const active = links.find(link => link.classList.contains('active')); (active || closer).focus(); } });
   for (const label of [opener, closer]) {
     label.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.checked = !toggle.checked; sync(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.checked = !toggle.checked; sync(); if (toggle.checked) { (links.find(link => link.classList.contains('active')) || closer).focus(); } else { opener.focus(); } }
     });
   }
   closer.addEventListener('click', () => { window.requestAnimationFrame(() => opener.focus()); });
