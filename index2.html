@@ -954,6 +954,11 @@ body > footer.site-footer a.footer-author-text:focus {
   line-height: inherit;
   letter-spacing: inherit;
 }
+/* Exemple NIP-05 : accent cyan de la palette, sans gras. */
+.fenetre-content .nip05-information .nip05-example-address {
+  color: #39c8ff;
+  font-weight: inherit;
+}
 /* Liste NIP-05 : même typographie que les paragraphes, marqueurs compris. */
 .fenetre-content .nip05-information li {
   font: inherit;
@@ -997,7 +1002,7 @@ body > footer.site-footer a.footer-author-text:focus {
 <article class="card nip05-information">
 <div class="accueil-logos" aria-label="Logo Nostr"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/></div>
 <p>Le NIP-05 est un identifiant Nostr qui associe ta clé publique à une adresse facile à reconnaître, semblable à une adresse e-mail.</p>
-<p>Libestria te permet d’utiliser un identifiant personnalisé au format <strong>pseudo@libestria.fr</strong>.</p>
+<p>Libestria te permet d’utiliser un identifiant personnalisé au format <span class="nip05-example-address">pseudo@libestria.fr</span>.</p>
 <p>Ton pseudo peut contenir uniquement des lettres minuscules (a-z), des chiffres (0-9), des tirets (-), des traits de soulignement (_) et des points (.).</p>
 <p>Pour demander ton NIP-05, contacte Libestria en indiquant :</p>
 <ul><li>le pseudo souhaité ;</li><li>ta clé publique Nostr (npub ou hex).</li></ul>
