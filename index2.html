@@ -733,11 +733,6 @@ main > .identity-banner .identity-wordmark {
   filter:drop-shadow(0 0 5px rgba(180,92,255,.32)) drop-shadow(0 0 15px rgba(242,106,223,.17)) drop-shadow(0 0 23px rgba(57,200,255,.10));
 }
 .drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}.drawer-icon svg{display:block;width:21px;height:21px}
-/* Accueil : paragraphes justifiés, dernière ligne alignée à gauche */
-.accueil-description { width: 100%; }
-.accueil-description .card-intro { }
-
-
 /* Footer global : typographie uniforme, espaces naturels et lien non souligné. */
 body > footer.site-footer {
   display: block;
@@ -881,10 +876,7 @@ body > footer.site-footer a.footer-author-text:focus {
   height: 25px;
 }
 
-/* Présentation sobre de la carte NIP-05 et accès direct aux contacts. */
-.nip05-information p { margin: 0 0 1em; line-height: 1.65;  }
-.nip05-information ul { margin: 0 0 1em; padding-left: 1.7em; line-height: 1.65; font: inherit; color: inherit; text-align: left; text-align-last: left; }
-.nip05-information li { font: inherit; color: inherit; }
+/* Titre NIP-05 conservé pour l’accessibilité. */
 .fenetre-content #services-libestria-title {
   position: absolute !important;
   width: 1px !important;
@@ -896,19 +888,6 @@ body > footer.site-footer a.footer-author-text:focus {
   white-space: nowrap !important;
   border: 0 !important;
 }
-/* Même police et même couleur pour les éléments et marqueurs de liste. */
-.fenetre-content .nip05-information ul,
-.fenetre-content .nip05-information li {
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  color: inherit !important;
-}
-.fenetre-content .nip05-information li::marker {
-  color: inherit !important;
-  font-size: 1em;
-}
-
 /* Espacements cohérents pour tous les blocs de texte des rubriques et cartes.
    Un même rythme vertical, y compris avant le premier et après le dernier bloc. */
 .fenetre-content .rubrique-panel :is(.card, .accueil-description) :is(p, .card-intro, ul, ol) {
@@ -937,6 +916,42 @@ body > footer.site-footer a.footer-author-text:focus {
   -webkit-hyphens: none !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
+}
+
+/* Mise en page commune aux textes À propos et NIP-05.
+   Neutralise les espacements propres aux cartes (flex gap et padding). */
+.fenetre-content .service-cards > .card.nip05-information {
+  padding: 0 !important;
+  gap: 0;
+  align-items: stretch;
+}
+.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > p {
+  margin: 0 0 1rem !important;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 2.8vw, 1.12rem);
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  text-align: left;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > :last-child {
+  margin-bottom: 0 !important;
+}
+.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > .accueil-logos {
+  margin: 0 0 1rem !important;
+}
+.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > ul {
+  margin: 0 0 1rem !important;
+  font: inherit;
+  color: var(--text-secondary);
+}
+/* Les puces et leur texte utilisent exactement la couleur des paragraphes. */
+.fenetre-content .nip05-information li,
+.fenetre-content .nip05-information li::marker {
+  color: var(--text-secondary) !important;
+  font-size: inherit;
 }
 </style>
 <meta content="website" property="og:type"/>
