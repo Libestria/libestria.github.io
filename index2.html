@@ -986,10 +986,6 @@ body > footer.site-footer a.footer-author-text:focus {
   }
 }
 
-/* Actions des relais : deux boutons côte à côte, alignés à gauche. */
-.fenetre-content [data-rubrique="recommended-services-title"] .card-links {
-  display: flex; flex-flow: row wrap; justify-content: flex-start; align-items: center; gap: 8px;
-}
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button {
   flex: 0 0 auto; font-family: inherit; font-size: inherit; font-weight: inherit;
   letter-spacing: inherit; line-height: inherit;
@@ -1009,6 +1005,9 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > .accueil-logos { margin: 0 0 1rem !important; }
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
+
+/* Logos des relais : hauteur uniforme et proportions conservées. */
+[data-rubrique="recommended-services-title"] .relay-card-logo { display: block; height: 250px; width: auto; max-width: 100%; object-fit: contain; object-position: center; margin: 0 auto; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1113,11 +1112,11 @@ body > footer.site-footer a.footer-author-text:focus {
      Relais Nostr recommandés
     </h2>
 <div class="relay-introduction nip05-information">
-  <div class="accueil-logos" aria-label="Logo Nostr"><img src="IMG/Logo_Nostr.png" alt="Logo Nostr" loading="lazy" decoding="async"></div>
-  <p>Nostr est un protocole de communication décentralisé : contrairement aux réseaux sociaux traditionnels, il ne dépend pas d'une plateforme ou d'un serveur central. Les messages circulent grâce à des relais indépendants, qui permettent de publier, stocker et diffuser les événements Nostr. Tu peux te connecter à plusieurs relais pour améliorer la diffusion de tes publications et retrouver les contenus des personnes que tu suis.</p>
-  <p>Libestria te recommande une sélection de relais Nostr publics francophones, accessibles à tous et sans inscription.</p>
-  <p>Ces relais sont hébergés et entretenus par des membres engagés de la communauté Nostr francophone (#nostrfr).</p>
-  <p>Pour les utiliser, ouvre les paramètres de ton client Nostr, accède à la gestion des relais et ajoute simplement leurs adresses à ta liste.</p>
+<div aria-label="Logo Nostr" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/></div>
+<p>Nostr est un protocole de communication décentralisé : contrairement aux réseaux sociaux traditionnels, il ne dépend pas d'une plateforme ou d'un serveur central. Les messages circulent grâce à des relais indépendants, qui permettent de publier, stocker et diffuser les événements Nostr. Tu peux te connecter à plusieurs relais pour améliorer la diffusion de tes publications et retrouver les contenus des personnes que tu suis.</p>
+<p>Libestria te recommande une sélection de relais Nostr publics francophones, accessibles à tous et sans inscription.</p>
+<p>Ces relais sont hébergés et entretenus par des membres engagés de la communauté Nostr francophone (#nostrfr).</p>
+<p>Pour les utiliser, ouvre les paramètres de ton client Nostr, accède à la gestion des relais et ajoute simplement leurs adresses à ta liste.</p>
 </div>
 <div class="card-grid">
 <article class="card">
@@ -1128,9 +1127,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Nostr Map
        </h3>
 </div>
-<p>
-       Relais public francophone, ouvert à tous, sans inscription.
-      </p>
+<img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/>
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
@@ -1148,12 +1145,8 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-
 <a class="relay-info-link relay-action-button" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">Infos</a>
-
-
 <a class="relay-info-link relay-action-button" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">Site officiel</a>
-
 </div>
 </article>
 <article class="card">
@@ -1164,9 +1157,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Decentralia
        </h3>
 </div>
-<p>
-       Relais public francophone, ouvert à tous, sans inscription.
-      </p>
+<img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/>
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
@@ -1184,12 +1175,8 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-
 <a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">Infos</a>
-
-
 <a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">Site officiel</a>
-
 </div>
 </article>
 <article class="card">
@@ -1200,9 +1187,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Noeud Libre
        </h3>
 </div>
-<p>
-       Relais public francophone, ouvert à tous, sans inscription.
-      </p>
+<img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
@@ -1220,12 +1205,8 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-
 <a class="relay-info-link relay-action-button" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Infos</a>
-
-
 <a class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Site officiel</a>
-
 </div>
 </article>
 </div>
