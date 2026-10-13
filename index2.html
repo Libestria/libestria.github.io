@@ -985,6 +985,15 @@ body > footer.site-footer a.footer-author-text:focus {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Actions des relais : deux boutons côte à côte, alignés à gauche. */
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links {
+  display: flex; flex-flow: row wrap; justify-content: flex-start; align-items: center; gap: 8px;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button {
+  flex: 0 0 auto; font-family: inherit; font-size: inherit; font-weight: inherit;
+  letter-spacing: inherit; line-height: inherit;
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1041,6 +1050,26 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:focus-visible {
   outline: 2px solid #9b6bf2; outline-offset: 3px;
 }
+
+/* Relais Nostr : adresse en texte libre, sans encadré de saisie ou de code. */
+.fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide .copy-box {
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  justify-content: flex-start;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide .copy-value {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+  text-overflow: clip;
+  overflow: visible;
+}
 </style></head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
@@ -1089,7 +1118,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://relay.nostrmap.net/favicon.ico"/>
+<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://nostrmap.fr/favicon.ico"/>
 <span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
          wss://relay.nostrmap.net
         </span>
@@ -1105,18 +1134,12 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-<div>
 
-<a class="relay-info-link relay-action-button" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">
-         Infos sur le relais
-        </a>
-</div>
-<div>
+<a class="relay-info-link relay-action-button" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">Infos</a>
 
-<a class="relay-info-link relay-action-button" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">
-         Page officielle du relais
-        </a>
-</div>
+
+<a class="relay-info-link relay-action-button" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">Site officiel</a>
+
 </div>
 </article>
 <article class="card">
@@ -1131,7 +1154,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://relay.decentralia.fr/favicon.ico"/>
+<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://decentralia.fr/favicon.ico"/>
 <span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
          wss://relay.decentralia.fr
         </span>
@@ -1147,18 +1170,12 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-<div>
 
-<a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">
-         Infos sur le relais
-        </a>
-</div>
-<div>
+<a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">Infos</a>
 
-<a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">
-         Page officielle du relais
-        </a>
-</div>
+
+<a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">Site officiel</a>
+
 </div>
 </article>
 <article class="card">
@@ -1173,7 +1190,7 @@ body > footer.site-footer a.footer-author-text:focus {
        Relais public francophone, ouvert à tous, sans inscription.
       </p>
 <div class="copy-row copy-row--wide">
-<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://relay.noeudlibre.fr/favicon.ico"/>
+<div class="copy-box"><img alt="" aria-hidden="true" class="relay-favicon" loading="lazy" onerror='this.style.display="none"' src="https://www.noeudlibre.fr/favicon.ico"/>
 <span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
          wss://relay.noeudlibre.fr
         </span>
@@ -1189,18 +1206,12 @@ body > footer.site-footer a.footer-author-text:focus {
 </button>
 </div>
 <div class="card-links">
-<div>
 
-<a class="relay-info-link relay-action-button" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank">
-         Infos sur le relais
-        </a>
-</div>
-<div>
+<a class="relay-info-link relay-action-button" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Infos</a>
 
-<a class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">
-         Page officielle du relais
-        </a>
-</div>
+
+<a class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Site officiel</a>
+
 </div>
 </article>
 </div>
