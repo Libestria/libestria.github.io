@@ -1006,23 +1006,6 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
 
-/* Cartes des relais : pictogramme cyan, titre blanc, logo sous le titre. */
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-title-icon {
-  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
-  color: var(--cyan); line-height: 0;
-}
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-title-icon svg {
-  display: block; width: 24px; height: 24px; stroke: currentColor;
-}
-
-/* Logo centré sur la largeur du texte du titre, indépendamment de la carte et du pictogramme. */
-.fenetre-content [data-rubrique="recommended-services-title"] .card-header .relay-heading-content {
-  display: inline-flex; flex-direction: column; align-items: center; width: max-content; max-width: 100%; min-width: 0;
-}
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-heading-content h3 { margin: 0 !important; text-align: center; width: auto; }
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-heading-content .relay-card-logo {
-  display: block; height: 50px; width: auto; max-width: 100%; object-fit: contain; margin: 10px 0 0; align-self: center;
-}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1110,6 +1093,55 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] .copy-row--wide > .status-dot {
   flex: 0 0 auto;
   margin: 0;
+}
+
+/* Alignement indépendant : pictogramme sur la ligne du titre, logo sous le texte. */
+.fenetre-content [data-rubrique="recommended-services-title"] .card-header {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  height: auto;
+  min-height: 0;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-title-icon {
+  display: inline-flex;
+  flex: 0 0 24px;
+  width: 24px;
+  height: calc(1.3 * clamp(1.2rem, 1.7vw, 1.5rem));
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  line-height: 0;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-title-icon svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .card-header .relay-heading-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: calc(100% - 36px);
+  min-width: 0;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-heading-content h3 {
+  width: auto;
+  margin: 0 !important;
+  text-align: center;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .relay-heading-content .relay-card-logo {
+  display: block;
+  height: 50px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 10px 0 0;
 }
 </style></head>
 <body>
