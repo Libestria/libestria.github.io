@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="Libestria propose des services francophones autour de Nostr et SimpleX : identité NIP-05, communautés et outils respectueux de la vie privée." name="description"/>
+<meta content="Libestria : tutoriels et ressources francophones sur Nostr et SimpleX, relais et serveurs recommandés, communautés et identité NIP-05 personnalisée." name="description"/>
 <meta content="#000000" name="theme-color"/>
 <link href="https://libestria.fr/" rel="canonical"/>
 <meta content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" http-equiv="Content-Security-Policy"/>
@@ -886,9 +886,10 @@ body > footer.site-footer a.footer-author-text:focus {
 
 /* Présentation sobre de la carte NIP-05 et accès direct aux contacts. */
 .nip05-information p { margin: 0 0 1em; line-height: 1.65; }
-.nip05-information ul { margin: 0 0 1em; padding-left: 1.7em; line-height: 1.65; }
-.nip05-contact-link { font: inherit; color: #27dfff; background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: .2em; cursor: pointer; }
-.nip05-contact-link:hover, .nip05-contact-link:focus-visible { color: #fff; }
+.nip05-information ul { margin: 0 0 1em; padding-left: 1.7em; line-height: 1.65; font: inherit; color: inherit; }
+.nip05-information li { font: inherit; color: inherit; }
+.nip05-information li::marker { color: currentColor; font-size: 1em; }
+.nip05-contact-link { display:inline-flex; align-items:center; justify-content:center; width:auto; max-width:100%; min-height:48px; padding:10px 18px; box-sizing:border-box; font:inherit; font-weight:600; line-height:1.3; color:#e9e5f4; background:#15131e; border:1px solid #3c3453; border-radius:13px; text-decoration:none; cursor:pointer; transition:background .2s,border-color .2s; } .nip05-contact-link:hover, .nip05-contact-link:focus-visible { color:#fff; background:#211b30; border-color:#8b63d8; } .nip05-contact-link:focus-visible { outline:2px solid #27dfff; outline-offset:3px; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -920,12 +921,12 @@ body > footer.site-footer a.footer-author-text:focus {
     </h2>
 <div class="service-cards">
 <article class="card nip05-information">
-<p>NIP-05 est une convention du protocole Nostr permettant de relier une clé publique (npub) à une adresse plus lisible de type courriel.</p>
-<p>Libestria te propose d’associer ton profil Nostr au domaine libestria.fr en enregistrant ton NIP-05 personnalisé sous la forme : pseudo@libestria.fr.</p>
-<p>Le pseudo doit utiliser uniquement les caractères a-z, les chiffres 0-9, le tiret (-), le souligné (_) ou le point (.).</p>
-<p>Si intéressé(e), tu peux contacter Libestria pour demander l’enregistrement de ton NIP-05 en précisant :</p>
-<ul><li>le pseudo souhaité,</li><li>ta clé publique (npub ou hex).</li></ul>
-<p><button class="nip05-contact-link" data-target="contact-title" type="button">Contacts Libestria</button></p>
+<p>Le NIP-05 est un identifiant Nostr qui associe ta clé publique à une adresse facile à reconnaître, semblable à une adresse e-mail.</p>
+<p>Libestria te permet d’utiliser un identifiant personnalisé au format <strong>pseudo@libestria.fr</strong>.</p>
+<p>Ton pseudo peut contenir uniquement des lettres minuscules (a-z), des chiffres (0-9), des tirets (-), des traits de soulignement (_) et des points (.).</p>
+<p>Pour demander ton NIP-05, contacte Libestria en indiquant :</p>
+<ul><li>le pseudo souhaité ;</li><li>ta clé publique Nostr (npub ou hex).</li></ul>
+<p><button class="nip05-contact-link" type="button">Contacter Libestria</button></p>
 </article>
 </div>
 </section><section aria-labelledby="recommended-services-title" class="section rubrique-panel" data-rubrique="recommended-services-title" hidden="hidden">
@@ -1472,12 +1473,6 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 </button>
 </div>
 </section></div></div>
-<!-- NIP-05 @libestria.fr -->
-<!-- Relais Nostr recommandés -->
-<!-- Serveurs SimpleX recommandés -->
-<!-- Groupes Nostrord -->
-<!-- Contact -->
-<!-- Soutien -->
 </main>
 <footer class="site-footer">© 2026 LIBESTRIA.FR | Propulsé par <a class="footer-author-text" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp" rel="me noopener noreferrer" target="_blank">ΛRTΞFΛCT</a></footer>
 <script>
