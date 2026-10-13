@@ -30,6 +30,7 @@
         --violet: #8b3fd9;
         --violet-light: #a855f7;
         --blue: #1a8fe8;
+        --cyan: #39c8ff;
         --background: #000;
         --surface: #090912;
         --surface-soft: #0d0d18;
@@ -260,10 +261,6 @@
       .nip05-example {
         color: var(--text-primary);
         font-size: 1rem;
-      }
-      .nip05-example strong {
-        color: var(--blue);
-        font-weight: 700;
       }
       .link-icon {
         display: inline-block;
@@ -931,10 +928,6 @@ body > footer.site-footer a.footer-author-text:focus {
   font-size: clamp(1rem, 2.8vw, 1.12rem);
   line-height: 1.65;
   letter-spacing: 0.02em;
-  text-align: left;
-  hyphens: none;
-  overflow-wrap: normal;
-  word-break: normal;
 }
 .fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > :last-child {
   margin-bottom: 0 !important;
@@ -956,14 +949,13 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 /* Exemple NIP-05 : accent cyan de la palette, sans gras. */
 .fenetre-content .nip05-information .nip05-example-address {
-  color: #39c8ff;
-  font-weight: inherit;
+  color: var(--cyan) !important;
+  font-weight: 400 !important;
 }
 /* Liste NIP-05 : même typographie que les paragraphes, marqueurs compris. */
 .fenetre-content .nip05-information li {
   font: inherit;
   color: inherit;
-  letter-spacing: inherit;
 }
 .fenetre-content .nip05-information li::marker {
   color: currentColor;
