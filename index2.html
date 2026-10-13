@@ -667,7 +667,7 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
 }
 .identity-banner .drawer-trigger,.nip05-contact-link{flex-shrink:0;width:48px;height:48px;display:grid;place-items:center;border:1px solid #3c3453;border-radius:13px;background:#15131e;color:#e9e5f4;font-size:26px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
 .identity-banner .drawer-trigger{margin-left:auto}
-.nip05-contact-link{width:max-content;max-width:100%;padding:0 18px;font-size:inherit;font-family:inherit;white-space:normal;text-align:center}
+.nip05-contact-link{width:fit-content;max-width:100%;height:auto;min-height:0;padding:9px 14px;font-size:inherit;font-family:inherit;white-space:normal;text-align:center;box-sizing:border-box}
 .identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible,.nip05-contact-link:hover,.nip05-contact-link:focus-visible{background:#211b30;border-color:#8b63d8}
 .drawer-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 .drawer-overlay[hidden]{display:none!important}
@@ -925,7 +925,7 @@ body > footer.site-footer a.footer-author-text:focus {
   gap: 0;
   align-items: stretch;
 }
-.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > p {
+.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > :is(p, ul) {
   margin: 0 0 1rem !important;
   color: var(--text-secondary);
   font-size: clamp(1rem, 2.8vw, 1.12rem);
@@ -944,14 +944,25 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 .fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > ul {
   margin: 0 0 1rem !important;
-  font: inherit;
-  color: var(--text-secondary);
+  padding-left: 1.7em;
 }
-/* Les puces et leur texte utilisent exactement la couleur des paragraphes. */
-.fenetre-content .nip05-information li,
-.fenetre-content .nip05-information li::marker {
-  color: var(--text-secondary) !important;
+/* Le libellé du bouton NIP-05 reprend exactement la typographie des paragraphes. */
+.fenetre-content .nip05-information .nip05-contact-link {
+  font-family: inherit;
   font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+/* Liste NIP-05 : même typographie que les paragraphes, marqueurs compris. */
+.fenetre-content .nip05-information li {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+.fenetre-content .nip05-information li::marker {
+  color: currentColor;
+  font-size: 1em;
 }
 </style>
 <meta content="website" property="og:type"/>
