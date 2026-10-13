@@ -1006,8 +1006,15 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
 
-/* Logos des relais : hauteur uniforme et proportions conservées. */
-[data-rubrique="recommended-services-title"] .relay-card-logo { display: block; height: 250px; width: auto; max-width: 100%; object-fit: contain; object-position: center; margin: 0 auto; }
+/* Logos à droite des adresses, sans éloigner les boutons Copier. */
+[data-rubrique="recommended-services-title"] .relay-card-logo {
+  display: block; height: 80px; width: auto; max-width: 100%;
+  object-fit: contain; object-position: center; margin-left: auto;
+  flex: 0 1 auto;
+}
+[data-rubrique="recommended-services-title"] .copy-row--wide .relay-card-logo {
+  max-width: min(100%, 130px);
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1127,7 +1134,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Nostr Map
        </h3>
 </div>
-<img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/>
+
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-1" title="wss://relay.nostrmap.net">
@@ -1143,7 +1150,7 @@ body > footer.site-footer a.footer-author-text:focus {
          Copier
         </span>
 </button>
-</div>
+<img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="80" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/></div>
 <div class="card-links">
 <a class="relay-info-link relay-action-button" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank">Infos</a>
 <a class="relay-info-link relay-action-button" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank">Site officiel</a>
@@ -1157,7 +1164,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Decentralia
        </h3>
 </div>
-<img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/>
+
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-2" title="wss://relay.decentralia.fr">
@@ -1173,7 +1180,7 @@ body > footer.site-footer a.footer-author-text:focus {
          Copier
         </span>
 </button>
-</div>
+<img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="80" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/></div>
 <div class="card-links">
 <a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank">Infos</a>
 <a class="relay-info-link relay-action-button" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank">Site officiel</a>
@@ -1187,7 +1194,7 @@ body > footer.site-footer a.footer-author-text:focus {
         Relais Noeud Libre
        </h3>
 </div>
-<img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="250" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
+
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="relay-address-3" title="wss://relay.noeudlibre.fr">
@@ -1203,7 +1210,7 @@ body > footer.site-footer a.footer-author-text:focus {
          Copier
         </span>
 </button>
-</div>
+<img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="80" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/></div>
 <div class="card-links">
 <a class="relay-info-link relay-action-button" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Infos</a>
 <a class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank">Site officiel</a>
