@@ -818,7 +818,7 @@ body > footer.site-footer a.footer-author-text:focus {
   flex: 0 1 auto;
 }
 
-/* Titre de la carte Accueil : aligné à gauche, sans affecter les autres rubriques. */
+/* Identifiant de navigation conservé sur le premier paragraphe de présentation. */
 .fenetre-content #accueil-title {
   display: block;
   width: 100%;
@@ -843,6 +843,33 @@ body > footer.site-footer a.footer-author-text:focus {
   height: clamp(38px, 8vw, 54px);
   max-width: 42%;
   object-fit: contain;
+}
+
+/* Alignement optique uniforme des icônes et des titres de rubriques. */
+.fenetre-bar {
+  align-items: center !important;
+}
+.fenetre-bar .fenetre-menu-icon {
+  display: inline-flex;
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  transform: translateY(1px) !important;
+}
+.fenetre-bar .fenetre-menu-icon svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+}
+.fenetre-bar .fenetre-titre {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.15;
+  transform: translateY(2px);
 }
 </style>
 <meta content="website" property="og:type"/>
@@ -869,8 +896,7 @@ body > footer.site-footer a.footer-author-text:focus {
     </h1>
 </div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Ouvrir le menu" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0">☰</label></section>
 <div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">À propos de Libestria</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
-<h2 class="section-label" id="accueil-title">Bienvenue sur Libestria</h2>
-<div class="accueil-description"><p class="card-intro">Libestria est dédié à l’écosystème Nostr et à la messagerie SimpleX Chat.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></img></div><p class="card-intro">Ces deux projets partagent une même philosophie : des communications libres, sans autorité centrale, respectueuses de la vie privée et de la souveraineté des utilisateurs.</p><p class="card-intro">L’objectif de Libestria est de proposer et mettre en avant des services utiles contribuant à la démocratisation et à l’adoption d’un numérique plus libre, plus souverain et plus respectueux de la vie privée.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
+<div class="accueil-description"><p class="card-intro" id="accueil-title">Bienvenue sur Libestria.</p><p class="card-intro">Libestria est dédié à l’écosystème Nostr et à la messagerie SimpleX Chat.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></img></div><p class="card-intro">Ces deux projets partagent une même philosophie : des communications libres, sans autorité centrale, respectueuses de la vie privée et de la souveraineté des utilisateurs.</p><p class="card-intro">L’objectif de Libestria est de proposer et mettre en avant des services utiles contribuant à la démocratisation et à l’adoption d’un numérique plus libre, plus souverain et plus respectueux de la vie privée.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
 <h2 class="section-label" id="services-libestria-title" translate="no">
      NIP-05 @libestria.fr
     </h2>
