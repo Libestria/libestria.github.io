@@ -736,7 +736,7 @@ main > .identity-banner .identity-wordmark {
 /* Accueil : paragraphes justifiés, dernière ligne alignée à gauche */
 .accueil-description { width: 100%; }
 .accueil-description .card-intro { }
-.accueil-description .card-intro + .card-intro { margin-top: 1em; }
+
 
 /* Footer global : typographie uniforme, espaces naturels et lien non souligné. */
 body > footer.site-footer {
@@ -823,7 +823,7 @@ body > footer.site-footer a.footer-author-text:focus {
   margin-right: 0;
 }
 
-/* Accueil : logos des deux protocoles sur une même ligne, de hauteur identique. */
+/* Accueil : logos des deux protocoles sur une même ligne. */
 .accueil-logos {
   display: flex;
   align-items: center;
@@ -838,6 +838,9 @@ body > footer.site-footer a.footer-author-text:focus {
   height: clamp(38px, 8vw, 54px);
   max-width: 42%;
   object-fit: contain;
+}
+.accueil-logos img[alt="Logo SimpleX"] {
+  height: clamp(35px, 7.4vw, 49px);
 }
 
 /* Alignement optique uniforme des icônes et des titres de rubriques. */
@@ -906,9 +909,28 @@ body > footer.site-footer a.footer-author-text:focus {
   font-size: 1em;
 }
 
-/* Règle unique : textes des rubriques et cartes alignés à gauche, sans césure. */
-.fenetre-content .rubrique-panel :is(p, li, ul, ol, h2, h3, h4),
-.fenetre-content .rubrique-panel :is(.card, .card-intro, .accueil-description, .nip05-information) {
+/* Espacements cohérents pour tous les blocs de texte des rubriques et cartes.
+   Un même rythme vertical, y compris avant le premier et après le dernier bloc. */
+.fenetre-content .rubrique-panel :is(.card, .accueil-description) :is(p, .card-intro, ul, ol) {
+  margin-block: 0 1rem !important;
+  line-height: 1.65;
+}
+.fenetre-content .rubrique-panel :is(.card, .accueil-description) :is(p, .card-intro, ul, ol):last-child {
+  margin-bottom: 0 !important;
+}
+.fenetre-content .rubrique-panel :is(.card, .accueil-description) :is(ul, ol) {
+  padding-left: 1.7em;
+}
+.fenetre-content .rubrique-panel :is(.card, .accueil-description) li {
+  margin-block: 0;
+  line-height: inherit;
+}
+/* Les logos constituent un bloc graphique séparé, avec un espacement symétrique. */
+.fenetre-content .accueil-description .intro-logos {
+  margin-block: 1rem !important;
+}
+/* Typographie commune : alignement naturel à gauche, sans justification ni césure. */
+.fenetre-content .rubrique-panel :is(p, li, ul, ol, h2, h3, h4, .card, .card-intro, .accueil-description, .nip05-information) {
   text-align: left !important;
   text-align-last: left !important;
   hyphens: none !important;
@@ -947,6 +969,7 @@ body > footer.site-footer a.footer-author-text:focus {
     </h2>
 <div class="service-cards">
 <article class="card nip05-information">
+<div class="accueil-logos" aria-label="Logo Nostr"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/></div>
 <p>Le NIP-05 est un identifiant Nostr qui associe ta clé publique à une adresse facile à reconnaître, semblable à une adresse e-mail.</p>
 <p>Libestria te permet d’utiliser un identifiant personnalisé au format <strong>pseudo@libestria.fr</strong>.</p>
 <p>Ton pseudo peut contenir uniquement des lettres minuscules (a-z), des chiffres (0-9), des tirets (-), des traits de soulignement (_) et des points (.).</p>
