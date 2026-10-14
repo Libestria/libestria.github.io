@@ -421,26 +421,6 @@
         gap: 10px;
         margin-bottom: 12px;
       }
-      .footer-author-text {
-        color: var(--text-muted);
-        font-family: "Exo 2", sans-serif;
-        font-size: clamp(1rem, 2.8vw, 1.12rem);
-        line-height: 1.75;
-        letter-spacing: 0.02em;
-        text-transform: none;
-      }
-      .footer-author-text a {
-        color: inherit;
-        font-family: inherit;
-        font-size: inherit;
-        text-decoration: none;
-        border-bottom: none;
-      }
-      .footer-author-text a:hover {
-        color: inherit;
-        text-decoration: none;
-        border-bottom: none;
-      }
       @keyframes fade-up {
         from {
           opacity: 0;
@@ -621,13 +601,9 @@ main > .rubrique-fenetre {flex:1 1 0!important;min-height:0!important;display:fl
 .rubrique-fenetre > .fenetre-content {flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#7854b4 #10101a;-webkit-overflow-scrolling:touch;}
 body > footer {flex:0 0 auto; width:90%; max-width:1600px; box-sizing:border-box; margin:0 auto; padding:8px 0 12px; font-size:.72rem; letter-spacing:.08em;}
 body > footer {flex-direction:row; flex-wrap:nowrap; white-space:nowrap; letter-spacing:clamp(0em,.15vw,.08em); font-size:clamp(.52rem,1.7vw,.72rem);}
-body > footer a.footer-author-text, body > footer a.footer-author-text:link, body > footer a.footer-author-text:visited, body > footer a.footer-author-text:hover, body > footer a.footer-author-text:focus {text-decoration:none!important; text-decoration-line:none!important; border-bottom:0!important; box-shadow:none; color:inherit; font:inherit; letter-spacing:inherit; white-space:nowrap;}
 /* Footer : respecter exactement la casse et la typographie du libellé. */
 body > footer {font-family:"Share Tech Mono",monospace; text-transform:none; font-weight:400;}
-body > footer a.footer-author-text, body > footer a.footer-author-text:link, body > footer a.footer-author-text:visited, body > footer a.footer-author-text:hover, body > footer a.footer-author-text:focus {font-family:inherit!important; font-size:inherit!important; font-weight:inherit!important; line-height:inherit!important; text-transform:none!important;}
-body > footer .footer-author {margin-bottom:4px;}
-body > footer .footer-author-text {font-size:.84rem; line-height:1.35;}
-@media(max-width:699px){body > footer{width:96%;padding:5px 0 8px;font-size:.65rem;} body > footer .footer-author-text{font-size:.76rem;}}
+@media(max-width:699px){body > footer{width:96%;padding:5px 0 8px;font-size:.65rem;}}
 @media(max-width:700px){body > main {width:96%!important;padding:8px 0!important;gap:9px!important;} .identity-banner {padding:8px 4px!important;} .terminal-navigation {padding:10px 12px!important;} .fenetre-bar {min-height:40px!important;padding:8px 10px!important;} .fenetre-content {padding:9px!important;}}
 @media(max-height:620px){body > main{gap:6px!important;padding:5px 0!important;} .identity-banner {padding-top:4px!important;padding-bottom:4px!important;} .terminal-navigation {padding-top:7px!important;padding-bottom:7px!important;}}
 .identity-banner .logo-wrap img { width:115px!important; max-width:115px!important; height:auto!important; }
@@ -730,7 +706,7 @@ main > .identity-banner .identity-wordmark {
   filter:drop-shadow(0 0 5px rgba(180,92,255,.32)) drop-shadow(0 0 15px rgba(242,106,223,.17)) drop-shadow(0 0 23px rgba(57,200,255,.10));
 }
 .drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}.drawer-icon svg{display:block;width:21px;height:21px}
-/* Footer global : typographie uniforme, espaces naturels et lien non souligné. */
+/* Footer global : typographie uniforme et texte non cliquable. */
 body > footer.site-footer {
   display: block;
   text-align: center;
@@ -743,19 +719,6 @@ body > footer.site-footer {
   word-spacing: normal;
   text-transform: none;
 }
-body > footer.site-footer a.footer-author-text,
-body > footer.site-footer a.footer-author-text:link,
-body > footer.site-footer a.footer-author-text:visited,
-body > footer.site-footer a.footer-author-text:hover,
-body > footer.site-footer a.footer-author-text:focus {
-  font: inherit !important;
-  letter-spacing: inherit;
-  color: inherit;
-  text-decoration: none !important;
-  border: 0 !important;
-  box-shadow: none;
-}
-
 /* Un seul cadre : celui de la fenêtre principale, jamais autour des cartes ou panneaux internes. */
 .fenetre-content .section,
 .fenetre-content .section:hover {
@@ -1757,7 +1720,7 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 </div>
 </section></div></div>
 </main>
-<footer class="site-footer">© 2026 LIBESTRIA.FR | Propulsé par <a class="footer-author-text" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp" rel="me noopener noreferrer" target="_blank">ΛRTΞFΛCT</a></footer>
+<footer class="site-footer">© 2026 Libestria.fr  |  Propulsé par ΛRTΞFΛCT</footer>
 <script>
 // Copie des identifiants : Clipboard API avec repli pour les aperçus locaux.
 document.addEventListener('click', async event => {
