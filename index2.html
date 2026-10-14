@@ -1262,7 +1262,7 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="contact-title"] .contact-image-link img {
   display: block;
   width: auto;
-  height: 150px;
+  height: 100px;
   max-width: 100%;
   object-fit: contain;
 }
@@ -1283,7 +1283,16 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 @media (max-width: 760px) {
   .fenetre-content [data-rubrique="contact-title"] > .contact-method-grid {
-    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(6px, 2vw, 14px);
+  }
+  .fenetre-content [data-rubrique="contact-title"] .contact-image-link {
+    width: 100%;
+  }
+  .fenetre-content [data-rubrique="contact-title"] .contact-image-link img {
+    width: 100%;
+    height: auto;
+    max-height: 100px;
+    object-fit: contain;
   }
 }
 </style></head>
@@ -1677,7 +1686,7 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 <h2 class="section-label visually-hidden" id="contact-title" translate="no">
      Contacter Libestria
     </h2>
-<p class="card-intro">Pour toute question, suggestion ou demande d’enregistrement d’un NIP-05, contacte-moi par e-mail, message privé Nostr ou messagerie SimpleX.</p><div class="contact-method-grid"><div class="contact-method"><a aria-label="Contacter Libestria par e-mail" class="contact-image-link" href="mailto:artefact@libestria.fr"><img alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" src="/IMG/IMG_contact-email.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria par message privé Nostr" class="contact-image-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp"><img alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" src="/IMG/IMG_contact-nostr.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria sur SimpleX" class="contact-image-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" rel="noopener noreferrer" target="_blank"><img alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" src="/IMG/IMG_contact-simplex.png"/></a></div></div>
+<p class="card-intro">Pour toute question, suggestion ou demande d’enregistrement d’un identifiant NIP-05, tu peux contacter l’administrateur de Libestria par e-mail, par message privé Nostr (DM) ou par le biais de la messagerie SimpleX.<br>Clique sur le moyen de contact de ton choix.</p><div class="contact-method-grid"><div class="contact-method"><a aria-label="Contacter Libestria par e-mail" class="contact-image-link" href="mailto:artefact@libestria.fr"><img alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" src="/IMG/IMG_contact-email.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria par message privé Nostr" class="contact-image-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp"><img alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" src="/IMG/IMG_contact-nostr.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria sur SimpleX" class="contact-image-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" rel="noopener noreferrer" target="_blank"><img alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" src="/IMG/IMG_contact-simplex.png"/></a></div></div>
 </section><section aria-labelledby="support-title" class="section rubrique-panel" data-rubrique="support-title" hidden="hidden">
 <h2 class="section-label" id="support-title" translate="no">
      Soutenir Libestria
