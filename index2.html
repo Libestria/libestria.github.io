@@ -1232,6 +1232,19 @@ body > footer.site-footer a.footer-author-text:focus {
   height: 21px;
 }
 
+
+/* Cartes des relais Nostr : fond sombre et contour discret, sans affecter les autres rubriques. */
+.fenetre-content [data-rubrique="recommended-services-title"] > .card-grid > .card {
+  background: #10101d !important;
+  border: 1px solid rgba(168, 155, 197, 0.20) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
+  padding: 24px 16px;
+}
+/* Neutralise le séparateur hérité entre cartes : chacune possède son propre contour. */
+.fenetre-content [data-rubrique="recommended-services-title"] > .card-grid > .card + .card {
+  border-top: 1px solid rgba(168, 155, 197, 0.20) !important;
+}
 </style>
 </head>
 <body>
