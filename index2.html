@@ -1010,14 +1010,23 @@ body > footer.site-footer a.footer-author-text:focus {
 /* Contact : alignement et rythme typographique communs aux rubriques À propos et NIP-05. */
 .fenetre-content [data-rubrique="contact-title"] {
   text-align: left;
+  align-items: stretch; /* Les éléments de contact occupent toute la largeur disponible. */
 }
 .fenetre-content [data-rubrique="contact-title"] > .card-intro {
+  display: block;
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+  box-sizing: border-box;
   margin: 0 0 1rem !important;
   color: var(--text-secondary);
   font-size: clamp(1rem, 2.8vw, 1.12rem);
   line-height: 1.65;
   letter-spacing: 0.02em;
   text-align: left !important;
+  text-align-last: left !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
 }
 .fenetre-content [data-rubrique="contact-title"] .contact-list {
   width: 100%;
