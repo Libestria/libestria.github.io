@@ -1006,6 +1006,53 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
 
+
+/* Contact : alignement et rythme typographique communs aux rubriques À propos et NIP-05. */
+.fenetre-content [data-rubrique="contact-title"] {
+  text-align: left;
+}
+.fenetre-content [data-rubrique="contact-title"] > .card-intro {
+  margin: 0 0 1rem !important;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 2.8vw, 1.12rem);
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  text-align: left !important;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin: 0;
+  text-align: left;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-row {
+  width: 100%;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  text-align: left;
+}
+.fenetre-content [data-rubrique="contact-title"] .copy-row--compact {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+.fenetre-content [data-rubrique="contact-title"] .copy-row--compact .copy-box {
+  width: auto;
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+.fenetre-content [data-rubrique="contact-title"] .copy-row--compact .copy-value {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1133,6 +1180,25 @@ body > footer.site-footer a.footer-author-text:focus {
   object-fit: contain;
   margin: 10px 0 0;
 }
+</style><style>
+/* Bouton NIP-05 : icône de contact identique à celle du menu. */
+.fenetre-content .nip05-information .nip05-contact-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.fenetre-content .nip05-information .nip05-contact-link .drawer-icon {
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+  color: #8e87a5;
+}
+.fenetre-content .nip05-information .nip05-contact-link .drawer-icon svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+}
 </style></head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
@@ -1157,7 +1223,7 @@ body > footer.site-footer a.footer-author-text:focus {
 <p>Ton pseudo peut contenir uniquement des lettres minuscules (a-z), des chiffres (0-9), des tirets (-), des traits de soulignement (_) et des points (.).</p>
 <p>Pour demander ton NIP-05, contacte Libestria en indiquant :</p>
 <ul><li>le pseudo souhaité ;</li><li>ta clé publique Nostr (npub ou hex).</li></ul>
-<p><button class="nip05-contact-link" type="button">Contacter Libestria</button></p>
+<p><button class="nip05-contact-link" type="button"><span aria-hidden="true" class="drawer-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="20" x="2" y="4"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span>Contacter Libestria</span></button></p>
 </article>
 </div>
 </section><section aria-labelledby="recommended-services-title" class="section rubrique-panel" data-rubrique="recommended-services-title" hidden="hidden">
@@ -1559,12 +1625,10 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 </article>
 </div>
 </section><section aria-labelledby="contact-title" class="section rubrique-panel" data-rubrique="contact-title" hidden="hidden">
-<h2 class="section-label" id="contact-title" translate="no">
+<h2 class="section-label visually-hidden" id="contact-title" translate="no">
      Contacter Libestria
     </h2>
-<div class="section-icon">
-     ✉️
-    </div>
+
 <p class="card-intro">
      Pour toute question, suggestion ou demande d’enregistrement d’un
           NIP-05, envoie-moi un e-mail ou un message privé sur Nostr.
