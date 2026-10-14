@@ -1056,11 +1056,6 @@ body > footer.site-footer a.footer-author-text:focus {
   text-overflow: ellipsis;
 }
 
-/* Icônes des boutons WSS : copie et confirmation. */
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-copy-wss .wss-icon { flex: 0 0 auto; }
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-copy-wss .wss-icon--done { display: none; }
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-copy-wss.copied .wss-icon--copy { display: none; }
-.fenetre-content [data-rubrique="recommended-services-title"] .relay-copy-wss.copied .wss-icon--done { display: block; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1102,7 +1097,7 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 /* Largeur stable pendant la confirmation de copie, y compris avec une bordure de 2 px. */
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss {
-  width: 174px; max-width: 100%; white-space: nowrap; gap: 8px;
+  width: 156px; max-width: 100%; white-space: nowrap; gap: 8px;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:hover,
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:focus-visible {
@@ -1228,8 +1223,25 @@ body > footer.site-footer a.footer-author-text:focus {
 <style>
 /* Icône d’information : alignement et dimensions cohérents avec les boutons voisins. */
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button svg { display: block; width: 20px; height: 20px; flex-shrink: 0; }
-.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss .wss-icon { width: 17px; height: 17px; }
-</style></head>
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss .wss-icon { width: 17px; height: 17px; flex: 0 0 auto; }
+</style><style>
+
+/* États WSS : une seule icône visible et bordure restaurée après confirmation. */
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss .wss-icon--copy { display: block; }
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss .wss-icon--done { display: none; }
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss.copied .wss-icon--copy { display: none; }
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss.copied .wss-icon--done { display: block; }
+/* Le pointeur restant sur le bouton ne doit pas maintenir la bordure violette. */
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss:not(.copied),
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss:not(.copied):hover {
+  border: 1px solid #3c3453;
+  padding: 9px 14px;
+  color: #e9e5f4 !important;
+  background: #15131e;
+}
+.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss:not(.copied):hover { background: #211b30; }
+</style>
+</head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
 <main>
@@ -1691,6 +1703,7 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-target]');
   if (!button) return;
+  if (button._copyResetTimer) { window.clearTimeout(button._copyResetTimer); button._copyResetTimer = null; }
   const source = document.getElementById(button.dataset.copyTarget);
   const label = button.querySelector('span');
   if (!source || !label) return;
@@ -1718,7 +1731,6 @@ document.addEventListener('click', async event => {
   if (button.classList.contains('relay-copy-wss')) button.setAttribute('aria-label', copied ? 'WSS copié' : 'Échec de la copie WSS');
   button.classList.toggle('copied', copied);
   // Une nouvelle copie remplace le délai précédent : aucun retour prématuré.
-  if (button._copyResetTimer) window.clearTimeout(button._copyResetTimer);
   button._copyResetTimer = window.setTimeout(() => {
     label.textContent = original;
     button.classList.remove('copied');
