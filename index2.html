@@ -1095,9 +1095,9 @@ body > footer.site-footer a.footer-author-text:focus {
   text-align: center; text-decoration: none !important; box-sizing: border-box;
   transition: background .2s, border-color .2s;
 }
-/* Largeur stable pendant la confirmation de copie, y compris avec une bordure de 2 px. */
+/* Largeur compacte et stable ; marges intérieures identiques aux boutons voisins (14 px par côté). */
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss {
-  width: 146px; max-width: 100%; white-space: nowrap; gap: 8px;
+  width: 138px; max-width: 100%; white-space: nowrap; gap: 8px;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:hover,
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:focus-visible {
@@ -1113,7 +1113,7 @@ body > footer.site-footer a.footer-author-text:focus {
   color: var(--violet-light) !important;
   background: rgba(168, 85, 247, .13);
   border: 2px solid var(--violet-light);
-  padding: 8px 13px; /* Compense la bordure pour garder les dimensions du bouton. */
+  padding: 8px 13px; /* Bordure 2 px + 13 px = bordure 1 px + 14 px : même espace intérieur visuel. */
 }
 
 /* Relais Nostr : adresse en texte libre, sans encadré de saisie ou de code. */
