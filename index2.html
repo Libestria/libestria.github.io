@@ -1300,6 +1300,21 @@ body > footer.site-footer a.footer-author-text:focus {
 .fenetre-content .rubrique-panel .rubrique-texte :is(ul, ol) {
   padding-left: 1.7em;
 }
+/* Rythme vertical unique pour les paragraphes et listes des rubriques. */
+.fenetre-content .rubrique-panel .rubrique-texte {
+  row-gap: 0;
+}
+.fenetre-content .rubrique-panel .rubrique-texte > :is(p, ul, ol) {
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+}
+.fenetre-content .rubrique-panel .rubrique-texte > :is(p, ul, ol):last-child {
+  margin-bottom: 0 !important;
+}
+/* Les paragraphes de contact ne doivent pas ajouter de gap flex. */
+.fenetre-content [data-rubrique="contact-title"] .contact-introduction {
+  display: block;
+}
 </style></head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
