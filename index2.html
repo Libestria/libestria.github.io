@@ -1240,6 +1240,37 @@ body > footer.site-footer a.footer-author-text:focus {
   background: #15131e;
 }
 </style>
+<style>
+/* Cartes de contact : même fond, bordure et centrage que les cartes des relais. */
+.fenetre-content [data-rubrique="contact-title"] > .contact-card-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-card-grid > .contact-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  text-align: center; min-width: 0; background: #10101d !important;
+  border: 1px solid rgba(168, 155, 197, .20) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+  padding: 24px 16px; gap: 18px;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-card h3 {
+  color: #fff; margin: 0; text-align: center; font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-card .contact-row {
+  width: 100%; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; gap: 10px; min-width: 0;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-card .copy-row--compact {
+  width: 100%; display: flex; justify-content: center; flex-wrap: wrap; min-width: 0;
+}
+.fenetre-content [data-rubrique="contact-title"] .contact-card .copy-box { min-width: 0; max-width: 100%; }
+.fenetre-content [data-rubrique="contact-title"] .contact-card .contact-email-link,
+.fenetre-content [data-rubrique="contact-title"] .contact-card .copy-value { overflow-wrap: anywhere; }
+.fenetre-content [data-rubrique="contact-title"] .contact-placeholder { margin: 0; color: var(--text-muted); text-align: center; }
+@media (max-width: 760px) {
+  .fenetre-content [data-rubrique="contact-title"] > .contact-card-grid { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <input aria-label="Afficher le menu de navigation" class="nav-toggle" id="nav-toggle" type="checkbox"/>
@@ -1631,20 +1662,15 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 <h2 class="section-label visually-hidden" id="contact-title" translate="no">
      Contacter Libestria
     </h2>
-<p class="card-intro">
-     Pour toute question, suggestion ou demande d’enregistrement d’un
-          NIP-05, envoie-moi un e-mail ou un message privé sur Nostr.
-    </p>
-<div class="contact-list">
-<div class="contact-row">
+<p class="card-intro">Pour toute question, suggestion ou demande d’enregistrement d’un NIP-05, contacte-moi par e-mail, message privé Nostr ou messagerie SimpleX.</p>
+<div class="contact-card-grid"><article class="card contact-card"><h3>E-mail</h3><div class="contact-row">
 <span class="contact-entry-label">
        E-mail :
       </span>
 <a class="contact-email-link" href="mailto:artefact@libestria.fr">
        artefact@libestria.fr
       </a>
-</div>
-<div class="contact-row">
+</div></article><article class="card contact-card"><h3>Message privé Nostr</h3><div class="contact-row">
 <span class="contact-entry-label">
        npub :
       </span>
@@ -1664,8 +1690,7 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
         </span>
 </button>
 </div>
-</div>
-</div>
+</div></article><article class="card contact-card"><h3>Messagerie SimpleX</h3><p class="contact-placeholder">Coordonnées SimpleX à venir.</p></article></div>
 </section><section aria-labelledby="support-title" class="section rubrique-panel" data-rubrique="support-title" hidden="hidden">
 <h2 class="section-label" id="support-title" translate="no">
      Soutenir Libestria
