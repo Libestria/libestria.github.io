@@ -1097,7 +1097,7 @@ body > footer.site-footer a.footer-author-text:focus {
 }
 /* Largeur stable pendant la confirmation de copie, y compris avec une bordure de 2 px. */
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss {
-  width: 156px; max-width: 100%; white-space: nowrap; gap: 8px;
+  width: 146px; max-width: 100%; white-space: nowrap; gap: 8px;
 }
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:hover,
 .fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-action-button:focus-visible {
@@ -1239,7 +1239,6 @@ body > footer.site-footer a.footer-author-text:focus {
   color: #e9e5f4 !important;
   background: #15131e;
 }
-.fenetre-content [data-rubrique="recommended-services-title"] .card-links .relay-copy-wss:not(.copied):hover { background: #211b30; }
 </style>
 </head>
 <body>
@@ -1704,6 +1703,8 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-target]');
   if (!button) return;
   if (button._copyResetTimer) { window.clearTimeout(button._copyResetTimer); button._copyResetTimer = null; }
+  const requestId = (button._copyRequestId || 0) + 1;
+  button._copyRequestId = requestId;
   const source = document.getElementById(button.dataset.copyTarget);
   const label = button.querySelector('span');
   if (!source || !label) return;
@@ -1727,6 +1728,8 @@ document.addEventListener('click', async event => {
     try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
     field.remove();
   }
+  // Ignore une copie asynchrone terminée après un clic plus récent.
+  if (button._copyRequestId !== requestId) return;
   label.textContent = copied ? (button.classList.contains('relay-copy-wss') ? 'WSS copié' : 'Copié') : 'Échec';
   if (button.classList.contains('relay-copy-wss')) button.setAttribute('aria-label', copied ? 'WSS copié' : 'Échec de la copie WSS');
   button.classList.toggle('copied', copied);
