@@ -986,6 +986,15 @@ body > footer.site-footer {
 /* Bouton Infos indisponible : même gabarit, aucune action ni navigation. */
 .relay-disabled-info-wrapper { display: inline-flex; cursor: not-allowed; }
 .relay-disabled-info-wrapper > .relay-action-button:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+/* Boutons QR SimpleX : dimensions identiques aux boutons Informations. */
+.fenetre-content [data-rubrique="recommended-simplex-title"] .simplex-qr-trigger { cursor: pointer; }
+.simplex-qr-dialog { border: 1px solid #66528c; border-radius: 18px; padding: 24px; width: min(360px, calc(100vw - 32px)); max-width: calc(100vw - 32px); box-sizing: border-box; background: #15131e; color: #e9e5f4; box-shadow: 0 16px 60px #0009; text-align: center; }
+.simplex-qr-dialog::backdrop { background: rgba(0,0,0,.76); }
+.simplex-qr-dialog img { display: block; width: min(260px,100%); height: auto; margin: 16px auto 8px; border-radius: 8px; background: #fff; }
+.simplex-qr-dialog h2 { margin: 0 36px 8px 0; font-size: 1.15rem; }
+.simplex-qr-dialog .simplex-qr-close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 1px solid #66528c; border-radius: 9px; background: #211b30; color: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
+.simplex-qr-dialog .simplex-qr-close:hover, .simplex-qr-dialog .simplex-qr-close:focus-visible { border-color: #a855f7; background: #302442; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1247,9 +1256,9 @@ body > footer.site-footer {
   max-width: 100%; min-width: 0; overflow-wrap: anywhere; word-break: normal;
   white-space: normal; text-overflow: clip; overflow: visible;
 }
-/* Boutons de copie SimpleX : largeur fixe et centrage symétrique, état copié inclus. */
+/* Boutons de copie SimpleX : largeur fixe compacte et marges internes identiques aux boutons Infos. */
 .fenetre-content [data-rubrique="recommended-simplex-title"] > .card-grid .card-links .relay-copy-wss {
-  width: 154px; min-width: 0; max-width: 100%;
+  width: 142px; min-width: 0; max-width: 100%;
   padding-inline: 14px; justify-content: center; box-sizing: border-box;
 }
 .fenetre-content [data-rubrique="recommended-simplex-title"] > .card-grid .card-links .relay-copy-wss.copied {
@@ -1356,7 +1365,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-1-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button></div>
+<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-1-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
+<button type="button" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="1" aria-label="Afficher le QR code du serveur" title="Afficher le QR code du serveur" aria-haspopup="dialog" aria-controls="simplex-qr-dialog"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="2" y="15" width="7" height="7" rx="1"/><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"/></svg></button></div>
 </article><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur XFTP Nostr Map </h3><img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1366,7 +1376,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse XFTP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="XFTP" data-copy-target="simplex-relay-copy-2-address" title="Copier l’adresse XFTP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier XFTP</span></button></div>
+<button aria-label="Copier l’adresse XFTP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="XFTP" data-copy-target="simplex-relay-copy-2-address" title="Copier l’adresse XFTP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier XFTP</span></button>
+<button type="button" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="2" aria-label="Afficher le QR code du serveur" title="Afficher le QR code du serveur" aria-haspopup="dialog" aria-controls="simplex-qr-dialog"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="2" y="15" width="7" height="7" rx="1"/><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"/></svg></button></div>
 </article><article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur SMP Decentralia </h3><img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1375,7 +1386,8 @@ body > footer.site-footer {
 </div>
 </div>
 <div class="card-links">
-<span aria-label="Informations indisponibles" class="relay-disabled-info-wrapper" title="Informations indisponibles"><button aria-label="Informations indisponibles" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button></div>
+<span aria-label="Informations indisponibles" class="relay-disabled-info-wrapper" title="Informations indisponibles"><button aria-label="Informations indisponibles" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
+<button type="button" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="3" aria-label="Afficher le QR code du serveur" title="Afficher le QR code du serveur" aria-haspopup="dialog" aria-controls="simplex-qr-dialog"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="2" y="15" width="7" height="7" rx="1"/><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"/></svg></button></div>
 </article><article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur SMP Noeud Libre </h3><img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1385,7 +1397,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-4-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button></div>
+<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-4-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
+<button type="button" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="4" aria-label="Afficher le QR code du serveur" title="Afficher le QR code du serveur" aria-haspopup="dialog" aria-controls="simplex-qr-dialog"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="15" y="2" width="7" height="7" rx="1"/><rect x="2" y="15" width="7" height="7" rx="1"/><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"/></svg></button></div>
 </article></div><div class="card-grid">
 <article class="card">
 <div class="card-header">
@@ -1794,6 +1807,38 @@ document.addEventListener('click', function(event) {
   const menuContact = document.querySelector('.drawer-link[data-target="contact-title"]');
   if (menuContact) menuContact.click();
 });
+</script>
+
+<dialog id="simplex-qr-dialog" class="simplex-qr-dialog" aria-labelledby="simplex-qr-heading"><button type="button" class="simplex-qr-close" aria-label="Fermer la fenêtre QR code" title="Fermer">×</button><h2 id="simplex-qr-heading"></h2><img id="simplex-qr-image" alt="" width="260" height="260"/></dialog>
+<script>
+(() => {
+  const servers = [{src:"IMG/QR/QR_NostrMap-SMP.png",name:"Serveur SMP Nostr Map"},{src:"IMG/QR/QR_NostrMap-XFTP.png",name:"Serveur XFTP Nostr Map"},{src:"IMG/QR/QR_Decentralia-SMP.png",name:"Serveur SMP Decentralia"},{src:"IMG/QR/QR_NoeudLibre-SMP.png",name:"Serveur SMP Noeud Libre"}];
+  const dialog = document.getElementById('simplex-qr-dialog');
+  if (!dialog || typeof dialog.showModal !== 'function') return;
+  const heading = document.getElementById('simplex-qr-heading');
+  const image = document.getElementById('simplex-qr-image');
+  let opener = null;
+  document.addEventListener('click', event => {
+    const trigger = event.target.closest('.simplex-qr-trigger');
+    if (!trigger) return;
+    const index = Number(trigger.dataset.simplexQr) - 1;
+    const server = servers[index];
+    if (!server) return;
+    opener = trigger;
+    heading.textContent = server.name;
+    image.src = server.src;
+    image.alt = 'QR code du ' + server.name;
+    if (!dialog.open) dialog.showModal();
+  });
+  dialog.querySelector('.simplex-qr-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const bounds = dialog.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+  });
+  dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); });
+})();
 </script>
 </body>
 </html>
