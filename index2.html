@@ -998,6 +998,38 @@ body > footer.site-footer {
 /* Icône de soutien : violet vif de la palette, y compris hors sélection. */
 .drawer-link[data-target="support-title"] .drawer-icon { color: var(--violet-light, #a855f7); }
 
+/* Soutien : deux images sans cartes, sur le modèle de la rubrique Contact. */
+.fenetre-content [data-rubrique="support-title"] > .support-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin-top: 22px;
+}
+.fenetre-content [data-rubrique="support-title"] .support-image-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.fenetre-content [data-rubrique="support-title"] .support-image-item img {
+  display: block;
+  width: auto;
+  height: 100px;
+  max-width: 100%;
+  object-fit: contain;
+}
+@media (max-width: 760px) {
+  .fenetre-content [data-rubrique="support-title"] > .support-image-grid {
+    gap: clamp(6px, 2vw, 14px);
+  }
+  .fenetre-content [data-rubrique="support-title"] .support-image-item img {
+    width: 100%;
+    height: auto;
+    max-height: 100px;
+  }
+}
+
 /* Moyens de soutien : présentation cohérente et responsive. */
 .fenetre-content [data-rubrique="support-title"] .support-donation-methods {
   display: grid;
@@ -1565,6 +1597,10 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
 <p>Tu peux soutenir Libestria par un don libre en Bitcoin Lightning ou en Monero (XMR), selon ta préférence.</p>
 <p>Chaque contribution, quel que soit son montant, aide le projet à poursuivre son développement.</p>
 <p>Merci pour ton soutien !</p>
+</div>
+<div class="support-image-grid" aria-label="Moyens de soutien">
+  <div class="support-image-item"><img src="/IMG/IMG_soutien-btc.png" alt="Soutenir Libestria en Bitcoin Lightning" loading="lazy" decoding="async"></div>
+  <div class="support-image-item"><img src="/IMG/IMG_soutien-xmr.png" alt="Soutenir Libestria en Monero (XMR)" loading="lazy" decoding="async"></div>
 </div>
 <div class="support-donation-methods">
 <div class="support-donation-method">
