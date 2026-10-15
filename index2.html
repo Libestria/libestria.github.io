@@ -1208,6 +1208,7 @@ body > footer.site-footer {
   border: 1px solid #3c3453; border-radius: 13px; background: #15131e;
   color: #e9e5f4 !important; font: inherit; line-height: 1.4;
   text-align: center; text-decoration: none !important; box-sizing: border-box;
+  cursor: pointer;
   transition: background .2s, border-color .2s;
 }
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid .card-links .relay-copy-wss {
@@ -1246,11 +1247,9 @@ body > footer.site-footer {
   max-width: 100%; min-width: 0; overflow-wrap: anywhere; word-break: normal;
   white-space: normal; text-overflow: clip; overflow: visible;
 }
-</style>
-<style>
 /* Boutons de copie SimpleX : largeur fixe et centrage symétrique, état copié inclus. */
 .fenetre-content [data-rubrique="recommended-simplex-title"] > .card-grid .card-links .relay-copy-wss {
-  width: 154px; min-width: 154px; max-width: 154px;
+  width: 154px; min-width: 0; max-width: 100%;
   padding-inline: 14px; justify-content: center; box-sizing: border-box;
 }
 .fenetre-content [data-rubrique="recommended-simplex-title"] > .card-grid .card-links .relay-copy-wss.copied {
@@ -1376,7 +1375,7 @@ body > footer.site-footer {
 </div>
 </div>
 <div class="card-links">
-<span aria-label="Informations sur le serveur (indisponibles)" class="relay-disabled-info-wrapper" title="Informations sur le serveur"><button aria-label="Informations sur le serveur (indisponibles)" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button></div>
+<span aria-label="Informations indisponibles" class="relay-disabled-info-wrapper" title="Informations indisponibles"><button aria-label="Informations indisponibles" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button></div>
 </article><article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur SMP Noeud Libre </h3><img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
