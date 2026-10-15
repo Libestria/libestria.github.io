@@ -995,6 +995,38 @@ body > footer.site-footer {
 .simplex-qr-dialog h2 { margin: 12px 0 0; font-size: 1.15rem; text-align: center; }
 .simplex-qr-dialog .simplex-qr-close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 1px solid #66528c; border-radius: 9px; background: #211b30; color: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
 .simplex-qr-dialog .simplex-qr-close:hover, .simplex-qr-dialog .simplex-qr-close:focus-visible { border-color: #a855f7; background: #302442; }
+/* Icône de soutien : violet vif de la palette, y compris hors sélection. */
+.drawer-link[data-target="support-title"] .drawer-icon { color: var(--violet-light, #a855f7); }
+
+/* Moyens de soutien : présentation cohérente et responsive. */
+.fenetre-content [data-rubrique="support-title"] .support-donation-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+.fenetre-content [data-rubrique="support-title"] .support-donation-method {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #3c3453;
+  border-radius: 14px;
+  background: #15131e;
+}
+.fenetre-content [data-rubrique="support-title"] .support-donation-method h3 {
+  margin: 0 0 16px;
+  color: #e9e5f4;
+  font: 700 1.1rem 'Exo 2', sans-serif;
+}
+.fenetre-content [data-rubrique="support-title"] .support-address-pending {
+  margin: 0;
+  color: #bdb6cb;
+  font: inherit;
+}
+@media (max-width: 700px) {
+  .fenetre-content [data-rubrique="support-title"] .support-donation-methods {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1525,17 +1557,18 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
     </h2>
 <div class="contact-introduction nip05-information rubrique-texte"><p>Pour toute question, suggestion ou demande d’enregistrement d’un identifiant NIP-05, tu peux contacter l’administrateur de Libestria par e-mail, par message privé Nostr (DM) ou par le biais de la messagerie SimpleX.</p><p>Clique sur le moyen de contact de ton choix.</p></div><div class="contact-method-grid"><div class="contact-method"><a aria-label="Contacter Libestria par e-mail" class="contact-image-link" href="mailto:artefact@libestria.fr"><img alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" src="/IMG/IMG_contact-email.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria par message privé Nostr" class="contact-image-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp"><img alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" src="/IMG/IMG_contact-nostr.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria sur SimpleX" class="contact-image-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" rel="noopener noreferrer" target="_blank"><img alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" src="/IMG/IMG_contact-simplex.png"/></a></div></div>
 </section><section aria-labelledby="support-title" class="section rubrique-panel" data-rubrique="support-title" hidden="hidden">
-<h2 class="section-label" id="support-title" translate="no">
+<h2 class="section-label visually-hidden" id="support-title" translate="no">
      Soutenir Libestria
     </h2>
-<div class="section-icon">
-     ⚡️
-    </div>
-<p class="card-intro rubrique-texte">
-     Libestria est un projet indépendant. Si tu souhaites contribuer à son
-          développement, tu peux envoyer quelques sats à cette adresse
-          Lightning.
-    </p>
+<div class="support-introduction nip05-information rubrique-texte">
+<p>Libestria est un projet indépendant qui défend un Internet libre, décentralisé et respectueux de la vie privée.</p>
+<p>Tu peux soutenir Libestria par un don libre en Bitcoin Lightning ou en Monero (XMR), selon ta préférence.</p>
+<p>Chaque contribution, quel que soit son montant, aide le projet à poursuivre son développement.</p>
+<p>Merci pour ton soutien !</p>
+</div>
+<div class="support-donation-methods">
+<div class="support-donation-method">
+<h3>Bitcoin Lightning</h3>
 <div class="copy-row copy-row--wide">
 <div class="copy-box">
 <span class="copy-value" id="ln-address">
@@ -1551,6 +1584,12 @@ https://smp5.simplex.im/g#0kxpavYb0dPks_KSLVYJWmiFeYIU1ftf7Z6X2JSUVWs
        Copier
       </span>
 </button>
+</div>
+</div>
+<div class="support-donation-method">
+<h3>Monero (XMR)</h3>
+<p class="support-address-pending">Adresse de réception à renseigner.</p>
+</div>
 </div>
 </section></div></div>
 </main>
