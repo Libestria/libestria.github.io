@@ -1063,10 +1063,19 @@ body > footer.site-footer {
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; box-sizing: border-box; min-height: 40px; padding: 9px 14px; border: 1px solid #3c3453; border-radius: 13px; background: #15131e; color: #e9e5f4 !important; font: inherit; line-height: 1.4; cursor: pointer; transition: background .2s, border-color .2s; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:hover:not(:disabled), .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:focus-visible { background: #211b30; border-color: #8b63d8; color: #fff !important; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:focus-visible { outline: 2px solid #9b6bf2; outline-offset: 3px; }
-.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button { width: 150px; max-width: calc(100% - 55px); white-space: nowrap; gap: 8px; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button { width: 142px; max-width: calc(100% - 55px); white-space: nowrap; gap: 8px; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button.copied { color: var(--violet-light) !important; background: rgba(168,85,247,.13); border: 2px solid var(--violet-light); padding: 8px 13px; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:disabled { opacity: .45; cursor: not-allowed; }
-@media (max-width: 500px) { .fenetre-content [data-rubrique="support-title"] .support-image-actions { gap: 5px; } .fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button { font-size: 11px; padding: 8px 5px; } .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:not(.support-copy-button) { padding: 8px; } }
+/* Même comportement SVG que les boutons des serveurs SimpleX. */
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .wss-icon { width: 17px; height: 17px; flex: 0 0 auto; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .wss-icon--copy { display: block; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .wss-icon--done { display: none; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button.copied .wss-icon--copy { display: none; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button.copied .wss-icon--done { display: block; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-qr-trigger { width: 48px; height: 40px; padding: 9px 14px; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions .support-qr-trigger svg { width: 20px; height: 20px; flex: 0 0 20px; display: block; }
+
+@media (max-width: 500px) { .fenetre-content [data-rubrique="support-title"] .support-image-actions { gap: 5px; } .fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button { font-size: inherit; padding: 9px 14px; } .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:not(.support-copy-button) { padding: 9px 14px; } }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
