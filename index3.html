@@ -1030,9 +1030,12 @@ body > footer.site-footer {
   }
 }
 
+/* Espacement unique entre les boutons des cartes. */
+:root { --card-actions-gap: 8px; }
+
 /* Soutien : sources de copie invisibles et actions alignées sur une ligne. */
 .fenetre-content [data-rubrique="support-title"] .support-image-item > [hidden] { display: none !important; }
-.fenetre-content [data-rubrique="support-title"] .support-image-actions { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px; width: 100%; }
+.fenetre-content [data-rubrique="support-title"] .support-image-actions { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: var(--card-actions-gap); width: 100%; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; box-sizing: border-box; min-height: 40px; padding: 9px 14px; border: 1px solid #3c3453; border-radius: 13px; background: #15131e; color: #e9e5f4 !important; font: inherit; line-height: 1.4; cursor: pointer; transition: background .2s, border-color .2s; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:hover:not(:disabled), .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:focus-visible { background: #211b30; border-color: #8b63d8; color: #fff !important; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .relay-action-button:focus-visible { outline: 2px solid #9b6bf2; outline-offset: 3px; }
@@ -1261,18 +1264,13 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 .fenetre-content [data-rubrique="recommended-simplex-title"] .simplex-heading-logo img { display: block; height: clamp(35px, 7.4vw, 49px); width: auto; max-width: 100%; object-fit: contain; }
 </style>
 <style>
-/* Styles partagés des cartes Nostr et des deux nouveaux groupes. */
-.fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-@media (max-width: 899px) {
-  .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-.fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid > .card {
+/* Apparence commune des cartes : relais Nostr, serveurs SimpleX et groupes. */
+.fenetre-content :is(
+  [data-rubrique="recommended-services-title"] > .card-grid > .card,
+  [data-rubrique="recommended-simplex-title"] > .card-grid > .card,
+  [data-rubrique="recommended-services-title"] > .discussions-simplex-grid > .card,
+  [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card
+) {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1283,6 +1281,17 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   border: 1px solid rgba(168, 155, 197, .20) !important;
   border-radius: 12px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+}
+
+.fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 899px) {
+  .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid > .card > h3 {
   display: flex;
@@ -1317,7 +1326,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 }
 /* Boutons et adresses communs aux cartes Nostr et SimpleX. */
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid .card-links {
-  display: flex; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
+  display: flex; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: center; gap: var(--card-actions-gap);
 }
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="recommended-simplex-title"]) > .card-grid .card-links .relay-action-button {
   display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
@@ -1374,7 +1383,6 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 }
 
 /* Cartes des groupes : présentation harmonisée avec les cartes des serveurs. */
-/* Styles partagés des cartes Nostr et des deux nouveaux groupes. */
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1385,18 +1393,6 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
     grid-template-columns: minmax(0, 1fr);
   }
 
-.fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid > .card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-  padding: 24px 16px;
-  text-align: center;
-  background: #10101d !important;
-  border: 1px solid rgba(168, 155, 197, .20) !important;
-  border-radius: 12px !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
-}
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid > .card > h3 {
   display: flex;
@@ -1437,7 +1433,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 
 /* Boutons et adresses communs aux cartes Nostr et SimpleX. */
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid .card-links {
-  display: flex; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
+  display: flex; flex-wrap: wrap; flex-direction: row; align-items: center; justify-content: center; gap: var(--card-actions-gap);
 }
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid .card-links .relay-action-button {
