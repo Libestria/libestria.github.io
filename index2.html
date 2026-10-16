@@ -1054,7 +1054,7 @@ body > footer.site-footer {
 /* Boutons QR SimpleX : dimensions identiques aux boutons Informations. */
 .fenetre-content [data-rubrique="nostrord-title"] .simplex-qr-trigger { cursor: pointer; }
 
-/* Logos des groupes : hauteur de 150 px. */
+/* Logos des groupes : hauteur de 300 px, proportions préservées. */
 .fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card > .relay-card-logo {
   height: 300px;
   width: auto;
@@ -1333,7 +1333,7 @@ body > footer.site-footer {
   max-width: 100%; min-width: 0; overflow-wrap: anywhere; word-break: normal;
   white-space: normal; text-overflow: clip; overflow: visible;
 }
-/* Boutons de copie SimpleX : largeur fixe compacte et marges internes identiques aux boutons Infos. */
+/* Boutons de copie des groupes : largeur adaptée au texte et marges horizontales équilibrées. */
 .fenetre-content [data-rubrique="recommended-simplex-title"] > .card-grid .card-links .relay-copy-wss {
   width: 142px; min-width: 0; max-width: 100%;
   padding-inline: 14px; justify-content: center; box-sizing: border-box;
@@ -1420,7 +1420,7 @@ body > footer.site-footer {
 }
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid .card-links .relay-copy-wss {
-  width: 138px; max-width: 100%; white-space: nowrap; gap: 8px;
+  width: fit-content; max-width: 100%; white-space: nowrap; gap: 8px;
 }
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid .card-links .relay-action-button:is(:hover, :focus-visible) {
@@ -1468,7 +1468,7 @@ body > footer.site-footer {
   white-space: normal; text-overflow: clip; overflow: visible;
 }
 
-/* Boutons de copie SimpleX : largeur fixe compacte et marges internes identiques aux boutons Infos. */
+/* Boutons de copie des groupes : largeur adaptée au texte et marges horizontales équilibrées. */
 .fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .card-links .relay-copy-wss {
   width: fit-content; min-width: 0; max-width: 100%;
   padding-inline: 14px; justify-content: center; box-sizing: border-box;
