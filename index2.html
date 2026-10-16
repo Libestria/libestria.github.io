@@ -985,14 +985,14 @@ body > footer.site-footer {
 .relay-disabled-info-wrapper { display: inline-flex; cursor: not-allowed; }
 .relay-disabled-info-wrapper > .relay-action-button:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
 
-/* Boutons QR SimpleX : dimensions identiques aux boutons Informations. */
+/* Fenêtres QR : présentation commune aux serveurs, groupes et soutien. */
 .fenetre-content [data-rubrique="recommended-simplex-title"] .simplex-qr-trigger { cursor: pointer; }
-.simplex-qr-dialog { position: fixed; top: 50%; left: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); margin: 0; max-height: calc(100dvh - 32px); overflow-y: auto; border: 1px solid #66528c; border-radius: 18px; padding: 24px; width: min(360px, calc(100vw - 32px)); max-width: calc(100vw - 32px); box-sizing: border-box; background: #000; color: #e9e5f4; box-shadow: 0 16px 60px #0009; text-align: center; }
-.simplex-qr-dialog::backdrop { background: rgba(0,0,0,.76); }
-.simplex-qr-dialog img { display: block; width: min(260px,100%); height: auto; margin: 16px auto 8px; border-radius: 8px; background: #fff; }
-.simplex-qr-dialog h2 { margin: 12px 0 0; font-size: 1.15rem; text-align: center; }
-.simplex-qr-dialog .simplex-qr-close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 1px solid #66528c; border-radius: 9px; background: #211b30; color: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
-.simplex-qr-dialog .simplex-qr-close:hover, .simplex-qr-dialog .simplex-qr-close:focus-visible { border-color: #a855f7; background: #302442; }
+.qr-dialog { position: fixed; top: 50%; left: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); margin: 0; max-height: calc(100dvh - 32px); overflow-y: auto; border: 2px solid transparent; border-radius: 18px; padding: 24px; width: min(360px, calc(100vw - 32px)); max-width: calc(100vw - 32px); box-sizing: border-box; background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%) border-box; color: #fff; box-shadow: 0 16px 60px #0009; text-align: center; }
+.qr-dialog::backdrop { background: rgba(0,0,0,.76); }
+.qr-dialog img { display: block; width: min(250px, 100%); aspect-ratio: 1 / 1; height: auto; margin: 16px auto 8px; border-radius: 8px; background: #fff; object-fit: contain; }
+.qr-dialog h2 { margin: 12px 0 0; font-size: 1.15rem; text-align: center; color: #fff; }
+.qr-dialog .simplex-qr-close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 1px solid #66528c; border-radius: 9px; background: #211b30; color: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
+.qr-dialog .simplex-qr-close:hover, .qr-dialog .simplex-qr-close:focus-visible { border-color: #a855f7; background: #302442; }
 /* Icône de soutien : violet vif de la palette, y compris hors sélection. */
 .drawer-link[data-target="support-title"] .drawer-icon { color: var(--violet-light, #a855f7); }
 
@@ -1051,7 +1051,7 @@ body > footer.site-footer {
 
 /* Cartes des groupes : présentation harmonisée avec les cartes des serveurs. */
 
-/* Boutons QR SimpleX : dimensions identiques aux boutons Informations. */
+/* Fenêtres QR : présentation commune aux serveurs, groupes et soutien. */
 .fenetre-content [data-rubrique="nostrord-title"] .simplex-qr-trigger { cursor: pointer; }
 
 /* Logos des groupes : hauteur de 300 px, proportions préservées. */
@@ -1066,6 +1066,51 @@ body > footer.site-footer {
   text-align: center;
   line-height: 1.5;
 }
+
+/* Groupes francophones : centrage uniforme de tous les éléments des cartes. */
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card > :is(h3, .relay-card-logo, .group-description, .copy-row, .card-links) {
+  margin-inline: auto;
+}
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .group-description {
+  width: 100%;
+  text-align: center;
+}
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .copy-row--wide,
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .card-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .copy-row--wide .copy-box {
+  text-align: center;
+}
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .copy-row--wide .copy-value {
+  text-align: center !important;
+}
+
+/* Harmonisation globale des boutons : dimensions, icônes et états de copie. */
+button svg, a.relay-action-button svg { width:20px !important; height:20px !important; flex:0 0 20px; vertical-align:middle; }
+button, a.relay-action-button { align-items:center; justify-content:center; }
+.fenetre-content .relay-action-button { box-sizing:border-box; padding-left:14px !important; padding-right:14px !important; width:max-content !important; min-width:0 !important; max-width:100%; gap:8px; vertical-align:middle; }
+.fenetre-content .relay-action-button.copied { padding-left:14px !important; padding-right:14px !important; }
+.fenetre-content button[data-copy-target] { display:inline-grid !important; grid-template-columns:20px max-content; align-items:center; justify-items:center; column-gap:8px; white-space:nowrap; }
+.fenetre-content button[data-copy-target] > svg { grid-column:1; grid-row:1; }
+.fenetre-content button[data-copy-target] > span { grid-column:2; grid-row:1; white-space:nowrap; }
+.fenetre-content button[data-copy-target] > .copy-width-reserve { visibility:hidden !important; pointer-events:none; }
+.fenetre-content button[data-copy-target] > .wss-icon--copy { display:block !important; }
+.fenetre-content button[data-copy-target] > .wss-icon--done { display:none !important; }
+.fenetre-content button[data-copy-target].copied > .wss-icon--copy { display:none !important; }
+.fenetre-content button[data-copy-target].copied > .wss-icon--done { display:block !important; }
+.fenetre-content button[data-copy-target].copy-failed > .wss-icon--copy { display:block !important; }
+.fenetre-content button[data-copy-target].copy-failed > .wss-icon--done { display:none !important; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1392,8 +1437,8 @@ body > footer.site-footer {
   display: block; width: 21px; height: 21px; stroke: currentColor;
 }
 
-.fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid > .card > .relay-card-logo {
-  display: block; height: 50px; width: auto; max-width: 100%; object-fit: contain; margin: 10px auto 0;
+.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card > .relay-card-logo {
+  display: block; height: 300px; width: auto; max-width: 100%; object-fit: contain; margin: 10px auto 0;
 }
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], [data-rubrique="nostrord-title"]) > .discussions-simplex-grid > .card > :is(.copy-row--wide, .card-links) {
@@ -1528,7 +1573,7 @@ body > footer.site-footer {
 <div class="card-links">
 <a aria-label="Informations sur le relais" class="relay-info-link relay-action-button" href="https://relay.nostrmap.net" rel="noopener noreferrer" target="_blank" title="Informations sur le relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
 <a aria-label="Site officiel du relais" class="relay-info-link relay-action-button" href="https://nostrmap.fr/relay" rel="noopener noreferrer" target="_blank" title="Site officiel du relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>
-<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-1" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span></button></div>
+<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-1" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">WSS copié</span></button></div>
 </article>
 <article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span>
         Relais Decentralia
@@ -1544,7 +1589,7 @@ body > footer.site-footer {
 <div class="card-links">
 <a aria-label="Informations sur le relais" class="relay-info-link relay-action-button" href="https://relay.decentralia.fr" rel="noopener noreferrer" target="_blank" title="Informations sur le relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
 <a aria-label="Site officiel du relais" class="relay-info-link relay-action-button" href="https://relay.decentralia.fr/info.html" rel="noopener noreferrer" target="_blank" title="Site officiel du relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>
-<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-2" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span></button></div>
+<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-2" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">WSS copié</span></button></div>
 </article>
 <article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></svg></span>
         Relais Noeud Libre
@@ -1560,7 +1605,7 @@ body > footer.site-footer {
 <div class="card-links">
 <a aria-label="Informations sur le relais" class="relay-info-link relay-action-button" href="https://relay.noeudlibre.fr" rel="noopener noreferrer" target="_blank" title="Informations sur le relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
 <a aria-label="Site officiel du relais" class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank" title="Site officiel du relais"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>
-<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-3" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span></button></div>
+<button aria-label="Copier l’adresse WSS du relais" class="relay-info-link relay-action-button relay-copy-wss" data-copy-target="relay-address-3" title="Copier l’adresse WSS du relais" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier WSS</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">WSS copié</span></button></div>
 </article>
 </div>
 </section><section aria-labelledby="recommended-simplex-title" class="section rubrique-panel" data-rubrique="recommended-simplex-title" hidden="hidden">
@@ -1578,8 +1623,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-1-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="1" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-1-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">SMP copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Serveur SMP Nostr Map" data-qr-src="IMG/QR/QR_NostrMap-SMP.png" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur XFTP Nostr Map </h3><img alt="Logo Nostr Map" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_NostrMap.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1589,8 +1634,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://simplex.nostrmap.fr/" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse XFTP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="XFTP" data-copy-target="simplex-relay-copy-2-address" title="Copier l’adresse XFTP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier XFTP</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="2" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<button aria-label="Copier l’adresse XFTP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="XFTP" data-copy-target="simplex-relay-copy-2-address" title="Copier l’adresse XFTP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier XFTP</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">XFTP copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Serveur XFTP Nostr Map" data-qr-src="IMG/QR/QR_NostrMap-XFTP.png" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article><article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur SMP Decentralia </h3><img alt="Logo Decentralia" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Decentralia.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1599,8 +1644,8 @@ body > footer.site-footer {
 </div>
 </div>
 <div class="card-links">
-<span aria-label="Informations indisponibles" class="relay-disabled-info-wrapper" title="Informations indisponibles"><button aria-label="Informations indisponibles" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="3" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<span aria-label="Informations indisponibles" class="relay-disabled-info-wrapper" title="Informations indisponibles"><button aria-label="Informations indisponibles" class="relay-info-link relay-action-button" disabled="" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></button></span><button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-3-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">SMP copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Serveur SMP Decentralia" data-qr-src="IMG/QR/QR_Decentralia-SMP.png" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article><article class="card"><h3><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="2"></rect><rect height="8" rx="2" width="20" x="2" y="14"></rect><path d="M6 6h.01M6 18h.01"></path></svg></span> Serveur SMP Noeud Libre </h3><img alt="Logo Noeud Libre" class="relay-card-logo" decoding="async" height="50" loading="lazy" src="IMG/Relais/Logo_Noeud-Libre.png"/>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1610,8 +1655,8 @@ body > footer.site-footer {
 </div>
 <div class="card-links">
 <a aria-label="Informations sur le serveur" class="relay-info-link relay-action-button" href="https://www.noeudlibre.fr" rel="noopener noreferrer" target="_blank" title="Informations sur le serveur"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4m0-4h.01"></path></svg></a>
-<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-4-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button simplex-qr-trigger" data-simplex-qr="4" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<button aria-label="Copier l’adresse SMP du serveur" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="SMP" data-copy-target="simplex-relay-copy-4-address" title="Copier l’adresse SMP du serveur" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier SMP</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">SMP copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du serveur" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Serveur SMP Noeud Libre" data-qr-src="IMG/QR/QR_NoeudLibre-SMP.png" title="Afficher le QR code du serveur" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article></div>
 </section><section aria-labelledby="nostrord-title" class="section rubrique-panel" data-rubrique="nostrord-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="nostrord-title" translate="no">
@@ -1625,8 +1670,8 @@ body > footer.site-footer {
 </div>
 </div>
 <div class="card-links">
-<button aria-label="Copier le lien du groupe QG des Nostriches" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="GROUPE" data-copy-target="discussions-simplex-relay-copy-1-address" title="Copier le lien du groupe" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier lien</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du QG des Nostriches" class="relay-info-link relay-action-button simplex-qr-trigger" data-qr-name="Le QG des Nostriches 🇫🇷" data-qr-src="IMG/QR/QR_QG-Nostriches.png" title="Afficher le QR code du groupe" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<button aria-label="Copier le lien du groupe QG des Nostriches" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="GROUPE" data-copy-target="discussions-simplex-relay-copy-1-address" title="Copier le lien du groupe" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier lien</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">Lien copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code du QG des Nostriches" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Le QG des Nostriches 🇫🇷" data-qr-src="IMG/QR/QR_QG-Nostriches.png" title="Afficher le QR code du groupe" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Bitcoin Plebs FR</h3><img alt="Logo Bitcoin Plebs FR" class="relay-card-logo" decoding="async" height="300" loading="lazy" src="IMG/Logo_Bitcoin-Plebs.png"/><p class="group-description">Un espace francophone sur SimpleX pour découvrir, apprendre et échanger autour de Bitcoin.</p>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1635,10 +1680,9 @@ body > footer.site-footer {
 </div>
 </div>
 <div class="card-links">
-<button aria-label="Copier le lien du groupe Bitcoin Plebs FR" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="GROUPE" data-copy-target="discussions-simplex-relay-copy-2-address" title="Copier le lien du groupe" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier lien</span></button>
-<button aria-controls="simplex-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code de Bitcoin Plebs FR" class="relay-info-link relay-action-button simplex-qr-trigger" data-qr-name="Bitcoin Plebs FR" data-qr-src="IMG/QR/QR_Bitcoin-Plebs.png" title="Afficher le QR code du groupe" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
+<button aria-label="Copier le lien du groupe Bitcoin Plebs FR" class="relay-info-link relay-action-button relay-copy-wss" data-copy-kind="GROUPE" data-copy-target="discussions-simplex-relay-copy-2-address" title="Copier le lien du groupe" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier lien</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">Lien copié</span></button>
+<button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code de Bitcoin Plebs FR" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Bitcoin Plebs FR" data-qr-src="IMG/QR/QR_Bitcoin-Plebs.png" title="Afficher le QR code du groupe" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div>
 </article></div>
-
 </section><section aria-labelledby="contact-title" class="section rubrique-panel" data-rubrique="contact-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="contact-title" translate="no">
      Contacter Libestria
@@ -1655,8 +1699,8 @@ body > footer.site-footer {
 <p>Merci pour ton soutien !</p>
 </div>
 <div aria-label="Moyens de soutien" class="support-image-grid">
-<div class="support-image-item"><img alt="Soutenir Libestria en Bitcoin Lightning" decoding="async" loading="lazy" src="/IMG/IMG_soutien-btc.png"/><span data-copy-value="artefact@coinos.io" hidden="" id="ln-address"></span><div class="support-image-actions"><button aria-label="Copier l’adresse Lightning (BTC)" class="relay-info-link relay-action-button relay-copy-wss support-copy-button" data-copy-target="ln-address" title="Copier l’adresse Lightning (BTC)" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier adresse</span></button><button aria-controls="support-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code Lightning (BTC)" class="relay-info-link relay-action-button support-qr-trigger" data-qr-name="Adresse Lightning (BTC)" data-qr-src="/IMG/QR/QR_adresse-LN-BTC.png" title="Afficher le QR code Lightning (BTC)" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div></div>
-<div class="support-image-item"><img alt="Soutenir Libestria en Monero (XMR)" decoding="async" loading="lazy" src="/IMG/IMG_soutien-xmr.png"/><span data-copy-value="4A8PF2wWq5acdQiCUjWcrHNZPT27GuZoxHGqiaHNACmYF4qoTK9i3yeAB9kcy1QWW5hLkp8WMNCNGaKQmgS1K3RNQSyqeQq" hidden="" id="xmr-address"></span><div class="support-image-actions"><button aria-label="Copier l’adresse Monero (XMR)" class="relay-info-link relay-action-button relay-copy-wss support-copy-button" data-copy-target="xmr-address" title="Copier l’adresse Monero (XMR)" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier adresse</span></button><button aria-controls="support-qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code Monero (XMR)" class="relay-info-link relay-action-button support-qr-trigger" data-qr-name="Adresse Monero (XMR)" data-qr-src="/IMG/QR/QR_adresse-XMR.png" title="Afficher le QR code Monero (XMR)" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div></div>
+<div class="support-image-item"><img alt="Soutenir Libestria en Bitcoin Lightning" decoding="async" loading="lazy" src="/IMG/IMG_soutien-btc.png"/><span data-copy-value="artefact@coinos.io" hidden="" id="ln-address"></span><div class="support-image-actions"><button aria-label="Copier l’adresse Lightning (BTC)" class="relay-info-link relay-action-button relay-copy-wss support-copy-button" data-copy-target="ln-address" title="Copier l’adresse Lightning (BTC)" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier adresse</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">Adresse copiée</span></button><button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code Lightning (BTC)" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Adresse Lightning (BTC)" data-qr-src="/IMG/QR/QR_adresse-LN-BTC.png" title="Afficher le QR code Lightning (BTC)" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div></div>
+<div class="support-image-item"><img alt="Soutenir Libestria en Monero (XMR)" decoding="async" loading="lazy" src="/IMG/IMG_soutien-xmr.png"/><span data-copy-value="4A8PF2wWq5acdQiCUjWcrHNZPT27GuZoxHGqiaHNACmYF4qoTK9i3yeAB9kcy1QWW5hLkp8WMNCNGaKQmgS1K3RNQSyqeQq" hidden="" id="xmr-address"></span><div class="support-image-actions"><button aria-label="Copier l’adresse Monero (XMR)" class="relay-info-link relay-action-button relay-copy-wss support-copy-button" data-copy-target="xmr-address" title="Copier l’adresse Monero (XMR)" type="button"><svg aria-hidden="true" class="wss-icon wss-icon--copy" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><rect height="13" rx="2" width="13" x="8" y="8"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg><svg aria-hidden="true" class="wss-icon wss-icon--done" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewbox="0 0 24 24" width="17" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><span>Copier adresse</span><span aria-hidden="true" class="copy-width-reserve">Échec</span><span aria-hidden="true" class="copy-width-reserve">Adresse copiée</span></button><button aria-controls="qr-dialog" aria-haspopup="dialog" aria-label="Afficher le QR code Monero (XMR)" class="relay-info-link relay-action-button qr-trigger" data-qr-name="Adresse Monero (XMR)" data-qr-src="/IMG/QR/QR_adresse-XMR.png" title="Afficher le QR code Monero (XMR)" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><rect height="7" rx="1" width="7" x="2" y="2"></rect><rect height="7" rx="1" width="7" x="15" y="2"></rect><rect height="7" rx="1" width="7" x="2" y="15"></rect><path d="M15 15h3v3h-3zM21 15v3m-3 3h3m-6 0v-2"></path></svg></button></div></div>
 </div>
 </section></div></div>
 </main>
@@ -1703,10 +1747,11 @@ document.addEventListener('click', async event => {
   label.textContent = copied ? copiedLabel : 'Échec';
   if (isRelayCopy) button.setAttribute('aria-label', copied ? copiedLabel : 'Échec de la copie');
   button.classList.toggle('copied', copied);
+  button.classList.toggle('copy-failed', !copied);
   // Une nouvelle copie remplace le délai précédent : aucun retour prématuré.
   button._copyResetTimer = window.setTimeout(() => {
     label.textContent = original;
-    button.classList.remove('copied');
+    button.classList.remove('copied', 'copy-failed');
     if (isRelayCopy && originalAriaLabel) button.setAttribute('aria-label', originalAriaLabel);
     button._copyResetTimer = null;
   }, 2000);
@@ -1765,64 +1810,34 @@ document.addEventListener('click', function(event) {
   if (menuContact) menuContact.click();
 });
 </script>
-<dialog aria-labelledby="simplex-qr-heading" class="simplex-qr-dialog" id="simplex-qr-dialog"><button aria-label="Fermer la fenêtre QR code" class="simplex-qr-close" title="Fermer" type="button">×</button><img alt="" height="260" id="simplex-qr-image" width="260"/><h2 id="simplex-qr-heading"></h2></dialog>
+<dialog aria-labelledby="qr-heading" class="simplex-qr-dialog" id="qr-dialog"><button aria-label="Fermer la fenêtre QR code" class="simplex-qr-close" title="Fermer" type="button">×</button><img alt="" height="250" id="qr-image" width="250"/><h2 id="qr-heading"></h2></dialog>
 <script>
 (() => {
-  const servers = [{src:"IMG/QR/QR_NostrMap-SMP.png",name:"Serveur SMP Nostr Map"},{src:"IMG/QR/QR_NostrMap-XFTP.png",name:"Serveur XFTP Nostr Map"},{src:"IMG/QR/QR_Decentralia-SMP.png",name:"Serveur SMP Decentralia"},{src:"IMG/QR/QR_NoeudLibre-SMP.png",name:"Serveur SMP Noeud Libre"}];
-  const dialog = document.getElementById('simplex-qr-dialog');
+  const dialog = document.getElementById('qr-dialog');
   if (!dialog || typeof dialog.showModal !== 'function') return;
-  const heading = document.getElementById('simplex-qr-heading');
-  const image = document.getElementById('simplex-qr-image');
+  const image = dialog.querySelector('#qr-image');
+  const heading = dialog.querySelector('#qr-heading');
+  const closeButton = dialog.querySelector('.simplex-qr-close');
   let opener = null;
-  document.addEventListener('click', event => {
-    const trigger = event.target.closest('.simplex-qr-trigger');
-    if (!trigger) return;
-    const index = Number(trigger.dataset.simplexQr) - 1;
-    const server = trigger.dataset.qrSrc
-      ? {src: trigger.dataset.qrSrc, name: trigger.dataset.qrName || 'Groupe'}
-      : servers[index];
-    if (!server) return;
-    opener = trigger;
-    heading.textContent = server.name;
-    image.src = server.src;
-    image.alt = 'QR code : ' + server.name;
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('.qr-trigger:not(:disabled)');
+    if (!button || !button.dataset.qrSrc || !button.dataset.qrName) return;
+    opener = button;
+    image.src = button.dataset.qrSrc;
+    image.alt = `QR code : ${button.dataset.qrName}`;
+    heading.textContent = button.dataset.qrName;
     if (!dialog.open) dialog.showModal();
   });
-  dialog.querySelector('.simplex-qr-close').addEventListener('click', () => { if (dialog.open) dialog.close(); });
-  dialog.addEventListener('click', event => {
+  closeButton.addEventListener('click', () => { if (dialog.open) dialog.close(); });
+  dialog.addEventListener('click', (event) => {
     if (event.target !== dialog) return;
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right ||
-        event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right ||
+        event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   });
   dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); });
 })();
 </script>
-<dialog aria-labelledby="support-qr-heading" class="simplex-qr-dialog" id="support-qr-dialog"><button aria-label="Fermer la fenêtre QR code" class="simplex-qr-close" title="Fermer" type="button">×</button><img alt="QR code Bitcoin Lightning" height="260" id="support-qr-image" src="/IMG/QR/QR_adresse-LN-BTC.png" width="260"/><h2 id="support-qr-heading">Adresse Lightning (BTC)</h2></dialog><script>
-(() => {
-  const dialog = document.getElementById('support-qr-dialog');
-  const close = dialog?.querySelector('.simplex-qr-close');
-  if (!dialog || typeof dialog.showModal !== 'function') return;
-  let opener = null;
-  document.addEventListener('click', event => {
-    const button = event.target.closest('.support-qr-trigger:not(:disabled)');
-    if (!button) return;
-    const image = document.getElementById('support-qr-image');
-    const heading = document.getElementById('support-qr-heading');
-    if (!image || !heading || !button.dataset.qrSrc || !button.dataset.qrName) return;
-    image.src = button.dataset.qrSrc;
-    image.alt = `QR code ${button.dataset.qrName}`;
-    heading.textContent = button.dataset.qrName;
-    opener = button;
-    if (!dialog.open) dialog.showModal();
-  });
-  close.addEventListener('click', () => { if (dialog.open) dialog.close(); });
-  dialog.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const r = dialog.getBoundingClientRect();
-    if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close();
-  });
-  dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); });
-})();
-</script></body>
+</body>
 </html>
