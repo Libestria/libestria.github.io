@@ -1277,8 +1277,12 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   min-width: 0;
   padding: 24px 16px;
   text-align: center;
-  background: #10101d !important;
-  border: 1px solid rgba(168, 155, 197, .20) !important;
+  /* Fond noir et cadre dégradé réservé aux cartes (distinct des rubriques). */
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(135deg, #35c7ff 0%, #8b5cf6 45%, #e65ab8 100%) border-box !important;
+  border-style: solid !important;
+  border-color: transparent !important;
+  border-width: 1px 2px 0 0 !important;
   border-radius: 12px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
 }
