@@ -1054,13 +1054,6 @@ body > footer.site-footer {
 /* Fenêtres QR : présentation commune aux serveurs, groupes et soutien. */
 .fenetre-content [data-rubrique="nostrord-title"] .simplex-qr-trigger { cursor: pointer; }
 
-/* Logos des groupes : hauteur de 300 px, proportions préservées. */
-.fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card > .relay-card-logo {
-  height: 300px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-}
 .fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid > .card > .group-description {
   margin: 12px 0 8px;
   text-align: center;
@@ -1513,6 +1506,12 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 
 .fenetre-content [data-rubrique="nostrord-title"] > .discussions-simplex-grid .card-links .relay-copy-wss.copied {
   padding-inline: 13px; /* Conserve 14 px entre le contenu et le bord externe avec une bordure de 2 px. */
+}
+
+/* Curseur main commun à toutes les actions cliquables du site.
+   Les contrôles désactivés conservent leur curseur d’indisponibilité. */
+:is(button, a[href], input[type="button"], input[type="submit"], input[type="reset"], select, label[for], [role="button"], .drawer-link, .drawer-trigger):not(:disabled):not([aria-disabled="true"]):hover {
+  cursor: pointer;
 }
 </style></head>
 <body>
