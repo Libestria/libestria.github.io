@@ -225,12 +225,10 @@ html[data-input="key"] .win-content:focus-visible { outline-offset: -3px; }
 @media (hover: hover) {
   .btn:hover:not([aria-disabled="true"]), .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
   .drawer-link:hover { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
-  .qr-close:hover { border-color: var(--violet-light); background: #302442; }
   .ext:hover { text-decoration: underline; }
 }
 html[data-input="key"] :is(.btn:not([aria-disabled="true"]), .icon-btn):focus-visible { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
 html[data-input="key"] .drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
-html[data-input="key"] .qr-close:focus-visible { border-color: var(--violet-light); background: #302442; }
 html[data-input="key"] .ext:focus-visible { text-decoration: underline; }
 .btn:active:not([aria-disabled="true"]), .icon-btn:active { background: var(--btn-hover-bg); }
 .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
@@ -282,9 +280,9 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 }
 .drawer-close {
   display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
-  border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #a9a5b9;
+  border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
 }
-.drawer-close .i { width: 17px; height: 17px; }
+.drawer-close .i { width: 18px; height: 18px; }
 .drawer-links { display: flex; flex-direction: column; gap: 3px; padding: 14px 0; }
 .drawer-link {
   display: flex; align-items: center; gap: 13px; padding: 10px 12px; border-radius: 10px;
@@ -316,9 +314,11 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 .qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: 8px; background: #fff; object-fit: contain; }
 .qr-dialog h2 { margin-top: 12px; font-size: 1.15rem; font-weight: 600; color: #fff; }
 .qr-close {
-  position: absolute; top: 12px; right: 12px; width: 34px; height: 34px;
-  border: 1px solid #66528c; border-radius: 9px; background: var(--btn-hover-bg); color: #fff; font-size: 23px; line-height: 1;
+  position: absolute; top: 12px; right: 12px;
+  display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
+  border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
 }
+.qr-close .i { width: 18px; height: 18px; }
 
 /* 11. Pied de page ------------------------------------------------------------ */
 .site-footer {
@@ -431,7 +431,7 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 </aside>
 
 <dialog class="qr-dialog" id="qr" aria-labelledby="qr-title">
-<button class="qr-close" type="button" aria-label="Fermer la fenêtre QR code" title="Fermer">×</button>
+<button class="qr-close" type="button" aria-label="Fermer la fenêtre QR code" title="Fermer"><svg class="i i--bold" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
 <img id="qr-img" alt="" width="250" height="250">
 <h2 id="qr-title"></h2>
 </dialog>
