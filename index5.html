@@ -202,7 +202,12 @@ main {
 .ext:is(:hover, :focus-visible) { text-decoration: underline; }
 .ext .i { width: 1em; height: 1em; }
 .ext span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%); }
+.dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%);
+  animation: dot-flash 1.2s ease-in-out infinite; }
+@keyframes dot-flash {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%), 0 0 28px rgb(34 197 94 / 28%); }
+  50% { opacity: .18; transform: scale(.55); box-shadow: none; }
+}
 
 /* 7. Boutons --------------------------------------------------------------- */
 .actions-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: 100%; }
@@ -344,7 +349,8 @@ main {
 @media (max-width: 380px) { .wordmark { font-size: clamp(1.15rem, 5vw, 1.4rem); } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
+  .dot { animation: none; }
 }
 
 </style>
