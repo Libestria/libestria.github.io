@@ -878,28 +878,11 @@ body > footer.site-footer {
   overflow-wrap: normal !important;
 }
 
-/* Mise en page commune aux textes À propos et NIP-05.
-   Neutralise les espacements propres aux cartes (flex gap et padding). */
+/* La carte NIP-05 contient une description, pas une grille de cartes classiques. */
 .fenetre-content .service-cards > .card.nip05-information {
   padding: 0 !important;
   gap: 0;
   align-items: stretch;
-}
-.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > :is(p, ul) {
-  margin: 0 0 1rem !important;
-  color: var(--text-secondary);
-  font-size: clamp(1rem, 2.8vw, 1.12rem);
-  line-height: 1.65;
-  letter-spacing: 0.02em;
-}
-.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > :last-child {
-  margin-bottom: 0 !important;
-}
-.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > .accueil-logos {
-  margin: 0 0 1rem !important;
-}
-.fenetre-content .rubrique-panel :is(.accueil-description, .nip05-information) > ul {
-  padding-left: 1.7em;
 }
 /* Le libellé du bouton NIP-05 reprend exactement la typographie des paragraphes. */
 .fenetre-content .nip05-information .nip05-contact-link {
@@ -1217,7 +1200,8 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   }
 }
 </style><style>
-/* Typographie générale des contenus de rubrique (y compris NIP-05 et À propos). */
+/* Système partagé pour toutes les descriptions des rubriques.
+   À propos et NIP-05 réutilisent la même classe que les autres introductions. */
 .fenetre-content .rubrique-panel .rubrique-texte {
   font-family: "Exo 2", sans-serif;
   font-size: clamp(1rem, 2.8vw, 1.12rem);
@@ -1235,28 +1219,30 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   letter-spacing: inherit;
   text-align: inherit;
 }
-.fenetre-content .rubrique-panel .rubrique-texte :is(ul, ol) {
-  padding-left: 1.7em;
-}
-/* Règle unique pour les descriptions introductives, hors cartes. */
-.fenetre-content .rubrique-panel > .rubrique-description {
+.fenetre-content .rubrique-panel .rubrique-description {
   display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
   margin-bottom: 1rem;
 }
-.fenetre-content .rubrique-panel > .rubrique-description > :is(p, ul, ol) {
+.fenetre-content .rubrique-panel .rubrique-description > :is(p, ul, ol) {
   margin: 0 0 1rem !important;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
 }
-.fenetre-content .rubrique-panel > .rubrique-description > :is(p, ul, ol):last-child {
+.fenetre-content .rubrique-panel .rubrique-description > :is(p, ul, ol):last-child,
+.fenetre-content .rubrique-panel .rubrique-description > :last-child {
   margin-bottom: 0 !important;
 }
-.fenetre-content .rubrique-panel > .rubrique-description > .accueil-logos {
+.fenetre-content .rubrique-panel .rubrique-description > :is(ul, ol) {
+  padding-left: 1.7em;
+}
+.fenetre-content .rubrique-panel .rubrique-description > .accueil-logos {
   margin: 0 0 1rem !important;
 }
-/* Les paragraphes de contact ne doivent pas ajouter de gap flex. */
-.fenetre-content [data-rubrique="contact-title"] .contact-introduction {
-  display: block;
-}
-
 /* Commandes du menu : centrage et dimensions des SVG. */
 .identity-banner .drawer-trigger,
 .drawer-close {
@@ -1549,12 +1535,12 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
     </h1>
 </div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Naviguer sur Libestria" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0" title="Naviguer sur Libestria"><svg aria-hidden="true" class="drawer-control-icon" fill="none" height="30" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewbox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label></section>
 <div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">À propos de Libestria</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
-<div class="accueil-description rubrique-texte"><p class="card-intro rubrique-texte" id="accueil-title">Libestria est un espace francophone dédié à la découverte et à l’utilisation de Nostr et SimpleX, deux écosystèmes qui ouvrent de nouvelles perspectives en matière de communication, de liberté numérique, d’autonomie et de respect de la vie privée.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div><p class="card-intro rubrique-texte">Son objectif est de rendre ces technologies plus accessibles, de faciliter leur prise en main et de favoriser le partage de connaissances au sein de la communauté francophone.</p><p class="card-intro rubrique-texte">Tu trouveras sur Libestria des tutoriels pratiques, des explications et une sélection de ressources utiles pour découvrir Nostr et SimpleX, comprendre leur fonctionnement et approfondir leur utilisation.</p><p class="card-intro rubrique-texte">Le site rassemble également des recommandations de relais Nostr, de serveurs SimpleX et de groupes de discussion francophones, afin de t’aider à trouver des points d’accès et des espaces d’échange adaptés à tes besoins.</p><p class="card-intro rubrique-texte">Libestria met aussi en lumière les sites, projets et initiatives de membres de la communauté francophone présents sur Nostr, pour encourager la découverte, les échanges et le partage d’expériences.</p><p class="card-intro rubrique-texte">Enfin, Libestria propose un service d’identité NIP-05 personnalisée sous le domaine libestria.fr, permettant d’associer ton profil Nostr à une adresse facilement reconnaissable.</p><p class="card-intro rubrique-texte">Libestria se veut avant tout un espace indépendant, accessible et convivial, animé par la volonté de partager des connaissances, de valoriser les initiatives francophones et de contribuer à une utilisation plus libre et décentralisée des outils de communication.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
+<div class="accueil-description rubrique-texte rubrique-description"><p class="card-intro rubrique-texte" id="accueil-title">Libestria est un espace francophone dédié à la découverte et à l’utilisation de Nostr et SimpleX, deux écosystèmes qui ouvrent de nouvelles perspectives en matière de communication, de liberté numérique, d’autonomie et de respect de la vie privée.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div><p class="card-intro rubrique-texte">Son objectif est de rendre ces technologies plus accessibles, de faciliter leur prise en main et de favoriser le partage de connaissances au sein de la communauté francophone.</p><p class="card-intro rubrique-texte">Tu trouveras sur Libestria des tutoriels pratiques, des explications et une sélection de ressources utiles pour découvrir Nostr et SimpleX, comprendre leur fonctionnement et approfondir leur utilisation.</p><p class="card-intro rubrique-texte">Le site rassemble également des recommandations de relais Nostr, de serveurs SimpleX et de groupes de discussion francophones, afin de t’aider à trouver des points d’accès et des espaces d’échange adaptés à tes besoins.</p><p class="card-intro rubrique-texte">Libestria met aussi en lumière les sites, projets et initiatives de membres de la communauté francophone présents sur Nostr, pour encourager la découverte, les échanges et le partage d’expériences.</p><p class="card-intro rubrique-texte">Enfin, Libestria propose un service d’identité NIP-05 personnalisée sous le domaine libestria.fr, permettant d’associer ton profil Nostr à une adresse facilement reconnaissable.</p><p class="card-intro rubrique-texte">Libestria se veut avant tout un espace indépendant, accessible et convivial, animé par la volonté de partager des connaissances, de valoriser les initiatives francophones et de contribuer à une utilisation plus libre et décentralisée des outils de communication.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="services-libestria-title" translate="no">
      NIP-05 @libestria.fr
     </h2>
 <div class="service-cards">
-<article class="card nip05-information rubrique-texte">
+<article class="card nip05-information rubrique-texte rubrique-description">
 <div aria-label="Logo Nostr" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/></div>
 <p>Sur Nostr, le NIP-05 est un identifiant qui permet d’associer ta clé publique (npub) à une adresse plus simple à retenir et à partager, semblable à une adresse e-mail.</p>
 <p>Avec Libestria, tu peux obtenir ton propre identifiant NIP-05 personnalisé au format <span class="nip05-example-address">pseudo@libestria.fr</span>.</p>
