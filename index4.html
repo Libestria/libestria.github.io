@@ -698,10 +698,9 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
 .drawer-link {width:100%;display:flex;align-items:center;justify-content:flex-start;gap:13px;padding:10px 12px;border:0;border-radius:10px;text-align:left;background:transparent;color:var(--nav-text);font:inherit;font-size:clamp(16px,2.8vw,18px);line-height:1.45;cursor:pointer;transition:background .18s,color .18s}
 .drawer-link > span:last-child {flex:1;min-width:0;text-align:left}
 .drawer-link:hover,.drawer-link:focus-visible {background:var(--nav-hover-bg);color:var(--nav-hover-text)}
-.drawer-link.active {color:var(--nav-active-text);background:var(--nav-active-bg);font-weight:700}
+.drawer-link.active {color:var(--nav-text);background:var(--nav-active-bg);font-weight:700;font-size:calc(clamp(16px,2.8vw,18px) + 2px)}
 .drawer-icon {display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:23px;text-align:center;color:var(--nav-muted)}
 .drawer-icon svg {display:block;width:21px;height:21px}
-.drawer-link.active .drawer-icon {color:var(--nav-active-icon)}
 .drawer-foot {margin-top:auto;padding-top:20px;border-top:1px solid var(--nav-divider);font:16px 'Share Tech Mono',monospace;letter-spacing:1px;color:#777188;text-align:right}
 .drawer-trigger:focus-visible,.nip05-contact-link:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible {outline:2px solid var(--nav-focus);outline-offset:3px}
 #nav-toggle:checked ~ .drawer-overlay {opacity:1;visibility:visible;pointer-events:auto}
