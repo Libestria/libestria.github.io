@@ -130,7 +130,7 @@ main {
   flex: 1 1 0; min-height: 0;
   display: flex; flex-direction: column; overflow: hidden;
   border: solid transparent; border-width: 0 0 1px 4px; border-radius: 18px;
-  background: linear-gradient(#070711, #070711) padding-box, var(--grad-frame) border-box;
+  background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
   box-shadow: var(--shadow-frame);
 }
 .win-bar {
@@ -255,7 +255,7 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 /* 9. Menu latéral ------------------------------------------------------------ */
 .overlay {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgb(0 0 0 / 68%); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  background: rgb(0 0 0 / 70%); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
   opacity: 0; visibility: hidden;
   transition: opacity .25s ease, visibility 0s .25s;
 }
@@ -312,7 +312,7 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
   background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
   color: #fff; text-align: center; box-shadow: 0 16px 60px #0009;
 }
-.qr-dialog::backdrop { background: rgb(0 0 0 / 76%); }
+.qr-dialog::backdrop { background: rgb(0 0 0 / 70%); }
 .qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: 8px; background: #fff; object-fit: contain; }
 .qr-dialog h2 { margin-top: 12px; font-size: 1.15rem; font-weight: 600; color: #fff; }
 .qr-close {
