@@ -1155,6 +1155,41 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 .fenetre-content .lien-externe:focus-visible { text-decoration: underline; }
 .fenetre-content .lien-externe__icone { width: 1em; height: 1em; flex: 0 0 auto; }
 .fenetre-content .lien-externe__texte { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+
+/* Actions de l’en-tête : boutons Accueil et Menu côte à côte. */
+.identity-banner .identity-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+.identity-banner .identity-header-actions .drawer-trigger { margin-left: 0; }
+/* Bouton Accueil : dimensions et habillage coordonnés au bouton Menu. */
+.identity-banner .home-trigger {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #3c3453;
+  border-radius: 13px;
+  background: #15131e;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.identity-banner .home-trigger:hover,
+.identity-banner .home-trigger:focus-visible {
+  background: #211b2d;
+  border-color: var(--violet-light, #a855f7);
+}
+.identity-banner .home-trigger svg { width: 25px; height: 25px; }
+@media (max-width: 600px) {
+  .identity-banner .home-trigger { width: 43px; height: 43px; }
+}
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1579,7 +1614,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 <h1 class="visually-hidden" translate="no">
      Libestria
     </h1>
-</div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><label aria-label="Naviguer sur Libestria" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0" title="Naviguer sur Libestria"><svg aria-hidden="true" class="drawer-control-icon" fill="none" height="30" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewbox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label></section>
+</div><span aria-label="Libestria.fr" class="identity-wordmark">Libestria.fr</span><div class="identity-header-actions"><button type="button" class="home-trigger" id="home-shortcut" aria-label="Accueil — À propos de Libestria" title="À propos de Libestria"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></button><label aria-label="Naviguer sur Libestria" class="drawer-trigger" for="nav-toggle" id="drawer-open" role="button" tabindex="0" title="Naviguer sur Libestria"><svg aria-hidden="true" class="drawer-control-icon" fill="none" height="30" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewbox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label></div></section>
 <div aria-label="Fenêtre de la rubrique sélectionnée" class="rubrique-fenetre" id="rubrique-fenetre" role="region"><div class="fenetre-bar"><span aria-hidden="true" class="fenetre-menu-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="fenetre-titre" id="fenetre-titre">À propos de Libestria</span></div><div class="fenetre-content"><section aria-labelledby="accueil-title" class="section rubrique-panel" data-rubrique="accueil-title">
 <div class="accueil-description rubrique-texte rubrique-description"><p class="card-intro rubrique-texte" id="accueil-title">Libestria est un espace francophone dédié à la découverte et à l’utilisation de Nostr et SimpleX, deux écosystèmes qui ouvrent de nouvelles perspectives en matière de communication, de liberté numérique, d’autonomie et de respect de la vie privée.</p><div aria-label="Logos Nostr et SimpleX" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div><p class="card-intro rubrique-texte">Son objectif est de rendre ces technologies plus accessibles, de faciliter leur prise en main et de favoriser le partage de connaissances au sein de la communauté francophone.</p><p class="card-intro rubrique-texte">Tu trouveras sur Libestria des tutoriels pratiques, des explications et une sélection de ressources utiles pour découvrir Nostr et SimpleX, comprendre leur fonctionnement et approfondir leur utilisation.</p><p class="card-intro rubrique-texte">Le site rassemble également des recommandations de relais Nostr, de serveurs SimpleX et de groupes de discussion francophones, afin de t’aider à trouver des points d’accès et des espaces d’échange adaptés à tes besoins.</p><p class="card-intro rubrique-texte">Libestria met aussi en lumière les sites, projets et initiatives de membres de la communauté francophone présents sur Nostr, pour encourager la découverte, les échanges et le partage d’expériences.</p><p class="card-intro rubrique-texte">Enfin, Libestria propose un service d’identité NIP-05 personnalisée sous le domaine libestria.fr, permettant d’associer ton profil Nostr à une adresse facilement reconnaissable.</p><p class="card-intro rubrique-texte">Libestria se veut avant tout un espace indépendant, accessible et convivial, animé par la volonté de partager des connaissances, de valoriser les initiatives francophones et de contribuer à une utilisation plus libre et décentralisée des outils de communication.</p></div></section><section aria-labelledby="services-libestria-title" class="section rubrique-panel" data-rubrique="services-libestria-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="services-libestria-title" translate="no">
@@ -1893,6 +1928,13 @@ document.addEventListener('click', async event => {
   links.forEach(link => link.addEventListener('click', () => {
     selectRubrique(link.dataset.target);
   }));
+  // Le raccourci accueil réutilise la navigation existante (titre, icône, stockage, fermeture).
+  const homeShortcut = document.getElementById('home-shortcut');
+  if (homeShortcut) homeShortcut.addEventListener('click', () => {
+    selectRubrique('accueil-title');
+    homeShortcut.focus({ preventScroll: true });
+  });
+
   try {
     const saved = sessionStorage.getItem(storageKey);
     if (saved) selectRubrique(saved, { restore: true });
