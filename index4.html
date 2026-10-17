@@ -1106,6 +1106,26 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 .fenetre-content button[data-copy-target].copied > .wss-icon--done { display:block !important; }
 .fenetre-content button[data-copy-target].copy-failed > .wss-icon--copy { display:block !important; }
 .fenetre-content button[data-copy-target].copy-failed > .wss-icon--done { display:none !important; }
+/* Liens externes des cartes : style réutilisable dans toutes les rubriques. */
+.fenetre-content .lien-externe {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: clamp(0.82rem, 2.1vw, 0.92rem);
+  letter-spacing: 0.025em;
+  padding-bottom: 0;
+  border-bottom: 0;
+  text-decoration: none;
+}
+.fenetre-content .lien-externe:hover,
+.fenetre-content .lien-externe:focus-visible { text-decoration: underline; }
+.fenetre-content .lien-externe__icone { width: 1em; height: 1em; flex: 0 0 auto; }
+.fenetre-content .lien-externe__texte { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 <meta content="website" property="og:type"/>
 <meta content="fr_FR" property="og:locale"/>
@@ -1696,7 +1716,7 @@ Un point de rencontre entre deux communautés.</p>
 <p>Pour participer, il te suffit de rejoindre les groupes qui t’intéressent grâce aux liens proposés.</p>
 </div>
 <div aria-label="Autres projets FR" class="card-grid simplex-future-grid discussions-simplex-grid" role="group"><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.875V19.125M4.875 12H19.125"></path></svg></span> Nom du projet</h3><img alt="Logo provisoire du projet" class="relay-card-logo" decoding="async" height="150" loading="lazy" src="IMG/Logo_QG-Nostriches.png"/><p class="group-description">Description projet 1.</p>
-<div class="copy-row copy-row--wide"><div class="copy-box"><a class="copy-value" href="https://autre-projet.fr" target="_blank" rel="noopener noreferrer" title="https://autre-projet.fr">https://autre-projet.fr</a></div></div>
+<div class="copy-row copy-row--wide"><div class="copy-box"><a class="copy-value lien-externe" href="https://autre-projet.fr" target="_blank" rel="noopener noreferrer" title="https://autre-projet.fr"><svg class="lien-externe__icone" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="lien-externe__texte">https://autre-projet.fr</span></a></div></div>
 </article></div>
 </section><section aria-labelledby="contact-title" class="section rubrique-panel" data-rubrique="contact-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="contact-title" translate="no">
