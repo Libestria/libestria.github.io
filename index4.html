@@ -1411,9 +1411,11 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   gap: 18px;
 }
 
+@media (max-width: 899px) {
   .fenetre-content :is([data-rubrique="recommended-services-title"], :is([data-rubrique="nostrord-title"], [data-rubrique="projets-francophones-title"])) > .discussions-simplex-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+}
 
 
 .fenetre-content :is([data-rubrique="recommended-services-title"], :is([data-rubrique="nostrord-title"], [data-rubrique="projets-francophones-title"])) > .discussions-simplex-grid > .card > h3 {
