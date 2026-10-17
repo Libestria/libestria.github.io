@@ -1833,9 +1833,11 @@ document.addEventListener('click', async event => {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && toggle.checked) { toggle.checked = false; sync(); opener.focus(); }
   });
-  links.forEach(link => link.addEventListener('click', () => {
-    const id = link.dataset.target;
-    if (!panels.some(panel => panel.dataset.rubrique === id)) return;
+  // Conserver la rubrique active lors d’une actualisation de l’onglet.
+  const storageKey = 'libestria-rubrique-active';
+  function selectRubrique(id, { restore = false } = {}) {
+    const link = links.find(item => item.dataset.target === id);
+    if (!link || !panels.some(panel => panel.dataset.rubrique === id)) return false;
     panels.forEach(panel => { panel.hidden = panel.dataset.rubrique !== id; });
     links.forEach(item => {
       item.classList.toggle('active', item === link);
@@ -1843,12 +1845,26 @@ document.addEventListener('click', async event => {
       else item.removeAttribute('aria-current');
     });
     if (title) title.textContent = link.textContent.trim();
-    if (headerIcon) { const svg = link.querySelector('.drawer-icon svg'); if (svg) headerIcon.replaceChildren(svg.cloneNode(true)); }
+    if (headerIcon) {
+      const svg = link.querySelector('.drawer-icon svg');
+      if (svg) headerIcon.replaceChildren(svg.cloneNode(true));
+    }
     if (scroller) scroller.scrollTop = 0;
     toggle.checked = false;
     sync();
-    opener.focus();
+    if (!restore) {
+      try { sessionStorage.setItem(storageKey, id); } catch (_) { /* stockage indisponible */ }
+      opener.focus();
+    }
+    return true;
+  }
+  links.forEach(link => link.addEventListener('click', () => {
+    selectRubrique(link.dataset.target);
   }));
+  try {
+    const saved = sessionStorage.getItem(storageKey);
+    if (saved) selectRubrique(saved, { restore: true });
+  } catch (_) { /* stockage indisponible : rubrique par défaut */ }
   sync();
 })();
 </script>
