@@ -644,7 +644,7 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
 .identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible,.nip05-contact-link:hover,.nip05-contact-link:focus-visible{background:#211b30;border-color:#8b63d8}
 /* Navigation latérale : variables et styles centralisés. */
 :root {
-  --nav-surface: #121119;
+  --nav-surface: #000000;
   --nav-border: #3a324d;
   --nav-divider: #373144;
   --nav-text: #e3dfeb;
@@ -1013,6 +1013,12 @@ body > footer.site-footer {
   [data-target="contact-title"],
   [data-target="support-title"]
 ) .drawer-icon { color: var(--violet-light, #a855f7); }
+
+/* Texte Soutenir Libestria : violet permanent, comme son icône. */
+.drawer-link[data-target="support-title"],
+.drawer-link[data-target="support-title"]:hover,
+.drawer-link[data-target="support-title"]:focus-visible,
+.drawer-link[data-target="support-title"].active { color: var(--violet-light, #a855f7); }
 
 /* Soutien : deux images sans cartes, sur le modèle de la rubrique Contact. */
 .fenetre-content [data-rubrique="support-title"] > .support-image-grid {
