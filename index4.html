@@ -935,9 +935,6 @@ body > footer.site-footer {
   letter-spacing: inherit; line-height: inherit;
 }
 
-.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > :last-child { margin-bottom: 0 !important; }
-.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction > .accueil-logos { margin: 0 0 1rem !important; }
-.fenetre-content [data-rubrique="recommended-services-title"] > .relay-introduction { margin-bottom: 1rem; }
 
 
 /* Contact : alignement et rythme typographique communs aux rubriques À propos et NIP-05. */
@@ -1200,9 +1197,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
   }
 }
 </style><style>
-/* Typographie partagée par toutes les rubriques : introductions, paragraphes et listes. */
-/* Styles de lecture communs : les éléments internes héritent de la typographie,
-   sans écraser les couleurs d’accent (NIP-05, #nostrfr, liens). */
+/* Typographie générale des contenus de rubrique (y compris NIP-05 et À propos). */
 .fenetre-content .rubrique-panel .rubrique-texte {
   font-family: "Exo 2", sans-serif;
   font-size: clamp(1rem, 2.8vw, 1.12rem);
@@ -1223,16 +1218,19 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 .fenetre-content .rubrique-panel .rubrique-texte :is(ul, ol) {
   padding-left: 1.7em;
 }
-/* Rythme vertical unique pour les paragraphes et listes des rubriques. */
-.fenetre-content .rubrique-panel .rubrique-texte {
-  row-gap: 0;
+/* Règle unique pour les descriptions introductives, hors cartes. */
+.fenetre-content .rubrique-panel > .rubrique-description {
+  display: block;
+  margin-bottom: 1rem;
 }
-.fenetre-content .rubrique-panel .rubrique-texte > :is(p, ul, ol) {
-  margin-top: 0 !important;
-  margin-bottom: 1rem !important;
+.fenetre-content .rubrique-panel > .rubrique-description > :is(p, ul, ol) {
+  margin: 0 0 1rem !important;
 }
-.fenetre-content .rubrique-panel .rubrique-texte > :is(p, ul, ol):last-child {
+.fenetre-content .rubrique-panel > .rubrique-description > :is(p, ul, ol):last-child {
   margin-bottom: 0 !important;
+}
+.fenetre-content .rubrique-panel > .rubrique-description > .accueil-logos {
+  margin: 0 0 1rem !important;
 }
 /* Les paragraphes de contact ne doivent pas ajouter de gap flex. */
 .fenetre-content [data-rubrique="contact-title"] .contact-introduction {
@@ -1260,7 +1258,6 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 }
 
 /* Introduction SimpleX : typographie et rythme identiques à la rubrique Relais Nostr. */
-.fenetre-content [data-rubrique="recommended-simplex-title"] > .simplex-introduction { margin-bottom: 1rem; }
 .fenetre-content [data-rubrique="recommended-simplex-title"] .simplex-heading-logo { margin: 0 0 1rem !important; }
 .fenetre-content [data-rubrique="recommended-simplex-title"] .simplex-heading-logo img { display: block; height: clamp(35px, 7.4vw, 49px); width: auto; max-width: 100%; object-fit: contain; }
 </style>
@@ -1546,7 +1543,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 <h2 class="section-label visually-hidden" id="recommended-services-title" translate="no">
      Relais Nostr FR
     </h2>
-<div class="relay-introduction nip05-information rubrique-texte">
+<div class="relay-introduction nip05-information rubrique-texte rubrique-description">
 <div aria-label="Logo Nostr" class="accueil-logos"><img alt="Logo Nostr" decoding="async" loading="lazy" src="IMG/Logo_Nostr.png"/></div>
 <p>Nostr est un protocole de communication décentralisé, sans plateforme ni serveur central. Les messages sont publiés, stockés et diffusés par des relais indépendants.</p>
 <p>Se connecter à plusieurs relais améliore la diffusion des publications, leur résilience et l’accès aux contenus des personnes suivies.</p>
@@ -1607,7 +1604,7 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 <h2 class="section-label visually-hidden" id="recommended-simplex-title" translate="no">
      Serveurs SimpleX FR
     </h2>
-<div class="simplex-introduction relay-introduction nip05-information rubrique-texte"><div class="accueil-logos simplex-heading-logo"><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div>
+<div class="simplex-introduction relay-introduction nip05-information rubrique-texte rubrique-description"><div class="accueil-logos simplex-heading-logo"><img alt="Logo SimpleX" decoding="async" loading="lazy" src="IMG/Logo_SimpleX.png"/></div>
 <p>SimpleX est un protocole de messagerie décentralisé, conçu pour protéger la vie privée et les communications, sans identifiant utilisateur permanent. Les messages transitent par des serveurs indépendants, sans révéler l’identité des correspondants.</p>
 <p>Utiliser plusieurs serveurs améliore la disponibilité, la résilience et la confidentialité des échanges.</p>
 <p>Libestria recommande des serveurs SimpleX publics francophones, gratuits et accessibles à tous, maintenus par des membres de la communauté <span style="color: var(--cyan);">#nostrfr</span>.</p>
@@ -1660,10 +1657,13 @@ button, a.relay-action-button { align-items:center; justify-content:center; }
 <h2 class="section-label visually-hidden" id="nostrord-title" translate="no">
      Groupes francophones
     </h2>
-<p class="card-intro rubrique-texte">Les groupes présentés par Libestria sont des espaces d’échange francophones où tu peux découvrir, apprendre et partager autour de centres d’intérêt communs.</p>
-<p class="card-intro rubrique-texte">Créés et animés par des membres actifs de la communauté <span style="color: var(--cyan);">#nostrfr</span>, ils offrent une ambiance conviviale et bienveillante, ouverte à tous, que tu sois débutant ou expérimenté.</p>
-<p class="card-intro rubrique-texte">L’entraide et l’accompagnement sont au cœur de ces groupes. Tu peux y poser tes questions, partager tes expériences, enrichir tes connaissances ou simplement faire de nouvelles rencontres.</p>
-<p class="card-intro rubrique-texte">Pour participer, il te suffit de rejoindre les groupes qui t’intéressent grâce aux liens proposés.</p><div aria-label="Groupes francophones" class="card-grid simplex-future-grid discussions-simplex-grid" role="group"><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Le QG des Nostriches 🇫🇷</h3><img alt="Logo du QG des Nostriches" class="relay-card-logo" decoding="async" height="150" loading="lazy" src="IMG/Logo_QG-Nostriches.png"/><p class="group-description">Un groupe SimpleX francophone pour découvrir, apprendre et échanger autour de Nostr et de SimpleX.
+<div class="relay-introduction nip05-information rubrique-texte rubrique-description">
+<p>Les groupes présentés par Libestria sont des espaces d’échange francophones où tu peux découvrir, apprendre et partager autour de centres d’intérêt communs.</p>
+<p>Créés et animés par des membres actifs de la communauté <span style="color: var(--cyan);">#nostrfr</span>, ils offrent une ambiance conviviale et bienveillante, ouverte à tous, que tu sois débutant ou expérimenté.</p>
+<p>L’entraide et l’accompagnement sont au cœur de ces groupes. Tu peux y poser tes questions, partager tes expériences, enrichir tes connaissances ou simplement faire de nouvelles rencontres.</p>
+<p>Pour participer, il te suffit de rejoindre les groupes qui t’intéressent grâce aux liens proposés.</p>
+</div>
+<div aria-label="Groupes francophones" class="card-grid simplex-future-grid discussions-simplex-grid" role="group"><article class="card"><h3 translate="no"><span aria-hidden="true" class="relay-title-icon"><svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="21" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Le QG des Nostriches 🇫🇷</h3><img alt="Logo du QG des Nostriches" class="relay-card-logo" decoding="async" height="150" loading="lazy" src="IMG/Logo_QG-Nostriches.png"/><p class="group-description">Un groupe SimpleX francophone pour découvrir, apprendre et échanger autour de Nostr et de SimpleX.
 Un point de rencontre entre deux communautés.</p>
 <div class="copy-row copy-row--wide"><span aria-hidden="true" class="status-dot status-dot--green">
 </span>
@@ -1689,12 +1689,12 @@ Un point de rencontre entre deux communautés.</p>
 <h2 class="section-label visually-hidden" id="contact-title" translate="no">
      Contacter Libestria
     </h2>
-<div class="contact-introduction nip05-information rubrique-texte"><p>Pour toute question, suggestion ou demande d’enregistrement d’un identifiant NIP-05, tu peux contacter l’administrateur de Libestria par e-mail, par message privé Nostr (DM) ou par le biais de la messagerie SimpleX.</p><p>Clique sur le moyen de contact de ton choix.</p></div><div class="contact-method-grid"><div class="contact-method"><a aria-label="Contacter Libestria par e-mail" class="contact-image-link" href="mailto:artefact@libestria.fr"><img alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" src="/IMG/IMG_contact-email.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria par message privé Nostr" class="contact-image-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp"><img alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" src="/IMG/IMG_contact-nostr.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria sur SimpleX" class="contact-image-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" rel="noopener noreferrer" target="_blank"><img alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" src="/IMG/IMG_contact-simplex.png"/></a></div></div>
+<div class="contact-introduction nip05-information rubrique-texte rubrique-description"><p>Pour toute question, suggestion ou demande d’enregistrement d’un identifiant NIP-05, tu peux contacter l’administrateur de Libestria par e-mail, par message privé Nostr (DM) ou par le biais de la messagerie SimpleX.</p><p>Clique sur le moyen de contact de ton choix.</p></div><div class="contact-method-grid"><div class="contact-method"><a aria-label="Contacter Libestria par e-mail" class="contact-image-link" href="mailto:artefact@libestria.fr"><img alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" src="/IMG/IMG_contact-email.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria par message privé Nostr" class="contact-image-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp"><img alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" src="/IMG/IMG_contact-nostr.png"/></a></div><div class="contact-method"><a aria-label="Contacter Libestria sur SimpleX" class="contact-image-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" rel="noopener noreferrer" target="_blank"><img alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" src="/IMG/IMG_contact-simplex.png"/></a></div></div>
 </section><section aria-labelledby="support-title" class="section rubrique-panel" data-rubrique="support-title" hidden="hidden">
 <h2 class="section-label visually-hidden" id="support-title" translate="no">
      Soutenir Libestria
     </h2>
-<div class="support-introduction nip05-information rubrique-texte">
+<div class="support-introduction nip05-information rubrique-texte rubrique-description">
 <p>Tu peux soutenir Libestria avec un don libre en Bitcoin via Lightning ou en Monero (XMR), selon ta préférence.</p>
 <p>Chaque contribution, quel que soit son montant, aide le projet à continuer à évoluer.</p>
 <p>Merci d’avance pour ton soutien !</p>
