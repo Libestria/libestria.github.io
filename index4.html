@@ -963,7 +963,6 @@ body > footer.site-footer {
 }
 
 
-
 /* Contact : alignement et rythme typographique communs aux rubriques À propos et NIP-05. */
 .fenetre-content [data-rubrique="contact-title"] {
   text-align: left;
@@ -1087,7 +1086,6 @@ body > footer.site-footer {
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .support-copy-button.copied .wss-icon--done { display: block; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .qr-trigger { width: 48px; max-width: 100%; height: 40px; padding: 9px 14px; }
 .fenetre-content [data-rubrique="support-title"] .support-image-actions .qr-trigger svg { width: 20px; height: 20px; flex: 0 0 20px; display: block; }
-
 
 
 /* Cartes des groupes : présentation harmonisée avec les cartes des serveurs. */
@@ -1874,7 +1872,7 @@ document.addEventListener('click', async event => {
   }
   closer.addEventListener('click', () => { window.requestAnimationFrame(() => opener.focus()); });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && toggle.checked) { toggle.checked = false; sync(); opener.focus(); }
+    if (e.key === 'Escape' && toggle.checked) { toggle.checked = false; sync(); opener.blur(); }
   });
   // Conserver la rubrique active lors d’une actualisation de l’onglet.
   const storageKey = 'libestria-rubrique-active';
