@@ -657,6 +657,14 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
   --nav-focus: #9b6bf2;
   --nav-motion: .26s ease;
 }
+/* Contrôle du drawer : masqué visuellement, conservé pour son fonctionnement. */
+.nav-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .drawer-overlay {
   position:fixed; inset:0; z-index:1000;
   display:block; opacity:0; visibility:hidden; pointer-events:none;
