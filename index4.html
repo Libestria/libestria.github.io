@@ -642,37 +642,69 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
 .identity-banner .drawer-trigger{margin-left:auto}
 .nip05-contact-link{width:fit-content;max-width:100%;height:auto;min-height:0;padding:9px 14px;font-size:inherit;font-family:inherit;white-space:normal;text-align:center;box-sizing:border-box}
 .identity-banner .drawer-trigger:hover,.identity-banner .drawer-trigger:focus-visible,.nip05-contact-link:hover,.nip05-contact-link:focus-visible{background:#211b30;border-color:#8b63d8}
-.drawer-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
-.drawer-overlay[hidden]{display:none!important}
-.libestria-drawer{position:fixed;top:0;right:0;bottom:0;z-index:1001;width:min(86vw,380px);background:#121119;border-left:1px solid #3a324d;box-shadow:-16px 0 60px rgba(0,0,0,.5);transform:translateX(105%);transition:transform .26s ease;display:flex;flex-direction:column;padding:25px 23px 22px;overflow-y:auto;overscroll-behavior:contain}
-.drawer-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid #373144;gap:12px}
-.drawer-brand{font-family:'Share Tech Mono',monospace;font-size:clamp(19px,4vw,25px);font-weight:600;background:linear-gradient(100deg,#9b6bf2,#48a9db);background-clip:text;-webkit-background-clip:text;color:transparent}
-.drawer-close{height:34px;width:34px;border:1px solid #393344;border-radius:10px;background:#1b1924;color:#a9a5b9;cursor:pointer}
-.drawer-links{display:flex;flex-direction:column;gap:3px;padding:14px 0}
-.drawer-link{width:100%;display:flex;align-items:center;justify-content:flex-start;gap:13px;padding:10px 12px;border:0;border-radius:10px;text-align:left;background:transparent;color:#e3dfeb;font:inherit;font-size:clamp(14px,2.8vw,17px);cursor:pointer;transition:background .18s,color .18s}
-.drawer-link > span:last-child{flex:1;min-width:0;text-align:left;} .drawer-link:hover,.drawer-link:focus-visible{background:#211b2d;color:#bca0ff}
-.drawer-link.active{color:#ac80ff;background:#211a30;font-weight:700}
-.drawer-icon{flex:0 0 25px;font-size:23px;text-align:center;color:#8e87a5}
-.drawer-link.active .drawer-icon{color:#ad87f9}
-.drawer-foot{margin-top:auto;padding-top:20px;border-top:1px solid #373144;font:12px 'Share Tech Mono',monospace;letter-spacing:1px;color:#777188}
-.drawer-foot span{color:#50d7a0;float:right}
-@media(max-width:600px){.identity-banner .drawer-trigger{width:43px;height:43px}.libestria-drawer{padding:22px 19px}}
-@media(prefers-reduced-motion:reduce){.libestria-drawer{transition:none}}
-.drawer-overlay{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease}
-.drawer-close{display:grid;place-items:center;cursor:pointer;flex-shrink:0}
-.drawer-trigger:focus-visible,.nip05-contact-link:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible{outline:2px solid #9b6bf2;outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.drawer-overlay{transition:none}}
-body.menu-open{overflow:hidden}
-.nav-toggle{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-#nav-toggle:checked ~ .drawer-overlay{opacity:1;visibility:visible;pointer-events:auto}
-#nav-toggle:checked ~ .libestria-drawer{transform:translateX(0);visibility:visible;pointer-events:auto}
-.libestria-drawer{visibility:hidden;pointer-events:none;transition:transform .26s ease,visibility .26s}
-#nav-toggle:checked ~ main .drawer-trigger{border-color:#9b6bf2;background:#211b30}
-.drawer-trigger,.nip05-contact-link,.drawer-close{user-select:none;-webkit-user-select:none}
-.drawer-brand-logo{display:block;width:48px;max-width:calc(100% - 60px);height:auto;max-height:48px;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 10px rgba(139,63,217,.16))}
-@media(max-width:600px){.drawer-brand-logo{width:42px;max-height:42px}}
-.drawer-brand{display:flex;align-items:center;gap:13px;min-width:0;flex:1}
-.drawer-brand .drawer-brand-logo{flex:none;max-width:none}
+/* Navigation latérale : variables et styles centralisés. */
+:root {
+  --nav-surface: #121119;
+  --nav-border: #3a324d;
+  --nav-divider: #373144;
+  --nav-text: #e3dfeb;
+  --nav-muted: #8e87a5;
+  --nav-hover-bg: #211b2d;
+  --nav-hover-text: #bca0ff;
+  --nav-active-bg: #211a30;
+  --nav-active-text: #ac80ff;
+  --nav-active-icon: #ad87f9;
+  --nav-focus: #9b6bf2;
+  --nav-motion: .26s ease;
+}
+.drawer-overlay {
+  position:fixed; inset:0; z-index:1000;
+  display:block; opacity:0; visibility:hidden; pointer-events:none;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px);
+  transition:opacity .25s ease;
+}
+.drawer-overlay[hidden] { display:none!important; }
+.libestria-drawer {
+  position:fixed; top:0; right:0; bottom:0; z-index:1001;
+  width:min(86vw,380px); padding:25px 23px 22px;
+  display:flex; flex-direction:column;
+  overflow-y:auto; overscroll-behavior:contain;
+  background:var(--nav-surface); border-left:1px solid var(--nav-border);
+  box-shadow:-16px 0 60px rgba(0,0,0,.5);
+  transform:translateX(105%); visibility:hidden; pointer-events:none;
+  transition:transform var(--nav-motion),visibility .26s;
+}
+.drawer-head {display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid var(--nav-divider);gap:12px}
+.drawer-brand {display:flex;align-items:center;gap:13px;min-width:0;flex:1}
+.drawer-brand-logo {display:block;width:48px;max-width:calc(100% - 60px);height:auto;max-height:48px;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 10px rgba(139,63,217,.16))}
+.drawer-brand .drawer-brand-logo {flex:none;max-width:none}
+.drawer-close {display:grid;place-items:center;flex-shrink:0;width:34px;height:34px;border:1px solid #393344;border-radius:10px;background:#1b1924;color:#a9a5b9;cursor:pointer}
+.drawer-links {display:flex;flex-direction:column;gap:3px;padding:14px 0}
+.drawer-link {width:100%;display:flex;align-items:center;justify-content:flex-start;gap:13px;padding:10px 12px;border:0;border-radius:10px;text-align:left;background:transparent;color:var(--nav-text);font:inherit;font-size:clamp(16px,2.8vw,18px);line-height:1.45;cursor:pointer;transition:background .18s,color .18s}
+.drawer-link > span:last-child {flex:1;min-width:0;text-align:left}
+.drawer-link:hover,.drawer-link:focus-visible {background:var(--nav-hover-bg);color:var(--nav-hover-text)}
+.drawer-link.active {color:var(--nav-active-text);background:var(--nav-active-bg);font-weight:700}
+.drawer-icon {display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:23px;text-align:center;color:var(--nav-muted)}
+.drawer-icon svg {display:block;width:21px;height:21px}
+.drawer-link.active .drawer-icon {color:var(--nav-active-icon)}
+.drawer-foot {margin-top:auto;padding-top:20px;border-top:1px solid var(--nav-divider);font:12px 'Share Tech Mono',monospace;letter-spacing:1px;color:#777188}
+.drawer-foot span {color:#50d7a0;float:right}
+.drawer-trigger:focus-visible,.nip05-contact-link:focus-visible,.drawer-close:focus-visible,.drawer-link:focus-visible {outline:2px solid var(--nav-focus);outline-offset:3px}
+#nav-toggle:checked ~ .drawer-overlay {opacity:1;visibility:visible;pointer-events:auto}
+#nav-toggle:checked ~ .libestria-drawer {transform:translateX(0);visibility:visible;pointer-events:auto}
+#nav-toggle:checked ~ main .drawer-trigger {border-color:var(--nav-focus);background:#211b30}
+.drawer-trigger,.nip05-contact-link,.drawer-close {user-select:none;-webkit-user-select:none}
+@media(max-width:600px) {
+  .identity-banner .drawer-trigger {width:43px;height:43px}
+  .libestria-drawer {padding:22px 19px}
+  .drawer-brand-logo {width:42px;max-height:42px}
+  .drawer-brand {gap:10px}
+  .drawer-brand-title {font-size:1.2rem}
+}
+@media(prefers-reduced-motion:reduce) {
+  .libestria-drawer,.drawer-overlay {transition:none}
+}
 .drawer-brand-title{color:#eee6ff;font-family:'Share Tech Mono',monospace;font-size:clamp(1.15rem,2.5vw,1.65rem);font-weight:600;letter-spacing:.035em;line-height:1.1;white-space:nowrap;text-shadow:0 0 17px rgba(151,90,244,.35),0 0 32px rgba(50,140,235,.14)}
 @media(max-width:600px){.drawer-brand{gap:10px}.drawer-brand-title{font-size:1.2rem}}
 main > .identity-banner .identity-wordmark {
@@ -705,7 +737,6 @@ main > .identity-banner .identity-wordmark {
   text-shadow:none;
   filter:drop-shadow(0 0 5px rgba(180,92,255,.32)) drop-shadow(0 0 15px rgba(242,106,223,.17)) drop-shadow(0 0 23px rgba(57,200,255,.10));
 }
-.drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}.drawer-icon svg{display:block;width:21px;height:21px}
 /* Footer global : typographie uniforme et texte non cliquable. */
 body > footer.site-footer {
   display: block;
@@ -908,7 +939,7 @@ body > footer.site-footer {
 }
 
 /* Séparateurs du menu : même trait que le bas du cadre. */
-.drawer-group-divider,.drawer-section-divider{border-top:1px solid #373144;margin:5px 0 1px}
+.drawer-group-divider,.drawer-section-divider{border-top:1px solid var(--nav-divider);margin:5px 0 1px}
 .drawer-group-divider{padding-top:8px;display:flex;align-items:center;justify-content:flex-start}
 .drawer-group-divider img{display:block;width:auto;max-width:100%;height:25px;object-fit:contain}
 .drawer-group-divider img[src="IMG/Logo_SimpleX.png"]{height:23px}
@@ -973,8 +1004,15 @@ body > footer.site-footer {
 .qr-dialog h2 { margin: 12px 0 0; font-size: 1.15rem; text-align: center; color: #fff; }
 .qr-dialog .simplex-qr-close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border: 1px solid #66528c; border-radius: 9px; background: #211b30; color: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
 .qr-dialog .simplex-qr-close:hover, .qr-dialog .simplex-qr-close:focus-visible { border-color: #a855f7; background: #302442; }
-/* Icône de soutien : violet vif de la palette, y compris hors sélection. */
-.drawer-link[data-target="support-title"] .drawer-icon { color: var(--violet-light, #a855f7); }
+/* Icônes violettes des rubriques Libestria : couleur constante, même hors sélection. */
+.drawer-link:is(
+  [data-target="accueil-title"],
+  [data-target="services-libestria-title"],
+  [data-target="tutoriels-nostr-title"],
+  [data-target="tutoriels-simplex-title"],
+  [data-target="contact-title"],
+  [data-target="support-title"]
+) .drawer-icon { color: var(--violet-light, #a855f7); }
 
 /* Soutien : deux images sans cartes, sur le modèle de la rubrique Contact. */
 .fenetre-content [data-rubrique="support-title"] > .support-image-grid {
