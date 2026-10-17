@@ -678,8 +678,14 @@ main > .identity-banner .terminal-navigation {margin-left:auto!important;width:a
   width:min(86vw,380px); padding:25px 23px 22px;
   display:flex; flex-direction:column;
   overflow-y:auto; overscroll-behavior:contain;
-  background:var(--nav-surface); border-left:1px solid var(--nav-border);
-  box-shadow:-16px 0 60px rgba(0,0,0,.5);
+  /* Cadre identique aux fenêtres des rubriques, fond du menu noir conservé. */
+  border-style:solid;
+  border-color:transparent;
+  border-width:0 0 1px 4px;
+  border-radius:18px 0 0 18px;
+  background:linear-gradient(#000,#000) padding-box,
+    linear-gradient(135deg,#b45cff 0%,#f26adf 33%,#8e7bff 62%,#39c8ff 100%) border-box;
+  box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 22px rgba(139,63,217,.12),0 0 12px rgba(57,200,255,.05);
   transform:translateX(105%); visibility:hidden; pointer-events:none;
   transition:transform var(--nav-motion),visibility .26s;
 }
