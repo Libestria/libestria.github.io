@@ -8,20 +8,25 @@
     "cosimo": "0fe82f918056ea051828ca0b63eaa9be812acaa2fcf436fc50bd2030b0cf9f0a",
     "egfoxdesign": "998a4b3a313d9619447f4f07426a19a8de29dd693c76fde985860bb75904d06a",
     "madame_michu": "403a5a7ef4fdf9608315ed6d3738fc945f832a98a579880cb994a4bf287cf21a",
-    "linuxchien": "0304d161665cfc7c8c0fb1a081015a36091e5dc602481e2bc8099b3928f28176"
+    "linuxchien": "0304d161665cfc7c8c0fb1a081015a36091e5dc602481e2bc8099b3928f28176",
+    "arnofuture": "adbee8b7ca1cf2571647e321ddacc8d238e5baea36bbd3902cf45d61f4aa97bf"
   },
   "relays": {
     "a50d5ddaea0e56c0cc8862614b83fb5a43cfca8f7e895dc82942cd52bb4d9088": [
       "wss://relay.nostrmap.net",
       "wss://relay.decentralia.fr",
+      "wss://relay.noeudlibre.fr",
       "wss://nos.lol",
       "wss://relay.damus.io",
       "wss://relay.primal.net"
     ],
     "1e9776a23fb84504bacc29a02c55457f836d6875ba1e4a905d420402716ab484": [
-      "wss://relay.decentralia.fr",
       "wss://relay.nostrmap.net",
-      "wss://relay.damus.io"
+      "wss://relay.decentralia.fr",
+      "wss://relay.noeudlibre.fr",
+      "wss://nos.lol",
+      "wss://relay.damus.io",
+      "wss://relay.primal.net"
     ]
   }
 }
