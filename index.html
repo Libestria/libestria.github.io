@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+  LIBESTRIA V2 — ÉDITION AUTONOME
+  Tous les styles et scripts applicatifs sont conservés dans ce document.
+  Les images locales et les pages de guides restent des ressources externes :
+  conserver leur arborescence lors de la mise en ligne.
+  Objectif : préserver l’interface V1, documenter les choix techniques et
+  renforcer l’accessibilité et la robustesse sans bibliothèque supplémentaire.
+-->
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -30,7 +38,11 @@
    7. Boutons  8. Contact / Soutien  9. Menu latéral  10. QR  11. Pied  12. Responsive
    ========================================================================== */
 
-/* 1. Variables ------------------------------------------------------------ */
+/* 1. Variables ------------------------------------------------------------
+   Les jetons ci-dessous centralisent la palette et les effets graphiques.
+   Ils sont volontairement conservés à l’identique pour éviter tout écart
+   visuel entre la V1 et la V2.
+*/
 :root {
   --violet-light: #a855f7;
   --blue: #1a8fe8;
@@ -58,7 +70,11 @@
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-/* 2. Base ----------------------------------------------------------------- */
+/* 2. Base -----------------------------------------------------------------
+   L’interface utilise une mise en page verticale pleine hauteur : la fenêtre
+   principale occupe l’espace libre et son contenu possède son propre scroll.
+   Le min-height: 0 des enfants Flex est essentiel à ce comportement.
+*/
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; height: 100dvh; }
 html { background: #000; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -125,7 +141,10 @@ main {
 .icon-btn .i { width: 30px; height: 30px; }
 .icon-btn[aria-expanded="true"] { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); }
 
-/* 4. Fenêtre de rubrique -------------------------------------------------- */
+/* 4. Fenêtre de rubrique --------------------------------------------------
+   Le double background (padding-box / border-box) dessine une bordure dégradée
+   sans image supplémentaire. Le scroll reste limité à .win-content.
+*/
 .window {
   flex: 1 1 0; min-height: 0;
   display: flex; flex-direction: column; overflow: hidden;
@@ -230,20 +249,30 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   line-height: 1.4; text-decoration: none; white-space: nowrap;
   transition: background .2s, border-color .2s, color .2s;
 }
-/* États interactifs : le survol n'existe qu'avec une vraie souris (pas de « survol collé » au tactile),
-   l'anneau de focus n'apparaît qu'à la navigation clavier (html[data-input="key"], voir le script). */
+/* États interactifs : les effets de survol sont réservés aux pointeurs
+   compatibles. :focus-visible délègue au navigateur la détection du focus
+   pertinent, y compris pour les technologies d’assistance et sans JavaScript. */
 :is(a, button) { -webkit-tap-highlight-color: transparent; }
-:is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext, .win-content):focus { outline: none; }
-html[data-input="key"] :is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext, .win-content):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-html[data-input="key"] .win-content:focus-visible { outline-offset: -3px; }
+:is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext, .win-content):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.win-content:focus-visible { outline-offset: -3px; }
 @media (hover: hover) {
   .btn:hover:not([aria-disabled="true"]), .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
+  /* Boutons de fermeture : même retour visuel que les boutons d’action.
+     Le survol n’est appliqué qu’aux périphériques disposant d’un vrai hover. */
+  :is(.drawer-close, .qr-close):hover {
+    background: var(--btn-hover-bg);
+    border-color: var(--btn-hover-border);
+    color: #fff;
+  }
   .drawer-link:hover { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
   .ext:hover { text-decoration: underline; }
 }
-html[data-input="key"] :is(.btn:not([aria-disabled="true"]), .icon-btn):focus-visible { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
-html[data-input="key"] .drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
-html[data-input="key"] .ext:focus-visible { text-decoration: underline; }
+:is(.btn:not([aria-disabled="true"]), .icon-btn):focus-visible { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
+/* Les boutons QR gardent un contour de focus accessible, sans simuler un survol
+   ou un clic après la fermeture de la fenêtre (notamment via Escape). */
+.btn[data-qr]:focus-visible { background: var(--btn-bg); border-color: var(--btn-border); color: #e9e5f4; }
+.drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
+.ext:focus-visible { text-decoration: underline; }
 .btn:active:not([aria-disabled="true"]), .icon-btn:active { background: var(--btn-hover-bg); }
 .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
 .btn-copy { min-width: 144px; }
@@ -259,12 +288,16 @@ html[data-input="key"] .ext:focus-visible { text-decoration: underline; }
 .contact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%; }
 .contact-link { display: flex; align-items: center; justify-content: center; min-width: 0; border-radius: 6px; }
 .contact-link img { display: block; width: auto; height: 100px; max-width: 100%; object-fit: contain; }
-html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
+.contact-link:focus-visible { outline-offset: 4px; }
 .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; }
 .support-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-width: 0; }
 .support-item img { display: block; width: auto; height: 75px; max-width: 100%; object-fit: contain; }
 
-/* 9. Menu latéral ------------------------------------------------------------ */
+/* 9. Menu latéral ------------------------------------------------------------
+   Le panneau latéral et son voile sont indépendants du flux du document.
+   JavaScript synchronise leurs classes, aria-expanded et l’attribut inert.
+   Ne pas rendre le fond interactif tant que le panneau est ouvert.
+*/
 .overlay {
   position: fixed; inset: 0; z-index: 1000;
   background: rgb(0 0 0 / 68%); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
@@ -295,6 +328,7 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 .drawer-close {
   display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
   border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
+  transition: background .2s, border-color .2s;
 }
 .drawer-close .i { width: 18px; height: 18px; }
 .drawer-links { display: flex; flex-direction: column; gap: 3px; padding: 14px 0; }
@@ -305,18 +339,21 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 }
 .drawer-link .i { width: 21px; height: 21px; margin-inline: 1.5px; color: var(--icon); }
 .drawer-link.is-own .i { color: var(--violet-light); }
-.drawer-link[aria-current="page"] {
+.drawer-link[aria-current="location"] {
   background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%);
   border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: 6px;
   color: var(--cyan); font-weight: 700; font-size: calc(clamp(16px, 2.8vw, 18px) + 2px);
 }
-.drawer-link.is-accent, html[data-input="key"] .drawer-link.is-accent:focus-visible, .drawer-link.is-accent[aria-current="page"] { color: var(--violet-light); }
+.drawer-link.is-accent, .drawer-link.is-accent:focus-visible, .drawer-link.is-accent[aria-current="location"] { color: var(--violet-light); }
 .drawer-sep { margin: 5px 0 1px; border-top: 1px solid var(--nav-divider); }
 .drawer-sep--logo { display: flex; align-items: center; padding-top: 8px; }
 .drawer-sep--logo img { display: block; width: auto; max-width: 100%; height: 29px; object-fit: contain; }
 .drawer-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--nav-divider); font: 16px var(--mono); letter-spacing: 1px; color: #777188; text-align: right; }
 
-/* 10. Fenêtre QR ------------------------------------------------------------- */
+/* 10. Fenêtre QR -------------------------------------------------------------
+   Le composant HTML natif <dialog> gère le caractère modal et la touche Échap.
+   Le script remplit l’image et son libellé à partir des attributs data-qr.
+*/
 .qr-dialog {
   position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%); margin: 0;
   width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto;
@@ -331,6 +368,7 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
   position: absolute; top: 12px; right: 12px;
   display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
   border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
+  transition: background .2s, border-color .2s;
 }
 .qr-close .i { width: 18px; height: 18px; }
 
@@ -373,7 +411,12 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 @media (max-width: 380px) { .wordmark { font-size: clamp(1.15rem, 5vw, 1.4rem); } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; }
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
   .dot { animation: none; }
 }
 
@@ -423,10 +466,10 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
 <aside class="drawer" id="drawer" aria-label="Navigation Libestria" inert>
 <div class="drawer-head">
 <div class="drawer-brand"><img class="drawer-logo" src="IMG/IMG_Libestria.png" alt="" decoding="async"><span class="drawer-title">Libestria.fr</span></div>
-<button class="drawer-close" id="drawer-close" type="button" aria-label="Fermer le menu"><svg class="i i--bold" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+<button class="drawer-close" id="drawer-close" type="button" aria-label="Fermer le menu" title="Fermer"><svg class="i i--bold" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
 </div>
 <nav class="drawer-links" aria-label="Rubriques">
-<a class="drawer-link is-own" href="#accueil" aria-current="page"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-home"/></svg><span class="drawer-label">À propos de Libestria</span></a>
+<a class="drawer-link is-own" href="#accueil" aria-current="location"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-home"/></svg><span class="drawer-label">À propos de Libestria</span></a>
 <div class="drawer-sep drawer-sep--logo" aria-hidden="true"><img src="IMG/Logo_Nostr.png" alt="" decoding="async" loading="lazy"></div>
 <a class="drawer-link" href="#nostr-cest-quoi"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-help"/></svg><span class="drawer-label">Nostr, c’est quoi ?</span></a>
 <a class="drawer-link is-own" href="#nip05"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-at"/></svg><span class="drawer-label">NIP-05 @libestria.fr</span></a>
@@ -460,12 +503,12 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-  /* ---------- Modalité d'entrée : l'anneau de focus ne s'affiche qu'au clavier ---------- */
-  const root = document.documentElement;
-  addEventListener('keydown', () => { root.dataset.input = 'key'; }, true);
-  addEventListener('pointerdown', () => { root.dataset.input = 'pointer'; }, true);
-
-  /* ---------- Navigation par rubriques (liens #ancre, historique du navigateur) ---------- */
+  /**
+   * NAVIGATION INTERNE
+   * Les panneaux sont conservés dans le DOM : seuls leurs attributs hidden
+   changent. Les liens #ancre restent partageables et l’historique fonctionne
+   sans chargement supplémentaire. Le panneau d’accueil sert de repli.
+   */
   const panels = new Map($$('.panel').map(p => [p.id, p]));
   const links = $$('.drawer-link');
   const menuBtn = $('#menu-btn');
@@ -477,21 +520,27 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
   const baseTitle = document.title;
   const backdrop = [$('main'), $('.site-footer')];
 
+  /**
+   * Ouvre ou ferme le menu en synchronisant visuel, accessibilité et focus.
+   * @param {boolean} open - État souhaité du menu.
+   * @param {boolean} restoreFocus - Revenir au bouton déclencheur à la fermeture.
+   */
   function setMenu(open, restoreFocus = true) {
+    // Déplacer le focus AVANT de rendre le menu inerte à la fermeture.
+    if (!open && restoreFocus) menuBtn.focus();
     drawer.inert = !open;
     backdrop.forEach(el => { el.inert = open; });
     drawer.classList.toggle('is-open', open);
     overlay.classList.toggle('is-open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
-    if (open) ($('.drawer-link[aria-current="page"]') || $('#drawer-close')).focus();
-    else if (restoreFocus) menuBtn.focus();
+    if (open) ($('.drawer-link[aria-current="location"]') || $('#drawer-close')).focus();
   }
 
   function show(id) {
     const panel = panels.get(id) || panels.get('accueil');
     const link = links.find(l => l.hash === '#' + panel.id);
     panels.forEach(p => { p.hidden = p !== panel; });
-    links.forEach(l => (l === link ? l.setAttribute('aria-current', 'page') : l.removeAttribute('aria-current')));
+    links.forEach(l => (l === link ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current')));
     const label = $('.drawer-label', link).textContent.trim();
     winTitle.textContent = label;
     winIcon.replaceChildren($('svg', link).cloneNode(true));
@@ -525,8 +574,14 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
   addEventListener('hashchange', () => show(hashId()));
   show(hashId());
 
-  /* ---------- Copie dans le presse-papiers ---------- */
+  /**
+   * PRESSE-PAPIERS
+   * API moderne d’abord, puis repli document.execCommand pour les navigateurs
+   ou contextes ne permettant pas navigator.clipboard. Le résultat est annoncé
+   par la zone role=status et visible sur le bouton déclencheur.
+   */
   const live = $('#live');
+  const copyTimers = new WeakMap(); // Évite d’ajouter des propriétés privées aux éléments DOM.
 
   async function copyText(text) {
     try {
@@ -556,19 +611,35 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
     live.textContent = ok ? btn.dataset.done : 'Échec de la copie';
     btn.classList.toggle('is-copied', ok);
     btn.classList.toggle('is-failed', !ok);
-    clearTimeout(btn._timer);
-    btn._timer = setTimeout(() => {
+    clearTimeout(copyTimers.get(btn));
+    copyTimers.set(btn, setTimeout(() => {
       label.textContent = btn.dataset.label;
       btn.classList.remove('is-copied', 'is-failed');
       live.textContent = '';
-    }, 2000);
+    }, 2000));
   });
 
-  /* ---------- Fenêtre QR code ---------- */
+  /**
+   * FENÊTRE QR
+   * <dialog> assure le comportement modal natif. Le bouton qui a ouvert la
+   * fenêtre retrouve le focus à la fermeture, si toujours présent dans le DOM.
+   */
   const dialog = $('#qr');
   const qrImg = $('#qr-img');
   const qrTitle = $('#qr-title');
   let opener = null;
+  let openedByKeyboard = false;
+
+  // Mémoriser le mode d’activation : Escape ne doit pas laisser un bouton
+  // activé à la souris avec un état de focus visuellement persistant.
+  document.addEventListener('pointerdown', e => {
+    if (e.target.closest('[data-qr]')) openedByKeyboard = false;
+  }, true);
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-qr]')) {
+      openedByKeyboard = true;
+    }
+  }, true);
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-qr]');
@@ -586,7 +657,17 @@ html[data-input="key"] .contact-link:focus-visible { outline-offset: 4px; }
     const r = dialog.getBoundingClientRect();
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
   });
-  dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); opener = null; });
+  dialog.addEventListener('close', () => {
+    // La fermeture native par Escape déclenche également cet événement.
+    // Conserver le focus visible pour une activation clavier, mais ne pas
+    // laisser de surbrillance persistante après une activation au pointeur.
+    if (opener?.isConnected) {
+      if (openedByKeyboard) opener.focus({ preventScroll: true });
+      else opener.blur();
+    }
+    opener = null;
+    openedByKeyboard = false;
+  });
 })();
 
 </script>
