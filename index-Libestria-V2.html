@@ -261,6 +261,9 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .ext:hover { text-decoration: underline; }
 }
 :is(.btn:not([aria-disabled="true"]), .icon-btn):focus-visible { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
+/* Les boutons QR gardent un contour de focus accessible, sans simuler un survol
+   ou un clic après la fermeture de la fenêtre (notamment via Escape). */
+.btn[data-qr]:focus-visible { background: var(--btn-bg); border-color: var(--btn-border); color: #e9e5f4; }
 .drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
 .ext:focus-visible { text-decoration: underline; }
 .btn:active:not([aria-disabled="true"]), .icon-btn:active { background: var(--btn-hover-bg); }
@@ -528,7 +531,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     const panel = panels.get(id) || panels.get('accueil');
     const link = links.find(l => l.hash === '#' + panel.id);
     panels.forEach(p => { p.hidden = p !== panel; });
-    links.forEach(l => (l === link ? l.setAttribute('aria-current', 'page') : l.removeAttribute('aria-current')));
+    links.forEach(l => (l === link ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current')));
     const label = $('.drawer-label', link).textContent.trim();
     winTitle.textContent = label;
     winIcon.replaceChildren($('svg', link).cloneNode(true));
@@ -616,6 +619,18 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   const qrImg = $('#qr-img');
   const qrTitle = $('#qr-title');
   let opener = null;
+  let openedByKeyboard = false;
+
+  // Mémoriser le mode d’activation : Escape ne doit pas laisser un bouton
+  // activé à la souris avec un état de focus visuellement persistant.
+  document.addEventListener('pointerdown', e => {
+    if (e.target.closest('[data-qr]')) openedByKeyboard = false;
+  }, true);
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-qr]')) {
+      openedByKeyboard = true;
+    }
+  }, true);
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-qr]');
@@ -633,7 +648,17 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     const r = dialog.getBoundingClientRect();
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
   });
-  dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); opener = null; });
+  dialog.addEventListener('close', () => {
+    // La fermeture native par Escape déclenche également cet événement.
+    // Conserver le focus visible pour une activation clavier, mais ne pas
+    // laisser de surbrillance persistante après une activation au pointeur.
+    if (opener?.isConnected) {
+      if (openedByKeyboard) opener.focus({ preventScroll: true });
+      else opener.blur();
+    }
+    opener = null;
+    openedByKeyboard = false;
+  });
 })();
 
 </script>
