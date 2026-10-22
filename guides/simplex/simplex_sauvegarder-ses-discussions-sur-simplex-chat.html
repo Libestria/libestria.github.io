@@ -99,9 +99,13 @@ main>section{border:solid transparent;border-width:3px 1px 0 0;border-radius:12p
  .libestria-wordmark{color:#fff!important;-webkit-text-fill-color:#fff!important;filter:none}
 }
 
+/* Date de dernière mise à jour. */
+.hero .updated{display:flex;align-items:center;gap:8px;margin:16px 0 0;font:.78rem/1.5 'Share Tech Mono',monospace;letter-spacing:.04em;color:var(--muted)}
+.hero .updated::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--grad-card);flex:none}
+@media print{.hero .updated{color:#fff!important}}
 </style>
 </link></head>
-<body><div class="wrap"><header class="hero"><div class="libestria-brand"><img alt="Logo Libestria" height="54" src="https://libestria.fr/IMG/IMG_Libestria.png" width="54"/><span class="libestria-wordmark">Libestria.fr</span></div><img alt="Logo SimpleX Chat" class="simplex-logo" decoding="async" height="40" loading="eager" src="https://libestria.fr/IMG/Logo_SimpleX.png"/><h1>Sauvegarder ses discussions sur SimpleX Chat</h1><p>Un guide clair pour exporter, protéger et restaurer tes conversations.</p><div class="platforms"><span class="platform-pill">Android</span><span class="platform-pill">iOS</span></div></header>
+<body><div class="wrap"><header class="hero"><div class="libestria-brand"><img alt="Logo Libestria" height="54" src="https://libestria.fr/IMG/IMG_Libestria.png" width="54"/><span class="libestria-wordmark">Libestria.fr</span></div><img alt="Logo SimpleX Chat" class="simplex-logo" decoding="async" height="40" loading="eager" src="https://libestria.fr/IMG/Logo_SimpleX.png"/><h1>Sauvegarder ses discussions sur SimpleX Chat</h1><p>Un guide clair pour exporter, protéger et restaurer tes conversations.</p><div class="platforms"><span class="platform-pill">Android</span><span class="platform-pill">iOS</span></div><p class="updated">Dernière mise à jour : <time datetime="2026-10-23">23/10/2026</time></p></header>
 <div class="toolbar"><button aria-label="Imprimer ou enregistrer le guide en PDF" onclick="window.print()" type="button">Imprimer / Enregistrer en PDF</button></div>
 <nav aria-labelledby="toc-title" class="toc"><h2 id="toc-title">Sommaire</h2><ul class="toc-list"><li><a href="#section-1">Introduction</a></li><li><a href="#section-2">1. Préparer la sauvegarde</a></li><li><a href="#section-3">2. Exporter et protéger la base</a></li><li><a href="#section-4">3. Restaurer la base sur un autre appareil</a></li><li><a href="#section-5">Conclusion</a></li></ul></nav><main>
 <section aria-labelledby="section-1"><h2 id="section-1">Introduction</h2><p>SimpleX Chat conserve tes profils et tes discussions dans une base de données locale chiffrée. Exporte-la régulièrement pour pouvoir la récupérer après une panne, une réinstallation ou un changement d’appareil.</p></section>
