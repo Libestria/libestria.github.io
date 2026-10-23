@@ -12,7 +12,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
-<title>Libestria.fr — Nostr, SimpleX et liberté numérique</title>
+<!-- build: focus-fix-3 --><title>Libestria.fr — Nostr, SimpleX et liberté numérique</title>
 <meta name="description" content="Libestria : tutoriels et ressources francophones sur Nostr et SimpleX, relais et serveurs recommandés, communautés et identité NIP-05 personnalisée.">
 <meta name="theme-color" content="#000000">
 <link rel="canonical" href="https://libestria.fr/">
@@ -254,7 +254,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
    pertinent, y compris pour les technologies d’assistance et sans JavaScript. */
 :is(a, button) { -webkit-tap-highlight-color: transparent; }
 :is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext, .win-content):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.win-content:focus-visible { outline-offset: -3px; }
+.win-content, .win-content:focus, .win-content:focus-visible { outline: none !important; }
 @media (hover: hover) {
   .btn:hover:not([aria-disabled="true"]), .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
   /* Boutons de fermeture : même retour visuel que les boutons d’action.
@@ -364,6 +364,8 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
   color: #fff; text-align: center; box-shadow: 0 16px 60px #0009;
 }
+.qr-dialog:focus, .qr-dialog:focus-visible { outline: none; }
+.qr-dialog:not(.kbd) .qr-close, .qr-dialog:not(.kbd) .qr-close:focus, .qr-dialog:not(.kbd) .qr-close:focus-visible { outline: none !important; }
 .qr-dialog::backdrop { background: rgb(0 0 0 / 76%); }
 .qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: 8px; background: #fff; object-fit: contain; }
 .qr-dialog h2 { margin-top: 12px; font-size: 1.15rem; font-weight: 600; color: #fff; }
@@ -494,7 +496,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <div class="drawer-foot">Nostr &amp; SimpleX</div>
 </aside>
 
-<dialog class="qr-dialog" id="qr" aria-labelledby="qr-title">
+<dialog class="qr-dialog" id="qr" aria-labelledby="qr-title" tabindex="-1" autofocus>
 <button class="qr-close" type="button" aria-label="Fermer la fenêtre QR code" title="Fermer"><svg class="i i--bold" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
 <img id="qr-img" alt="" width="250" height="250">
 <h2 id="qr-title"></h2>
@@ -652,7 +654,12 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     qrImg.src = btn.dataset.qr;
     qrImg.alt = `QR code : ${btn.dataset.qrName}`;
     qrTitle.textContent = btn.dataset.qrName;
+    dialog.classList.toggle('kbd', openedByKeyboard);
     dialog.showModal();
+    // Le focus initial va à la fenêtre elle-même (et non au bouton X) : plus de
+    // cadre de focus parasite à l’ouverture. Tab atteint ensuite le bouton X.
+    dialog.focus({ preventScroll: true });
+    if (!openedByKeyboard && document.activeElement !== dialog) document.activeElement.blur?.();
   });
   $('.qr-close').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', e => {
@@ -666,7 +673,12 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     // laisser de surbrillance persistante après une activation au pointeur.
     if (opener?.isConnected) {
       if (openedByKeyboard) opener.focus({ preventScroll: true });
-      else opener.blur();
+      else {
+        opener.blur();
+        // Sur iOS, le focus retombait sur la zone de contenu (cadre violet) :
+        // on le place sur le titre de la rubrique, qui n’a pas de contour.
+        winTitle.focus({ preventScroll: true });
+      }
     }
     opener = null;
     openedByKeyboard = false;
