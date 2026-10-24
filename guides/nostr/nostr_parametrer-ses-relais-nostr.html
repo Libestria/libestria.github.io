@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
+<meta content="Configure tes relais Nostr en lecture, écriture, recherche et messages privés, et comprends les listes publiques NIP-65 et NIP-17." name="description"/>
+<title>Paramétrer ses relais Nostr — Guide Libestria</title>
+<meta content="article" property="og:type"/>
+<meta content="fr_FR" property="og:locale"/>
+<meta content="Libestria" property="og:site_name"/>
+<meta content="https://libestria.fr/guides/nostr/nostr_parametrer-ses-relais-nostr.html" property="og:url"/>
+<meta content="Paramétrer ses relais Nostr — Guide Libestria" property="og:title"/>
+<meta content="Configure tes relais Nostr en lecture, écriture, recherche et messages privés, et comprends les listes publiques NIP-65 et NIP-17." property="og:description"/>
+<meta content="https://libestria.fr/guides/nostr/og-nostr.png" property="og:image"/>
+<meta content="Logo Nostr — Guide Libestria" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Paramétrer ses relais Nostr — Guide Libestria" name="twitter:title"/>
+<meta content="Configure tes relais Nostr en lecture, écriture, recherche et messages privés, et comprends les listes publiques NIP-65 et NIP-17." name="twitter:description"/>
+<meta content="https://libestria.fr/guides/nostr/og-nostr.png" name="twitter:image"/>
+<style>
+:root{color-scheme:dark;--ink:#f2f0f7;--muted:#bdb9cf;--accent:#1a8fe8;--bg:#000;--border:rgba(255,255,255,.10);--hero-bg:radial-gradient(ellipse at 15% 10%,rgba(139,63,217,.36),transparent 54%),radial-gradient(ellipse at 90% 85%,rgba(26,143,232,.26),transparent 57%),linear-gradient(125deg,#171027 0%,#101a32 55%,#090912 100%)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 'Exo 2',system-ui,sans-serif}
+.wrap{max-width:820px;margin:42px auto;padding:0 22px}
+.hero{position:relative;overflow:hidden;border-radius:18px;padding:42px;color:#fff}
+.hero::before,main>section::before{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#8b3fd9,#1a8fe8,transparent);opacity:.72}
+.hero .nostr-logo{display:block;width:auto;height:40px;max-width:100%;object-fit:contain;margin:0 0 18px}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.17;margin:14px 0;color:#fff}
+.hero p{color:#bdb9cf}
+.hero .platforms{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.hero .platform-pill{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;border:1px solid;color:#fff;font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:.04em}
+main{display:grid;gap:18px;margin-top:22px}
+main>section{position:relative;overflow:hidden;padding:30px 38px;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+h2{font:700 1.4rem/1.3 'Share Tech Mono',monospace;letter-spacing:.045em;color:#1a8fe8;margin:0 0 16px;text-shadow:0 0 6px rgba(26,143,232,.1)}
+p{margin:0 0 14px}li{margin:8px 0}ol,ul{padding-left:24px}
+.note,.warning{background:rgba(139,63,217,.13);border-left:4px solid #a855f7;color:#f2f0f7;padding:16px 18px;border-radius:7px;margin:18px 0}
+table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border-bottom:1px solid var(--border);text-align:left;padding:12px}th{background:#151426;color:#f2f0f7}
+a{color:#fff}a:hover{color:var(--accent)}a:focus-visible,button:focus-visible{outline:2px solid #a855f7;outline-offset:3px}
+footer{text-align:center;color:#fff;font: .96rem/1.7 'Share Tech Mono',monospace;padding:22px}
+.toolbar{text-align:right;margin:12px 0}.toolbar button{padding:7px 12px;color:#fff;cursor:pointer;font: .78rem/1.65 'Share Tech Mono',monospace;transition:background .2s,border-color .2s,color .2s}
+.toolbar button:hover,.toolbar button:focus-visible{color:#fff}
+@media(hover:hover){main>section:hover{transform:translateY(-2px);box-shadow:0 22px 58px rgba(0,0,0,.42),0 0 28px rgba(139,63,217,.08)}}
+@media(prefers-reduced-motion:reduce){main>section,.toolbar button{transition:none}main>section:hover{transform:none}}
+@media(max-width:600px){.wrap{margin:15px auto;padding:0 12px}.hero{padding:28px 24px}main{gap:14px}main>section{padding:28px 18px}table{font-size:.94rem}}
+@media print{
+ :root{color-scheme:light;--ink:#1b2b44;--muted:#5b6b80;--border:#dce6f2}
+ body{background:#fff;color:#1b2b44}
+ .wrap{max-width:none;margin:0;padding:0}
+ .hero{background:var(--hero-bg)!important;color:#fff!important;border-radius:12px;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .hero h1{color:#fff!important}.hero p{color:#fff!important}.hero .platform-pill{color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .toolbar{display:none!important}
+ main{display:block;margin-top:12px}
+ main>section{break-inside:auto;background:#fff!important;color:#1b2b44!important;box-shadow:none!important;border:1px solid #dce6f2!important;border-radius:10px;margin:0 0 14px;padding:18px 22px}.toc{margin:0 0 14px;padding:18px 22px;background:transparent!important;border:0!important;box-shadow:none!important}
+ main>section::before{display:none}
+ h2{color:#245fa5!important;break-after:avoid;page-break-after:avoid}
+ .note,.warning{background:#f3ecfc!important;color:#1b2b44!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .note strong,.warning strong{color:#1b2b44!important}
+ th{background:#eaf3ff!important;color:#1b2b44!important}td,th{border-color:#dce6f2}
+ a{color:#245fa5!important}footer{color:#1b2b44!important}
+}
+
+
+
+/* Sommaire sur une colonne, sans cadre. */
+.toc{margin:22px 0 0;padding:30px 38px;background:transparent;border:0;box-shadow:none;border-radius:0}
+@media(max-width:600px){.toc{padding:28px 18px}}
+.toc-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;list-style:none;padding:0;margin:0}
+.toc-list li{margin:0;min-width:0}
+.toc-list a{display:block;padding:5px 0;color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:1rem;line-height:1.7}
+.toc-list a:hover,.toc-list a:focus-visible{color:var(--accent)}
+@media(max-width:650px){.toc-list{row-gap:5px}}
+@media print{.hero{break-inside:avoid;page-break-inside:avoid}.toc-list a{color:#245fa5!important}li,tr{break-inside:avoid}thead{display:table-header-group}}
+
+/* Identité visuelle Libestria, harmonisée avec le guide Nostr. */
+:root{
+ --btn-bg:#15131e;--btn-border:#3c3453;--btn-hover-bg:#211b30;--btn-hover-border:#8b63d8;
+ --grad-title:linear-gradient(105deg,#d9a4ff 0%,#b45cff 25%,#f26adf 52%,#8e7bff 75%,#39c8ff 100%);
+ --grad-frame:linear-gradient(135deg,#b45cff 0%,#f26adf 33%,#8e7bff 62%,#39c8ff 100%);
+ --grad-card:linear-gradient(135deg,#35c7ff 0%,#8b5cf6 45%,#e65ab8 100%);
+ --glow-title:drop-shadow(0 0 5px rgb(180 92 255 / 32%)) drop-shadow(0 0 15px rgb(242 106 223 / 17%)) drop-shadow(0 0 23px rgb(57 200 255 / 10%));
+ --shadow-frame:0 24px 70px rgb(0 0 0 / 55%),0 0 22px rgb(139 63 217 / 12%),0 0 12px rgb(57 200 255 / 5%);
+ --mono:"Share Tech Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+.hero{background:linear-gradient(90deg,#302044 0%,#281d40 21%,#20264a 42%,#10121d 75%,#000 100%) padding-box,var(--grad-frame) border-box;border:solid transparent;border-width:1px 2px 2px 4px;box-shadow:var(--shadow-frame)}
+.hero h1{font-family:var(--mono);font-weight:400;letter-spacing:.015em}
+/* Cadres des cartes de contenu : style Libestria. */
+main>section{border:solid transparent;border-width:3px 1px 0 0;border-radius:12px;background:linear-gradient(#000,#000) padding-box,var(--grad-card) border-box;box-shadow:inset 0 1px 0 rgb(255 255 255 / 2.5%)}
+.toolbar button{background:var(--btn-bg);border:1px solid var(--btn-border);border-radius:13px;letter-spacing:.035em;text-transform:none;font-size:.85rem}
+.toolbar button:hover,.toolbar button:focus-visible{background:var(--btn-hover-bg);border-color:var(--btn-hover-border)}
+.hero .platform-pill{background:var(--btn-bg);border-color:var(--btn-border)}
+.libestria-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.libestria-brand img{width:54px;height:auto;object-fit:contain}
+.libestria-wordmark{font:400 clamp(1.4rem,3.7vw,2.15rem)/1.15 var(--mono);color:transparent;background:var(--grad-title);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:var(--glow-title)}
+@media(max-width:600px){.libestria-brand img{width:43px}}
+@media print{
+ .hero{background:linear-gradient(90deg,#302044,#20264a,#000)!important;border:1px solid #7f6ca3!important}
+ main>section{background:#fff!important;border:1px solid #dce6f2!important}
+ .libestria-wordmark{color:#fff!important;-webkit-text-fill-color:#fff!important;filter:none}
+}
+
+
+/* Repères techniques repris du guide NIP-05 validé. */
+pre{max-width:100%;overflow-x:auto;white-space:pre;padding:18px 20px;border:1px solid rgba(168,85,247,.30);border-radius:9px;background:rgba(139,63,217,.12);font:.88rem/1.7 'Share Tech Mono',monospace;color:#f2f0f7}pre code{font:inherit;color:inherit;background:none!important;border:0!important;padding:0!important;white-space:inherit;overflow-wrap:normal}code{font-family:'Share Tech Mono',monospace;overflow-wrap:anywhere}:not(pre)>code{font-family:'Share Tech Mono',monospace;font-size:.88em;color:#d8c2ff;background:rgba(139,63,217,.14);border:1px solid rgba(168,85,247,.23);border-radius:5px;padding:.08em .32em;overflow-wrap:anywhere}
+@media print{pre{background:#f4f0fa!important;color:#1b2b44!important;border-color:#d9d2e9!important;white-space:pre-wrap;overflow-wrap:anywhere;break-inside:avoid}:not(pre)>code{color:#293b59!important;background:#f0eef8!important;border-color:#d9d2e9!important}}
+/* Date de dernière mise à jour. */
+.hero .updated{display:flex;align-items:center;gap:8px;margin:16px 0 0;font:.78rem/1.5 'Share Tech Mono',monospace;letter-spacing:.04em;color:var(--muted)}
+.hero .updated::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--grad-card);flex:none}
+@media print{.hero .updated{color:#fff!important}}
+</style>
+</head>
+<body><div class="wrap"><header class="hero"><div class="libestria-brand"><img alt="Logo Libestria" height="54" src="https://libestria.fr/IMG/IMG_Libestria.png" width="54"/><span class="libestria-wordmark">Libestria.fr</span></div><img alt="Logo Nostr" class="nostr-logo" decoding="async" height="40" loading="eager" src="https://libestria.fr/IMG/Logo_Nostr.png"/><h1>Paramétrer ses relais Nostr</h1><p>Apprends à choisir et organiser tes relais de lecture, d’écriture, de recherche et de messages privés.</p><div aria-label="Plateformes couvertes" class="platforms"><span class="platform-pill">Android</span><span class="platform-pill">iOS</span><span class="platform-pill">Windows</span><span class="platform-pill">macOS</span><span class="platform-pill">Linux</span></div><p class="updated">Dernière mise à jour : <time datetime="2026-10-24">24/10/2026</time></p></header>
+<div class="toolbar"><button aria-label="Imprimer ou enregistrer le guide en PDF" onclick="window.print()" type="button">Imprimer / Enregistrer en PDF</button></div>
+<nav aria-labelledby="toc-title" class="toc"><h2 id="toc-title">Sommaire</h2><ul class="toc-list"><li><a href="#intro">Introduction</a></li><li><a href="#usages">1. Comprendre les quatre usages</a></li><li><a href="#contenus">2. Régler les relais de lecture et d’écriture</a></li><li><a href="#recherche">3. Choisir les relais de recherche</a></li><li><a href="#dm">4. Configurer les relais de messages privés</a></li><li><a href="#securite">5. Choisir ses relais et protéger ses données</a></li><li><a href="#verification">6. Vérifier et dépanner</a></li><li><a href="#conclusion">Conclusion</a></li></ul></nav><main>
+<section aria-labelledby="intro"><h2 id="intro">Introduction</h2>
+<p>Sur Nostr, les relais sont des serveurs qui reçoivent, stockent et transmettent des informations. Une publication, une réaction ou une modification de profil est appelée un <strong>événement</strong>. Les messages privés chiffrés circulent aussi sous forme d’événements. Tu peux choisir tes relais sans dépendre d’un serveur unique.</p>
+<p>Ce guide présente quatre usages des relais Nostr et propose une sélection d’adresses pour démarrer sur une base solide, que tu pourras ensuite adapter à tes besoins.</p>
+<p>Les menus et les fonctionnalités peuvent varier selon les applications et leurs versions.</p>
+<p><strong>Prérequis :</strong> une identité Nostr et une application permettant de gérer les relais.</p></section>
+<section aria-labelledby="usages"><h2 id="usages">1. Comprendre les quatre usages</h2>
+<p>Une adresse de relais commence généralement par <code>wss://</code>. Un même serveur peut remplir plusieurs fonctions : les catégories ci-dessous décrivent surtout la façon dont ton application l’utilise. Par exemple, quand tu publies un message, elle l’envoie à tes relais d’écriture ; quand tu consultes ton fil, elle récupère des événements auprès de relais de lecture.</p>
+<table><thead><tr><th>Usage</th><th>Fonction</th></tr></thead><tbody>
+<tr><td><strong>Lecture (R)</strong></td><td>Récupérer des événements.</td></tr>
+<tr><td><strong>Écriture (W)</strong></td><td>Envoyer tes événements à un relais.</td></tr>
+<tr><td><strong>Lecture + écriture (R+W)</strong></td><td>Lire et publier sur le même relais.</td></tr>
+<tr><td><strong>Recherche</strong></td><td>Rechercher des événements, notamment avec NIP-50.</td></tr>
+<tr><td><strong>Messages privés (DM)</strong></td><td>Recevoir les événements chiffrés des conversations compatibles avec NIP-17.</td></tr>
+</tbody></table>
+<div class="note"><strong>À retenir :</strong> une connexion réussie ne garantit ni l’acceptation de tes publications ni la prise en charge de toutes les fonctions. Les relais peuvent imposer des règles d’accès, de stockage et de modération.</div></section>
+<section aria-labelledby="contenus"><h2 id="contenus">2. Régler les relais de lecture et d’écriture</h2>
+<p>Pour démarrer sur une base solide, ajoute ces six relais en <strong>lecture + écriture (R+W)</strong> :</p>
+<pre><code>wss://relay.nostrmap.net 🇫🇷
+wss://relay.decentralia.fr 🇫🇷
+wss://relay.noeudlibre.fr 🇫🇷
+wss://relay.primal.net
+wss://relay.damus.io
+wss://nos.lol</code></pre>
+<div class="note"><strong>Relais francophones :</strong> les relais francophones sont identifiés par 🇫🇷. Cela ne signifie pas que leurs contenus sont exclusivement en français. Copie uniquement les adresses, sans les drapeaux.</div>
+<ol><li>Ouvre les <strong>« Paramètres »</strong> de ton client, puis la rubrique <strong>« Relais »</strong> ou son équivalent.</li><li>Ajoute une adresse <code>wss://</code> et sélectionne <strong>« Lecture + écriture »</strong> si cette option existe.</li><li>Répète l’opération pour les autres relais et vérifie leur état de connexion.</li><li>Ajoute ou retire ensuite des relais selon tes besoins et les communautés que tu fréquentes.</li></ol>
+<div class="note"><strong>Nombre conseillé :</strong> pour une configuration locale étendue, commence avec <strong>5 à 10 relais en écriture</strong> et <strong>10 à 20 relais en lecture</strong>. Ce sont des repères pratiques, pas des obligations. Trop de connexions peuvent ralentir ton application.</div>
+<h3>Comprendre la liste publique NIP-65</h3>
+<p>Une <strong>NIP</strong> est une proposition de règle technique pour Nostr. <strong>NIP-65</strong> permet de publier une liste de relais, sous la forme d’un événement de type <code>10002</code>. Elle indique aux autres applications où retrouver tes publications (<strong>relais d’écriture</strong>) et où déposer les événements qui te mentionnent (<strong>relais de lecture</strong>). Elle peut être différente de la liste de relais utilisés localement par ton application.</p>
+<div class="note"><strong>Important :</strong> pour la liste publique NIP-65, la spécification recommande plutôt <strong>2 à 4 relais par usage</strong>. Distingue donc les relais supplémentaires consultés par ton application de ceux que tu annonces au réseau.</div>
+<h3>Un client pratique : YakiHonne</h3>
+<p><strong>YakiHonne</strong> est particulièrement pratique pour organiser les relais de lecture, d’écriture, de recherche et de DM. Il permet de gérer et de publier la liste publique NIP-65 depuis son interface.</p>
+</section>
+<section aria-labelledby="recherche"><h2 id="recherche">3. Choisir les relais de recherche</h2>
+<p>Les relais compatibles avec <strong>NIP-50</strong> peuvent répondre à des recherches textuelles. Leur <strong>index</strong> regroupe les événements qu’ils peuvent retrouver. Tous les relais ne proposent pas cette fonction, et leurs index ne couvrent pas nécessairement les mêmes publications.</p>
+<p>Pour démarrer, essaie ces quatre relais dans un client proposant une rubrique de recherche, comme YakiHonne :</p>
+<pre><code>wss://profiles.nostrver.se
+wss://relay.ditto.pub
+wss://nostr.wine
+wss://search.nos.today</code></pre>
+<ol><li>Dans les <strong>« Paramètres »</strong> de ton client, cherche la rubrique <strong>« Recherche »</strong> des relais, lorsqu’elle existe.</li><li>Ajoute quelques adresses, puis vérifie leur connexion.</li><li>Effectue la même recherche sur plusieurs relais pour comparer les résultats.</li></ol>
+<div class="note"><strong>Nombre conseillé :</strong> commence avec <strong>3 à 5 relais de recherche</strong>. C’est un repère pratique, pas une obligation définie par NIP-50.</div>
+<div class="warning"><strong>Attention :</strong> cette sélection constitue une base de départ, mais ne garantit ni la compatibilité NIP-50 de chaque relais ni sa disponibilité permanente. Un indicateur vert confirme au mieux l’état de connexion affiché par l’application.</div></section>
+<section aria-labelledby="dm"><h2 id="dm">4. Configurer les relais de messages privés</h2>
+<p>Avec <strong>NIP-17</strong>, les messages privés sont chiffrés puis placés dans une enveloppe technique avant leur transmission. Les relais DM reçoivent et conservent ces événements chiffrés sans pouvoir en lire le contenu. Ce sont les serveurs que tu annonces pour <strong>recevoir</strong> tes messages ; ils ne sont pas nécessairement spécialisés.</p>
+<p>Pour démarrer avec les DM, essaie ces cinq relais :</p>
+<pre><code>wss://nos.lol
+wss://relay.damus.io
+wss://auth.nostr1.com
+wss://relay.primal.net
+wss://nip17.com</code></pre>
+<ol><li>Dans ton client compatible avec NIP-17, ouvre les réglages de <strong>« Relais DM »</strong> ou leur équivalent.</li><li>Ajoute les relais choisis et vérifie leurs éventuelles conditions d’accès.</li><li>Enregistre la configuration et assure-toi que la liste publique de réception est publiée si ton client le prévoit.</li><li>Envoie un message de test depuis une autre identité utilisant NIP-17.</li></ol>
+<p>La liste de réception NIP-17 est publiée dans un événement de type <code>10050</code>. L’expéditeur consulte cette liste pour savoir où déposer les messages destinés à ton compte.</p>
+<div class="note"><strong>Nombre conseillé :</strong> commence avec <strong>3 à 5 relais DM</strong>. C’est un repère pratique ; NIP-17 recommande toutefois <strong>1 à 3 relais</strong> pour la liste publique de réception. En ajouter davantage ne garantit pas une meilleure livraison.</div>
+<div class="warning"><strong>Confidentialité :</strong> le chiffrement protège le contenu des messages, mais pas toutes les <strong>métadonnées</strong> (informations techniques comme l’adresse IP ou les horaires de connexion). NIP-17 n’est pas non plus interchangeable avec les anciens systèmes de DM : vérifie la compatibilité des deux clients.</div></section>
+<section aria-labelledby="securite"><h2 id="securite">5. Choisir ses relais et protéger ses données</h2>
+<p>Privilégie des relais disponibles, dont les règles de modération, de conservation et d’accès te conviennent. Certains sont publics, d’autres privés, payants ou réservés à une communauté. Un relais peut aussi demander une authentification.</p>
+<ul><li><strong>Diversifie les opérateurs :</strong> évite de dépendre d’un seul service.</li><li><strong>Vérifie les conditions d’accès :</strong> une connexion peut réussir alors que l’écriture est refusée.</li><li><strong>Limite les données exposées :</strong> publier sur plusieurs relais augmente les lieux où des copies peuvent subsister.</li><li><strong>Protège ta clé privée :</strong> ne communique jamais ta clé <code>nsec1…</code> à un relais.</li></ul>
+<div class="warning"><strong>Attention :</strong> supprimer une publication d’un relais ne garantit pas sa disparition des autres relais ou des copies déjà effectuées.</div></section>
+<section aria-labelledby="verification"><h2 id="verification">6. Vérifier et dépanner</h2>
+<ol><li><strong>Écriture :</strong> publie un événement de test et vérifie qu’un relais l’a accepté.</li><li><strong>Lecture :</strong> consulte tes publications et celles de comptes suivis depuis un autre client si possible.</li><li><strong>Recherche :</strong> compare les résultats d’une même requête entre plusieurs relais.</li><li><strong>DM :</strong> teste la réception depuis une autre identité compatible NIP-17.</li></ol>
+<table><thead><tr><th>Problème</th><th>À vérifier</th></tr></thead><tbody>
+<tr><td>Relais déconnecté</td><td>Adresse <code>wss://</code>, réseau et disponibilité du serveur.</td></tr>
+<tr><td>Publication absente</td><td>Autorisation d’écriture, acceptation de l’événement et annonce NIP-65.</td></tr>
+<tr><td>Fil incomplet</td><td>Relais réellement interrogés, auteurs suivis et filtres du client.</td></tr>
+<tr><td>Recherche vide</td><td>Compatibilité NIP-50 et couverture de l’index.</td></tr>
+<tr><td>DM non reçu</td><td>Compatibilité NIP-17, annonce <code>10050</code> et restrictions du relais.</td></tr>
+</tbody></table>
+</section>
+<section aria-labelledby="conclusion"><h2 id="conclusion">Conclusion</h2>
+<p>Une bonne configuration Nostr consiste à choisir des relais adaptés pour lire, publier, rechercher et recevoir des DM. Commence avec une sélection diversifiée, teste chaque fonction et ajuste-la progressivement.</p>
+<p>Garde surtout la distinction entre <strong>les connexions locales</strong> de ton application et <strong>les listes publiques</strong> annoncées avec NIP-65 et NIP-17.</p></section>
+</main><footer><a href="https://libestria.fr" rel="noopener noreferrer" target="_blank">Libestria.fr</a></footer></div></body></html>
