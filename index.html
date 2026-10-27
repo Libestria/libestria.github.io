@@ -2,8 +2,8 @@
 <!--
   LIBESTRIA V2 — ÉDITION AUTONOME
   Tous les styles et scripts applicatifs sont conservés dans ce document.
-  Les images locales et les pages de guides restent des ressources externes :
-  conserver leur arborescence lors de la mise en ligne.
+  Les images locales, les polices (fonts/) et les pages de guides restent des
+  ressources externes : conserver leur arborescence lors de la mise en ligne.
   Objectif : préserver l’interface V1, documenter les choix techniques et
   renforcer l’accessibilité et la robustesse sans bibliothèque supplémentaire.
 -->
@@ -11,7 +11,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Libestria.fr — Nostr, SimpleX et liberté numérique</title>
 <meta name="description" content="Libestria : tutoriels et ressources francophones sur Nostr et SimpleX, relais et serveurs recommandés, communautés et identité NIP-05 personnalisée.">
 <meta name="theme-color" content="#000000">
@@ -28,10 +28,15 @@
 <meta property="og:image:alt" content="Logo de Libestria">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="image" href="IMG/IMG_Libestria.png" fetchpriority="high">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Share+Tech+Mono&display=swap">
 <style>
+@font-face { font-family: "Exo 2"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url(fonts/exo-2-v26-latin-regular.woff2) format("woff2"); }
+@font-face { font-family: "Exo 2"; font-style: normal; font-weight: 600; font-display: swap;
+  src: url(fonts/exo-2-v26-latin-600.woff2) format("woff2"); }
+@font-face { font-family: "Exo 2"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url(fonts/exo-2-v26-latin-700.woff2) format("woff2"); }
+@font-face { font-family: "Share Tech Mono"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url(fonts/share-tech-mono-v16-latin-regular.woff2) format("woff2"); }
 /* ==========================================================================
    Libestria.fr : feuille de style unique
    1. Variables  2. Base  3. En-tête  4. Fenêtre  5. Contenu  6. Cartes
@@ -59,7 +64,6 @@
   --nav-text: #e3dfeb;
   --nav-hover-bg: #211b2d;
   --nav-hover-text: #bca0ff;
-  --nav-active-bg: #211a30;
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
   --grad-frame: linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%);
   --glow-title: drop-shadow(0 0 10px rgb(180 92 255 / 30%));
@@ -155,14 +159,14 @@ main {
   box-shadow: var(--shadow-frame);
 }
 .win-bar {
-  flex: none; display: flex; align-items: center; gap: 16px;
+  flex: none; display: flex; align-items: center; gap: 10px;
   min-height: 55px; padding: 12px 20px;
   border-bottom: 1px solid rgb(168 85 247 / 28%);
   background: linear-gradient(90deg, #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%);
 }
 .win-icon { display: inline-flex; flex: none; color: var(--cyan); transform: translateY(1px); filter: drop-shadow(0 0 5px rgb(57 200 255 / 28%)); }
 .win-icon .i { width: 25px; height: 25px; }
-.win-title { font: 400 clamp(1.3rem, 2.2vw, 1.55rem) / 1.15 var(--mono); letter-spacing: .035em; color: #fff; transform: translateY(2px); }
+.win-title { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
 .win-title:focus { outline: none; }
 .win-content {
   flex: 1 1 auto; min-height: 0;
@@ -300,8 +304,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .btn[data-qr]:focus-visible { background: var(--btn-bg); border-color: var(--btn-border); color: #e9e5f4; }
 .drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
 /* La rubrique active porte déjà son propre cadre cyan : pas de second anneau de focus (évite le double cadre à l’ouverture). */
-.drawer-link[aria-current="location"]:focus-visible { outline: none; background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%); color: var(--cyan); }
-.drawer-link.is-accent[aria-current="location"]:focus-visible { color: var(--violet-light); }
+.drawer-link[aria-current="location"]:focus-visible { outline: none; background: var(--card-bg); color: var(--cyan); }
 .ext:focus-visible { text-decoration: underline; }
 .btn:active:not([aria-disabled="true"]), .icon-btn:active { background: var(--btn-hover-bg); }
 .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
@@ -368,11 +371,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .drawer-link .i { width: 21px; height: 21px; margin-inline: 1.5px; color: var(--icon); }
 .drawer-link.is-own .i { color: var(--violet-light); }
 .drawer-link[aria-current="location"] {
-  background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%);
-  border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: var(--r-sm);
+  background: var(--card-bg);
+  border-left: 5px solid var(--cyan); border-radius: var(--r-sm);
   color: var(--cyan); font-weight: 700;
 }
-.drawer-link.is-accent, .drawer-link.is-accent:focus-visible, .drawer-link.is-accent[aria-current="location"] { color: var(--violet-light); }
 .drawer-sep { margin: 5px 0 1px; border-top: 1px solid var(--nav-divider); }
 .drawer-sep--logo { display: flex; align-items: center; padding-top: 8px; }
 .drawer-sep--logo img { display: block; width: auto; max-width: 100%; height: 29px; object-fit: contain; }
@@ -455,7 +457,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <noscript><style>
 /* Sans JavaScript : toutes les rubriques sont affichées à la suite. */
 .panel[hidden]{display:flex}
-.panel::before{content:attr(data-title);display:block;color:var(--cyan);font:400 1.3rem var(--mono);letter-spacing:.035em;padding-top:1rem}
+.panel::before{content:attr(data-title);display:block;color:var(--cyan);font:600 21px/1.4 var(--sans);padding-top:1rem}
 .panel + .panel{border-top:1px solid var(--nav-divider);margin-top:1.5rem}
 .actions,.win-bar,.drawer,.overlay{display:none}
 </style></noscript>
@@ -518,7 +520,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <a class="drawer-link" href="#projets"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span class="drawer-label">Autres initiatives FR</span></a>
 <div class="drawer-sep" aria-hidden="true"></div>
 <a class="drawer-link is-own" href="#contact"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg><span class="drawer-label">Contacter Libestria</span></a>
-<a class="drawer-link is-own is-accent" href="#soutien"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg><span class="drawer-label">Soutenir Libestria</span></a>
+<a class="drawer-link is-own" href="#soutien"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg><span class="drawer-label">Soutenir Libestria</span></a>
 </nav>
 <div class="drawer-foot">Nostr &amp; SimpleX</div>
 </aside>
