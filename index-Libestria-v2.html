@@ -166,7 +166,7 @@ main {
 }
 .win-icon { display: inline-flex; flex: none; color: var(--cyan); transform: translateY(1px); filter: drop-shadow(0 0 5px rgb(57 200 255 / 28%)); }
 .win-icon .i { width: 25px; height: 25px; }
-.win-title { font: 400 clamp(1.3rem, 2.2vw, 1.55rem) / 1.15 var(--mono); letter-spacing: .035em; color: #fff; transform: translateY(2px); }
+.win-title { font: 600 clamp(1.3rem, 2.2vw, 1.55rem) / 1.4 var(--sans); color: #fff; text-shadow: 0 0 8px rgb(26 143 232 / 30%); transform: translateY(2px); }
 .win-title:focus { outline: none; }
 .win-content {
   flex: 1 1 auto; min-height: 0;
@@ -457,7 +457,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <noscript><style>
 /* Sans JavaScript : toutes les rubriques sont affichées à la suite. */
 .panel[hidden]{display:flex}
-.panel::before{content:attr(data-title);display:block;color:var(--cyan);font:400 1.3rem var(--mono);letter-spacing:.035em;padding-top:1rem}
+.panel::before{content:attr(data-title);display:block;color:var(--cyan);font:600 21px/1.4 var(--sans);padding-top:1rem}
 .panel + .panel{border-top:1px solid var(--nav-divider);margin-top:1.5rem}
 .actions,.win-bar,.drawer,.overlay{display:none}
 </style></noscript>
