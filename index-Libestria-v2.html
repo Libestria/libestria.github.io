@@ -2,8 +2,8 @@
 <!--
   LIBESTRIA V2 — ÉDITION AUTONOME
   Tous les styles et scripts applicatifs sont conservés dans ce document.
-  Les images locales et les pages de guides restent des ressources externes :
-  conserver leur arborescence lors de la mise en ligne.
+  Les images locales, les polices (fonts/) et les pages de guides restent des
+  ressources externes : conserver leur arborescence lors de la mise en ligne.
   Objectif : préserver l’interface V1, documenter les choix techniques et
   renforcer l’accessibilité et la robustesse sans bibliothèque supplémentaire.
 -->
@@ -64,7 +64,6 @@
   --nav-text: #e3dfeb;
   --nav-hover-bg: #211b2d;
   --nav-hover-text: #bca0ff;
-  --nav-active-bg: #211a30;
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
   --grad-frame: linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%);
   --glow-title: drop-shadow(0 0 10px rgb(180 92 255 / 30%));
@@ -305,8 +304,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .btn[data-qr]:focus-visible { background: var(--btn-bg); border-color: var(--btn-border); color: #e9e5f4; }
 .drawer-link:focus-visible { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
 /* La rubrique active porte déjà son propre cadre cyan : pas de second anneau de focus (évite le double cadre à l’ouverture). */
-.drawer-link[aria-current="location"]:focus-visible { outline: none; background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%); color: var(--cyan); }
-.drawer-link.is-accent[aria-current="location"]:focus-visible { color: var(--violet-light); }
+.drawer-link[aria-current="location"]:focus-visible { outline: none; background: var(--card-bg); color: var(--cyan); }
 .ext:focus-visible { text-decoration: underline; }
 .btn:active:not([aria-disabled="true"]), .icon-btn:active { background: var(--btn-hover-bg); }
 .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
@@ -373,11 +371,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .drawer-link .i { width: 21px; height: 21px; margin-inline: 1.5px; color: var(--icon); }
 .drawer-link.is-own .i { color: var(--violet-light); }
 .drawer-link[aria-current="location"] {
-  background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%);
-  border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: var(--r-sm);
+  background: var(--card-bg);
+  border-left: 5px solid var(--cyan); border-radius: var(--r-sm);
   color: var(--cyan); font-weight: 700;
 }
-.drawer-link.is-accent, .drawer-link.is-accent:focus-visible, .drawer-link.is-accent[aria-current="location"] { color: var(--violet-light); }
 .drawer-sep { margin: 5px 0 1px; border-top: 1px solid var(--nav-divider); }
 .drawer-sep--logo { display: flex; align-items: center; padding-top: 8px; }
 .drawer-sep--logo img { display: block; width: auto; max-width: 100%; height: 29px; object-fit: contain; }
@@ -523,7 +520,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <a class="drawer-link" href="#projets"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span class="drawer-label">Autres initiatives FR</span></a>
 <div class="drawer-sep" aria-hidden="true"></div>
 <a class="drawer-link is-own" href="#contact"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg><span class="drawer-label">Contacter Libestria</span></a>
-<a class="drawer-link is-own is-accent" href="#soutien"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg><span class="drawer-label">Soutenir Libestria</span></a>
+<a class="drawer-link is-own" href="#soutien"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg><span class="drawer-label">Soutenir Libestria</span></a>
 </nav>
 <div class="drawer-foot">Nostr &amp; SimpleX</div>
 </aside>
