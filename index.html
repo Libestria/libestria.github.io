@@ -64,8 +64,10 @@
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
   --grad-frame: linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%);
   --grad-card: linear-gradient(135deg, #35c7ff 0%, #8b5cf6 45%, #e65ab8 100%);
-  --glow-title: drop-shadow(0 0 5px rgb(180 92 255 / 32%)) drop-shadow(0 0 15px rgb(242 106 223 / 17%)) drop-shadow(0 0 23px rgb(57 200 255 / 10%));
+  --glow-title: drop-shadow(0 0 10px rgb(180 92 255 / 30%));
   --shadow-frame: 0 24px 70px rgb(0 0 0 / 55%), 0 0 22px rgb(139 63 217 / 12%), 0 0 12px rgb(57 200 255 / 5%);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 13px; --r-xl: 18px;
+  --card-bg: #07050d;
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -124,6 +126,8 @@ main {
   flex: 0 1 auto; min-width: 0;
   font: 400 clamp(2rem, 4.3vw, 4.1rem) / 1.12 var(--mono);
   white-space: nowrap;
+}
+.grad-text, .wordmark, .drawer-title {
   color: transparent;
   background: var(--grad-title);
   -webkit-background-clip: text; background-clip: text;
@@ -134,7 +138,7 @@ main {
 .icon-btn {
   display: grid; place-items: center; flex: none;
   width: 48px; height: 48px; padding: 0;
-  border: 1px solid var(--btn-border); border-radius: 13px;
+  border: 1px solid var(--btn-border); border-radius: var(--r-lg);
   background: var(--btn-bg); color: #fff; text-decoration: none; line-height: 1;
   transition: background .2s, border-color .2s;
 }
@@ -148,7 +152,7 @@ main {
 .window {
   flex: 1 1 0; min-height: 0;
   display: flex; flex-direction: column; overflow: hidden;
-  border: solid transparent; border-width: 0 0 1px 4px; border-radius: 18px;
+  border: solid transparent; border-width: 0 0 1px 4px; border-radius: var(--r-xl);
   background: linear-gradient(#000000, #000000) padding-box, var(--grad-frame) border-box;
   box-shadow: var(--shadow-frame);
 }
@@ -169,6 +173,12 @@ main {
   scrollbar-width: thin; scrollbar-color: #7854b4 #10101a;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Barre de défilement WebKit (repli pour les navigateurs sans scrollbar-color) */
+.win-content::-webkit-scrollbar, .drawer::-webkit-scrollbar { width: 8px; }
+.win-content::-webkit-scrollbar-track, .drawer::-webkit-scrollbar-track { background: #10101a; }
+.win-content::-webkit-scrollbar-thumb, .drawer::-webkit-scrollbar-thumb { background: #7854b4; border-radius: 4px; }
+.win-content::-webkit-scrollbar-thumb:hover, .drawer::-webkit-scrollbar-thumb:hover { background: #8b63d8; }
 
 /* 5. Contenu des rubriques ----------------------------------------------- */
 .panel { display: flex; flex-direction: column; gap: 20px; width: 100%; padding: 34px clamp(22px, 3vw, 48px); }
@@ -198,9 +208,9 @@ main {
 .card {
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   min-width: 0; padding: 24px 16px; text-align: center;
-  border: solid transparent; border-width: 1px 2px 0 0; border-radius: 12px;
-  background: linear-gradient(#000, #000) padding-box, var(--grad-card) border-box;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
+  border: solid transparent; border-width: 1px 2px 0 0; border-radius: var(--r-lg);
+  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, var(--grad-card) border-box;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
 }
 .guide-card {
   border-width: 1px 2px 1px 1px;
@@ -215,7 +225,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .card h3 {
   display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
   color: #fff; font-size: clamp(1.2rem, 1.7vw, 1.5rem); font-weight: 600; line-height: 1.3; letter-spacing: .03em;
-  text-shadow: 0 0 2px rgb(26 143 232 / 18%), 0 0 6px rgb(26 143 232 / 10%), 0 0 10px rgb(139 63 217 / 5%);
+  text-shadow: 0 0 8px rgb(26 143 232 / 30%);
 }
 .card h3 .i { width: 21px; height: 21px; color: var(--icon); }
 .card-logo { display: block; height: 100px; width: auto; max-width: 100%; margin-top: 10px; object-fit: contain; }
@@ -233,10 +243,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .ext .i { width: 1em; height: 1em; }
 .ext span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%);
-  animation: dot-flash 1.2s ease-in-out infinite; }
+  animation: dot-flash 2s ease-in-out infinite; }
 @keyframes dot-flash {
   0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%), 0 0 28px rgb(34 197 94 / 28%); }
-  50% { opacity: .18; transform: scale(.55); box-shadow: none; }
+  50% { opacity: .45; transform: scale(.7); box-shadow: 0 0 4px rgb(34 197 94 / 50%); }
 }
 
 /* 7. Boutons --------------------------------------------------------------- */
@@ -244,7 +254,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   max-width: 100%; padding: 9px 14px;
-  border: 1px solid var(--btn-border); border-radius: 13px;
+  border: 1px solid var(--btn-border); border-radius: var(--r-lg);
   background: var(--btn-bg); color: #e9e5f4;
   line-height: 1.4; text-decoration: none; white-space: nowrap;
   transition: background .2s, border-color .2s, color .2s;
@@ -285,11 +295,12 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .btn-copy.is-copied { color: var(--violet-light); background: rgb(168 85 247 / 13%); border-color: var(--violet-light); box-shadow: inset 0 0 0 1px var(--violet-light); }
 .btn-copy.is-failed { color: #fca5a5; border-color: #ef4444; }
 .btn-copy.is-copied .ic-copy { display: none; }
-.btn-copy.is-copied .ic-done { display: block; }
+.btn-copy.is-copied .ic-done { display: block; animation: fade-in .22s ease; }
+@keyframes fade-in { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: none; } }
 
 /* 8. Contact / Soutien ------------------------------------------------------ */
 .contact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%; }
-.contact-link { display: flex; align-items: center; justify-content: center; min-width: 0; border-radius: 6px; }
+.contact-link { display: flex; align-items: center; justify-content: center; min-width: 0; border-radius: var(--r-sm); }
 .contact-link img { display: block; width: auto; height: 100px; max-width: 100%; object-fit: contain; }
 .contact-link:focus-visible { outline-offset: 4px; }
 .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; }
@@ -312,7 +323,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   position: fixed; inset: 0 0 0 auto; z-index: 1001;
   width: min(86vw, 380px); padding: 25px 23px 22px;
   display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain;
-  border: solid transparent; border-width: 0 0 0 2px; border-radius: 18px 0 0 18px;
+  border: solid transparent; border-width: 0 0 0 2px; border-radius: var(--r-xl) 0 0 var(--r-xl);
   background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
   box-shadow: var(--shadow-frame);
   transform: translateX(105%); visibility: hidden;
@@ -324,19 +335,16 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .drawer-logo { display: block; flex: none; width: 48px; max-height: 48px; height: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgb(139 63 217 / 16%)); }
 .drawer-title {
   font: 400 clamp(1.15rem, 2.5vw, 1.65rem) / 1.1 var(--mono); letter-spacing: .035em; white-space: nowrap;
-  color: transparent; background: var(--grad-title);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  filter: var(--glow-title);
 }
 .drawer-close {
   display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
-  border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
+  border: 1px solid var(--btn-border); border-radius: var(--r-md); background: var(--btn-bg); color: #fff;
   transition: background .2s, border-color .2s;
 }
 .drawer-close .i { width: 18px; height: 18px; }
 .drawer-links { display: flex; flex-direction: column; gap: 3px; padding: 14px 0; }
 .drawer-link {
-  display: flex; align-items: center; gap: 13px; padding: 10px 12px; border-radius: 10px;
+  display: flex; align-items: center; gap: 13px; padding: 10px 12px; border-radius: var(--r-md);
   color: var(--nav-text); font-size: clamp(16px, 2.8vw, 18px); line-height: 1.45; text-decoration: none;
   transition: background .18s, color .18s;
 }
@@ -344,14 +352,14 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .drawer-link.is-own .i { color: var(--violet-light); }
 .drawer-link[aria-current="location"] {
   background: linear-gradient(to top, var(--nav-active-bg) 0%, #000 100%);
-  border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: 6px;
-  color: var(--cyan); font-weight: 700; font-size: calc(clamp(16px, 2.8vw, 18px) + 2px);
+  border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: var(--r-sm);
+  color: var(--cyan); font-weight: 700;
 }
 .drawer-link.is-accent, .drawer-link.is-accent:focus-visible, .drawer-link.is-accent[aria-current="location"] { color: var(--violet-light); }
 .drawer-sep { margin: 5px 0 1px; border-top: 1px solid var(--nav-divider); }
 .drawer-sep--logo { display: flex; align-items: center; padding-top: 8px; }
 .drawer-sep--logo img { display: block; width: auto; max-width: 100%; height: 29px; object-fit: contain; }
-.drawer-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--nav-divider); font: 16px var(--mono); letter-spacing: 1px; color: #777188; text-align: right; }
+.drawer-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--nav-divider); font: 16px var(--mono); letter-spacing: 1px; color: #8a849e; text-align: right; }
 
 /* 10. Fenêtre QR -------------------------------------------------------------
    Le composant HTML natif <dialog> gère le caractère modal et la touche Échap.
@@ -360,19 +368,19 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .qr-dialog {
   position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%); margin: 0;
   width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto;
-  padding: 24px; border: 2px solid transparent; border-radius: 18px;
+  padding: 24px; border: 2px solid transparent; border-radius: var(--r-xl);
   background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
   color: #fff; text-align: center; box-shadow: 0 16px 60px #0009;
 }
 .qr-dialog:focus, .qr-dialog:focus-visible { outline: none; }
 .qr-dialog:not(.kbd) .qr-close, .qr-dialog:not(.kbd) .qr-close:focus, .qr-dialog:not(.kbd) .qr-close:focus-visible { outline: none !important; }
 .qr-dialog::backdrop { background: rgb(0 0 0 / 76%); }
-.qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: 8px; background: #fff; object-fit: contain; }
+.qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: var(--r-md); background: #fff; object-fit: contain; }
 .qr-dialog h2 { margin-top: 12px; font-size: 1.15rem; font-weight: 600; color: #fff; }
 .qr-close {
   position: absolute; top: 12px; right: 12px;
   display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
-  border: 1px solid #393344; border-radius: 10px; background: #1b1924; color: #fff;
+  border: 1px solid var(--btn-border); border-radius: var(--r-md); background: var(--btn-bg); color: #fff;
   transition: background .2s, border-color .2s;
 }
 .qr-close .i { width: 18px; height: 18px; }
@@ -380,11 +388,11 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 /* 11. Pied de page ------------------------------------------------------------ */
 .site-footer {
   flex: none; width: 90%; max-width: 1600px; margin: 0 auto; padding: 8px 0 12px;
-  color: #fff; font: 400 clamp(.6rem, 1.9vw, .8rem) var(--mono); text-align: center; white-space: nowrap;
+  color: var(--muted); font: 400 clamp(.7rem, 1.9vw, .8rem) var(--mono); text-align: center; text-wrap: balance;
 }
 
 /* 12. Responsive ----------------------------------------------------------------- */
-@media (min-width: 900px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 700px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 1099px) { .panel { padding: 26px 20px; } }
 @media (max-width: 760px) {
   .contact-grid { gap: clamp(6px, 2vw, 14px); }
@@ -413,6 +421,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .drawer-title { font-size: 1.2rem; }
 }
 @media (max-width: 560px) { .win-bar { gap: 10px; } }
+@media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
 @media (max-width: 380px) { .wordmark { font-size: clamp(1.15rem, 5vw, 1.4rem); } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 @media (prefers-reduced-motion: reduce) {
