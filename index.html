@@ -45,7 +45,6 @@
 */
 :root {
   --violet-light: #a855f7;
-  --blue: #1a8fe8;
   --cyan: #39c8ff;
   --text: #f2f0f7;
   --text-2: #bdb9cf;
@@ -63,11 +62,10 @@
   --nav-active-bg: #211a30;
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
   --grad-frame: linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%);
-  --grad-card: linear-gradient(135deg, #35c7ff 0%, #8b5cf6 45%, #e65ab8 100%);
   --glow-title: drop-shadow(0 0 10px rgb(180 92 255 / 30%));
   --shadow-frame: 0 24px 70px rgb(0 0 0 / 55%), 0 0 22px rgb(139 63 217 / 12%), 0 0 12px rgb(57 200 255 / 5%);
   --r-sm: 6px; --r-md: 10px; --r-lg: 13px; --r-xl: 18px;
-  --card-bg: #07050d;
+  --card-bg: linear-gradient(180deg, #242424 0%, #000000 100%);
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -127,7 +125,7 @@ main {
   font: 400 clamp(2rem, 4.3vw, 4.1rem) / 1.12 var(--mono);
   white-space: nowrap;
 }
-.grad-text, .wordmark, .drawer-title {
+.wordmark, .drawer-title {
   color: transparent;
   background: var(--grad-title);
   -webkit-background-clip: text; background-clip: text;
@@ -199,8 +197,8 @@ main {
 .proto-logos { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 7vw, 64px); width: 100%; }
 .proto-logos img { display: block; width: auto; height: clamp(38px, 8vw, 54px); max-width: 42%; object-fit: contain; }
 
-.nostr-theme-title { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 21px; font-weight: 600; line-height: 1.4; }
-.nostr-theme-title .i { flex: none; width: 24px; height: 24px; color: var(--icon); }
+.nostr-theme-title { display: flex; align-items: flex-start; gap: 10px; color: #fff; font-size: 21px; font-weight: 600; line-height: 1.4; }
+.nostr-theme-title .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2); color: var(--cyan); }
 #ressources-nostr > section + section, #groupes > section + section { border-top: 1px solid var(--nav-divider); padding-top: 24px; }
 
 /* 6. Cartes ---------------------------------------------------------------- */
@@ -208,26 +206,45 @@ main {
 .card {
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   min-width: 0; padding: 24px 16px; text-align: center;
-  border: solid transparent; border-width: 1px 2px 0 0; border-radius: var(--r-lg);
-  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, var(--grad-card) border-box;
+  border: 0; border-radius: var(--r-lg);
+  background: var(--card-bg);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
+  translate: 0 0;
+  transition: translate .25s ease, box-shadow .25s ease;
 }
-.guide-card {
-  border-width: 1px 2px 1px 1px;
-  background: linear-gradient(135deg, #151020, #0b1320) padding-box, var(--grad-card) border-box;
-  color: inherit; text-decoration: none;
-  transition: background .2s, box-shadow .2s;
-}
-a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) {
-  a.guide-card:hover { background: linear-gradient(135deg, #211630, #101e2c) padding-box, var(--grad-card) border-box; box-shadow: 0 0 18px rgb(139 92 246 / 15%); }
+  .card:hover {
+    translate: 0 -3px;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 14px 30px rgb(0 0 0 / 45%);
+  }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card.reveal-ready {
+    opacity: 0;
+    transform: translateY(36px) scale(.90);
+    transition: opacity .85s cubic-bezier(.22, 1, .36, 1),
+                transform .85s cubic-bezier(.22, 1, .36, 1),
+                translate .25s ease, box-shadow .25s ease;
+    transition-delay: 0ms;
+  }
+  .card.reveal-ready.is-entering {
+    transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms, 0ms;
+  }
+  .card.reveal-ready.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.guide-card { color: inherit; text-decoration: none; }
+a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .card h3 {
-  display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+  display: flex; align-items: flex-start; justify-content: center; gap: 12px; width: 100%;
   color: #fff; font-size: clamp(1.2rem, 1.7vw, 1.5rem); font-weight: 600; line-height: 1.3; letter-spacing: .03em;
   text-shadow: 0 0 8px rgb(26 143 232 / 30%);
 }
-.card h3 .i { width: 21px; height: 21px; color: var(--icon); }
+.card h3 .i { width: 21px; height: 21px; margin-top: calc((1.3em - 21px) / 2); color: var(--cyan); }
 .card-logo { display: block; height: 100px; width: auto; max-width: 100%; margin-top: 10px; object-fit: contain; }
 .card-logo--lg { height: 150px; }
 .desc { width: 100%; color: var(--muted); line-height: 1.5; text-align: center; }
@@ -451,6 +468,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <h1 class="wordmark" translate="no">Libestria.fr</h1>
 <div class="actions">
 <a class="icon-btn" href="#accueil" aria-label="Accueil — À propos de Libestria" title="À propos de Libestria"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></a>
+<a class="icon-btn" href="#soutien" aria-label="Soutenir Libestria" title="Soutenir Libestria"><svg class="i" aria-hidden="true" focusable="false" style="color:var(--violet-light)"><use href="#i-heart"/></svg></a>
 <button class="icon-btn" id="menu-btn" type="button" aria-label="Naviguer sur Libestria" title="Naviguer sur Libestria" aria-expanded="false" aria-controls="drawer"><svg class="i i--bold" aria-hidden="true" focusable="false"><use href="#i-menu"/></svg></button>
 </div>
 </header>
@@ -550,6 +568,57 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     if (open) ($('.drawer-link[aria-current="location"]') || $('#drawer-close')).focus();
   }
 
+  // La fenêtre possède son propre scroll : l'observateur utilise .win-content
+  // comme racine, et est réinitialisé à chaque changement de rubrique.
+  const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  let cardObserver = null;
+  let activePanel = null;
+
+  function observeCards(panel) {
+    activePanel = panel;
+    cardObserver?.disconnect();
+    $$('.card.reveal-ready').forEach(card => {
+      card.classList.remove('reveal-ready', 'is-visible', 'is-entering');
+      card.style.removeProperty('--reveal-delay');
+    });
+    if (motionPreference.matches || !('IntersectionObserver' in window)) return;
+
+    const cards = $$('.card', panel);
+    cards.forEach(card => card.classList.add('reveal-ready'));
+    cardObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const card = entry.target;
+        if (!entry.isIntersecting) {
+          // La sortie ne doit jamais hériter du délai d'apparition.
+          card.classList.remove('is-entering', 'is-visible');
+          card.style.removeProperty('--reveal-delay');
+          return;
+        }
+        // Décalage stable selon la position dans la rangée, même lorsque
+        // les cartes sont signalées dans des lots d'observation distincts.
+        const rowCards = cards.filter(item => item.offsetTop === card.offsetTop);
+        const position = rowCards.indexOf(card);
+        card.style.setProperty('--reveal-delay', `${Math.max(0, position) * 80}ms`);
+        card.classList.add('is-entering', 'is-visible');
+      });
+    }, { root: scroller, threshold: 0.20 });
+    cards.forEach(card => cardObserver.observe(card));
+  }
+
+  // Une modification de préférence système prend effet sans recharger la page.
+  motionPreference.addEventListener('change', () => {
+    if (activePanel) observeCards(activePanel);
+  });
+
+  // Un lien atteint au clavier doit toujours être visible sans délai.
+  scroller.addEventListener('focusin', event => {
+    const card = event.target.closest('.card.reveal-ready');
+    if (!card) return;
+    card.classList.remove('is-entering');
+    card.style.removeProperty('--reveal-delay');
+    card.classList.add('is-visible');
+  });
+
   function show(id) {
     const panel = panels.get(id) || panels.get('accueil');
     const link = links.find(l => l.hash === '#' + panel.id);
@@ -560,6 +629,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     winIcon.replaceChildren($('svg', link).cloneNode(true));
     document.title = panel.id === 'accueil' ? baseTitle : `${label} — Libestria.fr`;
     scroller.scrollTop = 0;
+    observeCards(panel);
   }
 
   function hashId() {
