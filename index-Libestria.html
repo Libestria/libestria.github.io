@@ -388,7 +388,8 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 /* Battement discret de la rubrique Soutenir Libestria, uniquement inactive. */
 @media (prefers-reduced-motion: no-preference) {
   .drawer-link[href="#soutien"]:not([aria-current="location"]) .i,
-  .drawer-link[href="#soutien"]:not([aria-current="location"]) .drawer-label {
+  .drawer-link[href="#soutien"]:not([aria-current="location"]) .drawer-label,
+  .actions .icon-btn[href="#soutien"] .i {
     animation: support-heartbeat 5s ease-in-out infinite;
     transform-origin: center;
   }
