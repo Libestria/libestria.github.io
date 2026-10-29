@@ -232,7 +232,7 @@ main {
 @media (prefers-reduced-motion: no-preference) {
   .card.reveal-ready {
     opacity: 0;
-    transform: translateY(36px) scale(.90);
+    transform: translateY(36px);
     transition: opacity .85s cubic-bezier(.22, 1, .36, 1),
                 transform .85s cubic-bezier(.22, 1, .36, 1),
                 translate .25s ease, box-shadow .25s ease;
@@ -597,12 +597,20 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   // La fenêtre possède son propre scroll : l'observateur utilise .win-content
   // comme racine, et est réinitialisé à chaque changement de rubrique.
   const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  // Apparition : fondu + glissement. REVEAL_DISTANCE = px de la carte visibles au
+  // déclenchement, dans les deux sens de défilement. REVEAL_SLIDE doit être égal au
+  // translateY de .card.reveal-ready (CSS) : une carte masquée est décalée de ce montant,
+  // d'où la compensation dans les marges de l'observateur d'apparition.
+  const REVEAL_DISTANCE = 100;
+  const REVEAL_SLIDE = 36;
   let cardObserver = null;
+  let leaveObserver = null;
   let activePanel = null;
 
   function observeCards(panel) {
     activePanel = panel;
     cardObserver?.disconnect();
+    leaveObserver?.disconnect();
     $$('.card.reveal-ready').forEach(card => {
       card.classList.remove('reveal-ready', 'is-visible', 'is-entering');
       card.style.removeProperty('--reveal-delay');
@@ -611,15 +619,11 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 
     const cards = $$('.card', panel);
     cards.forEach(card => card.classList.add('reveal-ready'));
+    // Apparition : bande de REVEAL_DISTANCE px, quel que soit le sens de défilement.
     cardObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const card = entry.target;
-        if (!entry.isIntersecting) {
-          // La sortie ne doit jamais hériter du délai d'apparition.
-          card.classList.remove('is-entering', 'is-visible');
-          card.style.removeProperty('--reveal-delay');
-          return;
-        }
+        if (!entry.isIntersecting || card.classList.contains('is-visible')) return;
         // Décalage stable selon la position dans la rangée, même lorsque
         // les cartes sont signalées dans des lots d'observation distincts.
         const rowCards = cards.filter(item => item.offsetTop === card.offsetTop);
@@ -627,8 +631,22 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
         card.style.setProperty('--reveal-delay', `${Math.max(0, position) * 80}ms`);
         card.classList.add('is-entering', 'is-visible');
       });
-    }, { root: scroller, threshold: 0.20 });
-    cards.forEach(card => cardObserver.observe(card));
+    }, {
+      root: scroller,
+      threshold: 0,
+      rootMargin: `-${REVEAL_DISTANCE + REVEAL_SLIDE}px 0px -${REVEAL_DISTANCE - REVEAL_SLIDE}px 0px`
+    });
+    // Disparition : seulement quand la carte est entièrement sortie (évite tout clignotement).
+    // La sortie ne doit jamais hériter du délai d'apparition.
+    leaveObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) return;
+        const card = entry.target;
+        card.classList.remove('is-entering', 'is-visible');
+        card.style.removeProperty('--reveal-delay');
+      });
+    }, { root: scroller, threshold: 0 });
+    cards.forEach(card => { cardObserver.observe(card); leaveObserver.observe(card); });
   }
 
   // Une modification de préférence système prend effet sans recharger la page.
