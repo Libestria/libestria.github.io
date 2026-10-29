@@ -4,6 +4,9 @@
   document.addEventListener('click', e => { if (e.target.closest('[data-print]')) print(); });
 
   // Apparition des chapitres : même logique que les cartes de l'index.
+  // Distance fixe (px) : la carte apparaît quand ~64 px de sa partie haute sont visibles,
+  // quelle que soit sa hauteur. 36 px de décalage initial (translateY) sont inclus.
+  const REVEAL_OFFSET = 100;
   const cards = [...document.querySelectorAll('main > section.card')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let io = null;
@@ -14,7 +17,7 @@
     cards.forEach(c => c.classList.add('reveal-ready'));
     io = new IntersectionObserver(
       es => es.forEach(e => e.target.classList.toggle('is-visible', e.isIntersecting)),
-      { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+      { threshold: 0, rootMargin: `0px 0px -${REVEAL_OFFSET}px 0px` });
     cards.forEach(c => io.observe(c));
   }
   reduced.addEventListener('change', setup);
