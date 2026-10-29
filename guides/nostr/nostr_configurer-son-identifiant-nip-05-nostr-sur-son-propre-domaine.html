@@ -1,126 +1,38 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
-<link href="/favicon.png" rel="icon" type="image/png"/>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
-<meta content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json." name="description"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Configurer son identifiant NIP-05 Nostr sur son propre domaine — Guide Libestria</title>
-<meta property="og:type" content="article"/>
-<meta property="og:locale" content="fr_FR"/>
-<meta property="og:site_name" content="Libestria"/>
-<meta property="og:url" content="https://libestria.fr/guides/nostr/nostr_configurer-son-identifiant-nip-05-nostr-sur-son-propre-domaine.html"/>
-<meta property="og:title" content="Configurer son identifiant NIP-05 Nostr sur son propre domaine — Guide Libestria"/>
-<meta property="og:description" content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json."/>
-<meta property="og:image" content="https://libestria.fr/guides/nostr/og-nostr.png"/>
-<meta property="og:image:alt" content="Logo Nostr — Guide Libestria"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Configurer son identifiant NIP-05 Nostr sur son propre domaine — Guide Libestria"/>
-<meta name="twitter:description" content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json."/>
-<meta name="twitter:image" content="https://libestria.fr/guides/nostr/og-nostr.png"/>
-<style>
-:root{color-scheme:dark;--ink:#f2f0f7;--muted:#bdb9cf;--accent:#1a8fe8;--bg:#000;--border:rgba(255,255,255,.10);}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 'Exo 2',system-ui,sans-serif}
-.wrap{max-width:820px;margin:42px auto;padding:0 22px}
-.hero{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:18px;padding:42px;color:#fff;box-shadow:0 18px 50px rgba(0,0,0,.34)}
-.hero::before,main>section::before,.toc::before{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#8b3fd9,#1a8fe8,transparent);opacity:.72}
-.hero .nostr-logo{display:block;width:auto;height:40px;max-width:100%;object-fit:contain;margin:0 0 18px}
-h1{font-size:clamp(2rem,5vw,3rem);line-height:1.17;margin:14px 0;color:#fff}
-.hero p{color:#bdb9cf}
-.hero .platforms{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.hero .platform-pill{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;background:rgba(26,143,232,.19);border:1px solid rgba(26,143,232,.55);color:#fff;font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:.04em}
-main{display:grid;gap:18px;margin-top:22px}
-main>section,.toc{position:relative;overflow:hidden;padding:30px 38px;background:radial-gradient(circle at top,rgba(139,63,217,.08),transparent 44%),linear-gradient(180deg,#0d0d18,#090912);border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.025);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
-h2{font:700 1.4rem/1.3 'Share Tech Mono',monospace;letter-spacing:.045em;color:#1a8fe8;margin:0 0 16px;text-shadow:0 0 6px rgba(26,143,232,.1)}
-p{margin:0 0 14px}li{margin:8px 0}ol,ul{padding-left:24px}
-.note,.warning{background:rgba(139,63,217,.13);border-left:4px solid #a855f7;color:#f2f0f7;padding:16px 18px;border-radius:7px;margin:18px 0}
-table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border-bottom:1px solid var(--border);text-align:left;padding:12px}th{background:#151426;color:#f2f0f7}
-a{color:#fff}a:hover{color:var(--accent)}a:focus-visible,button:focus-visible{outline:2px solid #a855f7;outline-offset:3px}
-footer{text-align:center;color:#fff;font: .96rem/1.7 'Share Tech Mono',monospace;padding:22px}
-.toolbar{text-align:right;margin:12px 0}.toolbar button{padding:7px 12px;color:#fff;background:rgba(26,143,232,.10);border:1px solid rgba(26,143,232,.28);border-radius:999px;cursor:pointer;font: .78rem/1.65 'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,border-color .2s,color .2s}
-.toolbar button:hover,.toolbar button:focus-visible{background:rgba(26,143,232,.18);border-color:#1a8fe8;color:#fff}
-@media(hover:hover){main>section:hover,.toc:hover{transform:translateY(-2px);border-color:rgba(168,85,247,.22);box-shadow:0 22px 58px rgba(0,0,0,.42),0 0 28px rgba(139,63,217,.08)}}
-@media(prefers-reduced-motion:reduce){main>section,.toc,.toolbar button{transition:none}main>section:hover,.toc:hover{transform:none}}
-@media(max-width:600px){.wrap{margin:15px auto;padding:0 12px}.hero{padding:28px 24px}main{gap:14px}main>section,.toc{padding:28px 18px}table{font-size:.94rem}}
-@media print{
- :root{color-scheme:light;--ink:#1b2b44;--muted:#5b6b80;--border:#dce6f2}
- body{background:#fff;color:#1b2b44}
- .wrap{max-width:none;margin:0;padding:0}
- .hero{background:linear-gradient(90deg,#302044,#20264a,#000)!important;color:#fff!important;border-radius:12px;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
- .hero h1{color:#fff!important}.hero p{color:#fff!important}.hero .platform-pill{color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
- .toolbar{display:none!important}
- main{display:block;margin-top:12px}
- main>section,.toc{break-inside:auto;background:#fff!important;color:#1b2b44!important;box-shadow:none!important;border:1px solid #dce6f2!important;border-radius:10px;margin:0 0 14px;padding:18px 22px;}
- main>section::before,.toc::before{display:none}
- h2{color:#245fa5!important;break-after:avoid;page-break-after:avoid}
- .note,.warning{background:#f3ecfc!important;color:#1b2b44!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
- .note strong,.warning strong{color:#1b2b44!important}
- th{background:#eaf3ff!important;color:#1b2b44!important}td,th{border-color:#dce6f2}
- a{color:#245fa5!important}footer{color:#1b2b44!important}
-}
-
-
-
-/* Sommaire : les styles de carte et de titre sont partagés avec les sections. */
-.toc{margin:22px 0 0}
-.toc-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;list-style:none;padding:0;margin:0}
-.toc-list li{margin:0;min-width:0}
-.toc-list a{display:block;padding:5px 0;color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:1rem;line-height:1.7}
-.toc-list a:hover,.toc-list a:focus-visible{color:var(--accent)}
-@media(max-width:650px){.toc-list{row-gap:5px}}
-@media print{.hero{break-inside:avoid;page-break-inside:avoid}.toc-list a{color:#245fa5!important}li,tr{break-inside:avoid}thead{display:table-header-group}}
-
-/* Blocs de code propres au guide NIP-05. */
-pre{max-width:100%;overflow-x:auto;white-space:pre;padding:18px 20px;border:1px solid rgba(168,85,247,.30);border-radius:9px;background:rgba(139,63,217,.12);font: .88rem/1.7 'Share Tech Mono',monospace;color:#f2f0f7}pre code{font:inherit;color:inherit;background:none!important;border:0!important;padding:0!important;white-space:inherit;overflow-wrap:normal}code{font-family:'Share Tech Mono',monospace;overflow-wrap:anywhere}@media print{pre{background:#f4f0fa!important;color:#1b2b44!important;border-color:#d9d2e9!important;white-space:pre-wrap;overflow-wrap:anywhere;break-inside:avoid}}
-
-/* Repères techniques. */
-:not(pre)>code{font-family:'Share Tech Mono',monospace;font-size:.88em;color:#d8c2ff;background:rgba(139,63,217,.14);border:1px solid rgba(168,85,247,.23);border-radius:5px;padding:.08em .32em;overflow-wrap:anywhere}
-@media print{:not(pre)>code{color:#293b59!important;background:#f0eef8!important;border-color:#d9d2e9!important}}
-
-/* Identité Libestria : jetons employés par ce guide. */
-:root{
- --btn-bg:#15131e;--btn-border:#3c3453;--btn-hover-bg:#211b30;--btn-hover-border:#8b63d8;
- --grad-title:linear-gradient(105deg,#d9a4ff 0%,#b45cff 25%,#f26adf 52%,#8e7bff 75%,#39c8ff 100%);
- --grad-frame:linear-gradient(135deg,#b45cff 0%,#f26adf 33%,#8e7bff 62%,#39c8ff 100%);
- --grad-card:linear-gradient(135deg,#35c7ff 0%,#8b5cf6 45%,#e65ab8 100%);
- --glow-title:drop-shadow(0 0 5px rgb(180 92 255 / 32%)) drop-shadow(0 0 15px rgb(242 106 223 / 17%)) drop-shadow(0 0 23px rgb(57 200 255 / 10%));
- --shadow-frame:0 24px 70px rgb(0 0 0 / 55%),0 0 22px rgb(139 63 217 / 12%),0 0 12px rgb(57 200 255 / 5%);
- --mono:"Share Tech Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
-}
-.hero{background:linear-gradient(90deg,#302044 0%,#281d40 21%,#20264a 42%,#10121d 75%,#000 100%) padding-box,var(--grad-frame) border-box;border:solid transparent;border-width:1px 2px 2px 4px;box-shadow:var(--shadow-frame)}
-.hero h1{font-family:var(--mono);font-weight:400;letter-spacing:.015em}
-/* Cadres des cartes de contenu : mêmes bordures que les cartes du site Libestria. */
-main>section{border:solid transparent;border-width:3px 1px 0 0;border-radius:12px;background:linear-gradient(#000,#000) padding-box,var(--grad-card) border-box;box-shadow:inset 0 1px 0 rgb(255 255 255 / 2.5%)}
-.toolbar button{background:var(--btn-bg);border:1px solid var(--btn-border);border-radius:13px;letter-spacing:.035em;text-transform:none;font-size:.85rem}
-.toolbar button:hover,.toolbar button:focus-visible{background:var(--btn-hover-bg);border-color:var(--btn-hover-border)}
-.hero .platform-pill{background:var(--btn-bg);border-color:var(--btn-border)}
-.libestria-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.libestria-brand img{width:54px;height:auto;object-fit:contain}
-.libestria-wordmark{font:400 clamp(1.4rem,3.7vw,2.15rem)/1.15 var(--mono);color:transparent;background:var(--grad-title);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:var(--glow-title)}
-@media(max-width:600px){.libestria-brand img{width:43px}}
-@media print{
- .hero{background:linear-gradient(90deg,#302044,#20264a,#000)!important;border:1px solid #7f6ca3!important}
- main>section{background:#fff!important;border:1px solid #dce6f2!important}
- .libestria-wordmark{color:#fff!important;-webkit-text-fill-color:#fff!important;filter:none}
-}
-/* Sommaire sans cadre : conserver sa typographie, ses liens et ses espacements. */
-.toc{background:transparent;border:0;box-shadow:none;border-radius:0;transition:none}
-@media(hover:hover){.toc:hover{background:transparent;border:0;box-shadow:none;transform:none}}
-.toc::before{display:none}
-@media print{.toc{background:transparent!important;border:0!important;box-shadow:none!important}}
-/* Date de dernière mise à jour. */
-.hero .updated{display:flex;align-items:center;gap:8px;margin:16px 0 0;font:.78rem/1.5 'Share Tech Mono',monospace;letter-spacing:.04em;color:var(--muted)}
-.hero .updated::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--grad-card);flex:none}
-@media print{.hero .updated{color:#fff!important}}
-</style>
-</link></head>
-<body><div class="wrap"><header class="hero"><div class="libestria-brand"><img alt="Logo Libestria" height="54" src="https://libestria.fr/IMG/IMG_Libestria.png" width="54"/><span class="libestria-wordmark">Libestria.fr</span></div><img alt="Logo Nostr" class="nostr-logo" decoding="async" height="40" loading="eager" src="https://libestria.fr/IMG/Logo_Nostr.png"/><h1>Configurer son identifiant NIP-05 Nostr sur son propre domaine</h1><p>Associe ta clé publique Nostr à une adresse lisible en hébergeant toi-même le fichier de correspondance.</p><div class="platforms"><span class="platform-pill">Serveur Web HTTPS</span></div><p class="updated">Dernière mise à jour : <time datetime="2026-10-23">23/10/2026</time></p></header>
-<div class="toolbar"><button aria-label="Imprimer le guide ou l’enregistrer en PDF" onclick="window.print()" type="button">Imprimer / Enregistrer en PDF</button></div>
+<meta name="description" content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json.">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://libestria.fr/guides/nostr/nostr_configurer-son-identifiant-nip-05-nostr-sur-son-propre-domaine.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Libestria">
+<meta property="og:url" content="https://libestria.fr/guides/nostr/nostr_configurer-son-identifiant-nip-05-nostr-sur-son-propre-domaine.html">
+<meta property="og:title" content="Configurer son identifiant NIP-05 Nostr sur son propre domaine — Guide Libestria">
+<meta property="og:description" content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json.">
+<meta property="og:image" content="https://libestria.fr/guides/nostr/og-nostr.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Logo Nostr — Guide Libestria">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Configurer son identifiant NIP-05 Nostr sur son propre domaine — Guide Libestria">
+<meta name="twitter:description" content="Guide pour publier un identifiant NIP-05 Nostr sur son propre domaine avec un fichier nostr.json.">
+<meta name="twitter:image" content="https://libestria.fr/guides/nostr/og-nostr.png">
+<link rel="stylesheet" href="../guides.css">
+</head>
+<body><div class="wrap"><header class="hero"><div class="libestria-brand"><a class="brand-link" href="https://libestria.fr/"><img alt="" decoding="async" fetchpriority="high" height="256" src="../../IMG/IMG_Libestria.webp" width="256"><span class="libestria-wordmark">Libestria.fr</span></a><div class="actions"><a class="icon-btn icon-btn--home" href="https://libestria.fr/" aria-label="Accueil Libestria" title="Accueil Libestria"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a><a class="icon-btn icon-btn--support" href="https://libestria.fr/#soutien" aria-label="Soutenir Libestria" title="Soutenir Libestria"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"/></svg></a></div></div><img alt="Logo Nostr" class="proto-logo" decoding="async" height="166" src="../../IMG/Logo_Nostr.png" width="400"><h1>Configurer son identifiant NIP-05 Nostr sur son propre domaine</h1><p>Associe ta clé publique Nostr à une adresse lisible en hébergeant toi-même le fichier de correspondance.</p><div class="platforms" aria-label="Plateformes couvertes"><span class="platform-pill">Serveur Web HTTPS</span></div><p class="updated">Dernière mise à jour : <time datetime="2026-10-23">23/10/2026</time></p></header>
+<div class="toolbar"><button aria-label="Imprimer le guide ou l’enregistrer en PDF" data-print type="button">Imprimer / Enregistrer en PDF</button></div>
 <nav aria-labelledby="toc-title" class="toc"><h2 id="toc-title">Sommaire</h2><ul class="toc-list"><li><a href="#section-1">Introduction</a></li><li><a href="#section-2">1. Choisir l’adresse et récupérer ta clé publique</a></li><li><a href="#section-3">2. Créer le fichier nostr.json</a></li><li><a href="#section-4">3. Publier le fichier et autoriser son accès</a></li><li><a href="#section-5">4. Ajouter et vérifier l’identifiant</a></li><li><a href="#section-6">Conclusion</a></li></ul></nav><main>
-<section aria-labelledby="section-1"><h2 id="section-1">Introduction</h2><p>NIP-05 associe une clé publique Nostr à une adresse lisible, comme <code>alice@exemple.fr</code>. Tu peux héberger toi-même cette correspondance sur un domaine que tu contrôles.</p><p><strong>Prérequis :</strong> un profil Nostr, un domaine, et un hébergement HTTPS où tu peux publier un fichier JSON et régler les en-têtes HTTP.</p><div class="note"><strong>À savoir :</strong> NIP-05 associe une clé à un domaine, mais ne certifie pas l’identité civile de son titulaire. Il n’est pas nécessaire pour utiliser Nostr.</div></section>
-<section aria-labelledby="section-2"><h2 id="section-2">1. Choisir l’adresse et récupérer ta clé publique</h2><p>Choisis une adresse, par exemple <code>alice@exemple.fr</code>. La partie avant <code>@</code> accepte les lettres minuscules <code>a-z</code>, les chiffres <code>0-9</code>, le tiret <code>-</code>, le souligné <code>_</code> et le point <code>.</code>. Le domaine doit correspondre exactement à l’hôte du fichier ; n’ajoute pas <code>www</code> sauf si l’adresse l’utilise.</p><p>Pour associer le domaine lui-même à ton profil, tu peux choisir <code>_@exemple.fr</code> ; certains clients l’affichent comme <code>exemple.fr</code>.</p><ol><li>Dans ton client Nostr, copie la clé publique de ton profil.</li><li>Si elle commence par <code>npub1</code>, récupère son format hexadécimal avec l’option d’export du client ou un convertisseur, tel que <a href="https://nostrcheck.me/converter/" rel="noopener noreferrer" target="_blank">NostrCheck (npub ↔ HEX — EN)</a>.</li><li>Vérifie que la clé HEX contient 64 caractères hexadécimaux en minuscules.</li></ol><div class="warning"><strong>Sécurité :</strong> utilise uniquement ta clé publique. Ne saisis jamais ta clé privée <code>nsec1…</code> dans un convertisseur ou dans le fichier.</div></section>
-<section aria-labelledby="section-3"><h2 id="section-3">2. Créer le fichier nostr.json</h2><p>Crée <code>nostr.json</code> et remplace la valeur fictive ci-dessous par ta clé publique HEX :</p><pre><code>{
+<section class="card" aria-labelledby="section-1"><h2 id="section-1">Introduction</h2><p>NIP-05 associe une clé publique Nostr à une adresse lisible, comme <code>alice@exemple.fr</code>. Tu peux héberger toi-même cette correspondance sur un domaine que tu contrôles.</p><p><strong>Prérequis :</strong> un profil Nostr, un domaine, et un hébergement HTTPS où tu peux publier un fichier JSON et régler les en-têtes HTTP.</p><div class="note"><strong>À savoir :</strong> NIP-05 associe une clé à un domaine, mais ne certifie pas l’identité civile de son titulaire. Il n’est pas nécessaire pour utiliser Nostr.</div></section>
+<section class="card" aria-labelledby="section-2"><h2 id="section-2">1. Choisir l’adresse et récupérer ta clé publique</h2><p>Choisis une adresse, par exemple <code>alice@exemple.fr</code>. La partie avant <code>@</code> accepte les lettres minuscules <code>a-z</code>, les chiffres <code>0-9</code>, le tiret <code>-</code>, le souligné <code>_</code> et le point <code>.</code>. Le domaine doit correspondre exactement à l’hôte du fichier ; n’ajoute pas <code>www</code> sauf si l’adresse l’utilise.</p><p>Pour associer le domaine lui-même à ton profil, tu peux choisir <code>_@exemple.fr</code> ; certains clients l’affichent comme <code>exemple.fr</code>.</p><ol><li>Dans ton client Nostr, copie la clé publique de ton profil.</li><li>Si elle commence par <code>npub1</code>, récupère son format hexadécimal avec l’option d’export du client ou un convertisseur, tel que <a href="https://nostrcheck.me/converter/" rel="noopener noreferrer" target="_blank">NostrCheck (npub ↔ HEX — EN)</a>.</li><li>Vérifie que la clé HEX contient 64 caractères hexadécimaux en minuscules.</li></ol><div class="warning"><strong>Sécurité :</strong> utilise uniquement ta clé publique. Ne saisis jamais ta clé privée <code>nsec1…</code> dans un convertisseur ou dans le fichier.</div></section>
+<section class="card" aria-labelledby="section-3"><h2 id="section-3">2. Créer le fichier nostr.json</h2><p>Crée <code>nostr.json</code> et remplace la valeur fictive ci-dessous par ta clé publique HEX :</p><pre><code>{
   "names": {
     "alice": "CLE_PUBLIQUE_HEX_DE_64_CARACTERES"
   }
@@ -130,7 +42,7 @@ main>section{border:solid transparent;border-width:3px 1px 0 0;border-radius:12p
     "CLE_PUBLIQUE_HEX_DE_64_CARACTERES": ["wss://relay.exemple.net"]
   }
 }</code></pre><p>Les valeurs de cet exemple sont fictives. Si tu renseignes <code>"relays"</code>, répète exactement la même clé HEX que dans <code>"names"</code>.</p></section>
-<section aria-labelledby="section-4"><h2 id="section-4">3. Publier le fichier et autoriser son accès</h2><ol><li>À la racine publique de <code>exemple.fr</code>, publie le fichier à l’adresse exacte <code>/.well-known/nostr.json</code>.</li><li>Vérifie qu’il est accessible en HTTPS, sans authentification ni redirection, et servi comme JSON.</li><li>Pour permettre sa lecture par les clients Nostr dans un navigateur, configure l’en-tête HTTP suivant :</li></ol><pre><code>Access-Control-Allow-Origin: *</code></pre><p>Teste l’adresse <code>https://exemple.fr/.well-known/nostr.json?name=alice</code> dans un navigateur. Elle doit renvoyer le JSON, pas une page HTML ni une erreur 404. Certains hébergements bloquent les dossiers commençant par un point : vérifie que <code>.well-known</code> est bien publié.</p></section>
-<section aria-labelledby="section-5"><h2 id="section-5">4. Ajouter et vérifier l’identifiant</h2><ol><li>Dans les réglages de ton profil Nostr, saisis <code>alice@exemple.fr</code> dans le champ <strong>« NIP-05 »</strong> ou équivalent, puis publie la modification. Les intitulés et la prise en charge varient selon le client.</li><li>Vérifie que la clé de <code>names.alice</code> correspond exactement à la clé publique de ton profil.</li><li>Contrôle la réponse et ses en-têtes avec :</li></ol><pre><code>curl -i 'https://exemple.fr/.well-known/nostr.json?name=alice'</code></pre><p>La réponse attendue est <code>200 OK</code>, sans redirection, avec un JSON valide et l’en-tête <code>Access-Control-Allow-Origin: *</code>. Le client doit ensuite reconnaître l’adresse, parfois après un délai de cache.</p><ul><li><strong>404 :</strong> vérifie le chemin et la publication de <code>.well-known</code>.</li><li><strong>JSON invalide :</strong> contrôle les guillemets doubles, les virgules et l’absence de commentaires.</li><li><strong>Adresse non reconnue :</strong> vérifie le nom, la clé HEX en minuscules et le champ de profil.</li><li><strong>Échec dans un client Web :</strong> vérifie CORS et l’absence de redirection.</li></ul></section>
-<section aria-labelledby="section-6"><h2 id="section-6">Conclusion</h2><p>Ton domaine peut maintenant associer une adresse NIP-05 à ta clé publique. Garde le fichier accessible en HTTPS et vérifie la correspondance après tout changement de clé, de domaine ou d’hébergement. Dans Nostr, ta clé publique reste la référence de ton profil.</p></section>
-</main><footer><a href="https://libestria.fr" rel="noopener noreferrer" target="_blank">Libestria.fr</a></footer></div></body></html>
+<section class="card" aria-labelledby="section-4"><h2 id="section-4">3. Publier le fichier et autoriser son accès</h2><ol><li>À la racine publique de <code>exemple.fr</code>, publie le fichier à l’adresse exacte <code>/.well-known/nostr.json</code>.</li><li>Vérifie qu’il est accessible en HTTPS, sans authentification ni redirection, et servi comme JSON.</li><li>Pour permettre sa lecture par les clients Nostr dans un navigateur, configure l’en-tête HTTP suivant :</li></ol><pre><code>Access-Control-Allow-Origin: *</code></pre><p>Teste l’adresse <code>https://exemple.fr/.well-known/nostr.json?name=alice</code> dans un navigateur. Elle doit renvoyer le JSON, pas une page HTML ni une erreur 404. Certains hébergements bloquent les dossiers commençant par un point : vérifie que <code>.well-known</code> est bien publié.</p></section>
+<section class="card" aria-labelledby="section-5"><h2 id="section-5">4. Ajouter et vérifier l’identifiant</h2><ol><li>Dans les réglages de ton profil Nostr, saisis <code>alice@exemple.fr</code> dans le champ <strong>« NIP-05 »</strong> ou équivalent, puis publie la modification. Les intitulés et la prise en charge varient selon le client.</li><li>Vérifie que la clé de <code>names.alice</code> correspond exactement à la clé publique de ton profil.</li><li>Contrôle la réponse et ses en-têtes avec :</li></ol><pre><code>curl -i 'https://exemple.fr/.well-known/nostr.json?name=alice'</code></pre><p>La réponse attendue est <code>200 OK</code>, sans redirection, avec un JSON valide et l’en-tête <code>Access-Control-Allow-Origin: *</code>. Le client doit ensuite reconnaître l’adresse, parfois après un délai de cache.</p><ul><li><strong>404 :</strong> vérifie le chemin et la publication de <code>.well-known</code>.</li><li><strong>JSON invalide :</strong> contrôle les guillemets doubles, les virgules et l’absence de commentaires.</li><li><strong>Adresse non reconnue :</strong> vérifie le nom, la clé HEX en minuscules et le champ de profil.</li><li><strong>Échec dans un client Web :</strong> vérifie CORS et l’absence de redirection.</li></ul></section>
+<section class="card" aria-labelledby="section-6"><h2 id="section-6">Conclusion</h2><p>Ton domaine peut maintenant associer une adresse NIP-05 à ta clé publique. Garde le fichier accessible en HTTPS et vérifie la correspondance après tout changement de clé, de domaine ou d’hébergement. Dans Nostr, ta clé publique reste la référence de ton profil.</p></section>
+</main><footer><a href="https://libestria.fr" rel="noopener noreferrer" target="_blank">Libestria.fr</a></footer></div><script src="../guides.js"></script></body></html>
