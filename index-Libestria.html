@@ -170,7 +170,7 @@ main {
   border-bottom: 1px solid rgb(168 85 247 / 28%);
   background: linear-gradient(90deg, #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%);
 }
-.win-icon { display: inline-flex; flex: none; color: var(--cyan); transform: translateY(1px); filter: drop-shadow(0 0 5px rgb(57 200 255 / 28%)); }
+.win-icon { display: inline-flex; flex: none; color: var(--cyan); filter: drop-shadow(0 0 5px rgb(57 200 255 / 28%)); }
 .win-icon .i { width: 25px; height: 25px; }
 .win-title { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
 .win-title:focus { outline: none; }
@@ -208,8 +208,8 @@ main {
 .proto-logos img { display: block; width: auto; height: clamp(38px, 8vw, 54px); max-width: 42%; object-fit: contain; }
 
 .nostr-theme-title { display: flex; align-items: flex-start; gap: 10px; color: #fff; font-size: 21px; font-weight: 600; line-height: 1.4; }
-.nostr-theme-title .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2); color: var(--cyan); }
-#ressources-nostr > section + section, #groupes > section + section { border-top: 1px solid var(--nav-divider); padding-top: 24px; }
+.nostr-theme-title .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2 + 1px); color: var(--cyan); }
+#ressources-nostr > section + section, #groupes > section + section, #mentions-legales > section + section { border-top: 1px solid var(--nav-divider); padding-top: 24px; }
 
 /* 6. Cartes ---------------------------------------------------------------- */
 .cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; width: 100%; }
@@ -383,7 +383,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   color: var(--nav-text); font-size: clamp(17px, 2.8vw, 19px); line-height: 1.45; text-decoration: none;
   transition: background .18s, color .18s;
 }
-.drawer-link .i { width: 23px; height: 23px; margin-inline: 1.5px; color: var(--icon); }
+.drawer-link .i { position: relative; top: .5px; width: 23px; height: 23px; margin-inline: 1.5px; color: var(--icon); }
 .drawer-link.is-own .i { color: var(--violet-light); }
 .drawer-link.is-own:not([aria-current="location"]) .drawer-label { color: var(--violet-light); }
 .drawer-link[aria-current="location"] .i { color: var(--cyan); }
@@ -478,6 +478,35 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .dot { animation: none; }
 }
 
+/* Alignement des icônes et des diodes sur la ligne de base réelle du texte.
+   Méthode unique : le conteneur aligne ses éléments sur la ligne de base (align-items: baseline),
+   puis l’icône est décalée de « demi-taille − demi-hauteur de lettre » (unités cap / ex = métriques
+   de la police réellement chargée). Le margin-top négatif (= taille de l’icône) l’exclut du calcul
+   de hauteur de la ligne : seule la position visuelle change, pas la mise en page. Navigateurs sans l’unité « cap » : les réglages en px définis
+   plus haut restent appliqués.
+   --icon-lift : remontée des icônes par rapport au centre des majuscules (texte Exo 2).
+   --mono-drop : descente des icônes et diodes par rapport au centre des minuscules (adresses). */
+@supports (top: 1cap) {
+  :root { --icon-lift: .3px; --mono-drop: .6px; }
+
+  /* Texte courant : centre des majuscules */
+  .win-bar { align-items: baseline; }
+  .win-icon { position: relative; margin-top: -25px; top: calc(12.5px - .5cap - var(--icon-lift)); font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); }
+  .nostr-theme-title { align-items: baseline; }
+  .nostr-theme-title .i { position: relative; margin-top: 0; top: calc(12px - .5cap - var(--icon-lift)); }
+  .card h3 { align-items: baseline; }
+  .card h3 .i { position: relative; margin-top: -21px; top: calc(10.5px - .5cap - var(--icon-lift)); }
+  .drawer-link { align-items: baseline; }
+  .drawer-link .i { top: calc(11.5px - .5cap - var(--icon-lift)); }
+  .btn-copy, .btn-text { align-items: baseline; padding-block: calc((44px - 2px - 1.4em) / 2); }
+  .btn-copy .i, .btn-text .i { position: relative; margin-top: -20px; top: calc(10px - .5cap - var(--icon-lift)); }
+
+  /* Adresses : centre des minuscules */
+  .addr { align-items: baseline; }
+  .dot { position: relative; margin-top: -7px; top: calc(3.5px - .5ex + var(--mono-drop)); }
+  .ext { align-items: baseline; }
+  .ext .i { position: relative; margin-top: -1em; top: calc(.5em - .5ex + var(--mono-drop)); }
+}
 </style>
 <noscript><style>
 /* Sans JavaScript : toutes les rubriques sont affichées à la suite. */
@@ -516,6 +545,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <div class="panel" id="projets" data-title="Autres initiatives FR" hidden><div class="intro"><p>La communauté francophone compte d’autres initiatives qui contribuent à faire vivre et à développer un numérique plus libre, ouvert et décentralisé.</p><p>Libestria met en lumière des projets indépendants portés par des membres de la communauté <span class="tag">#nostrfr</span>, autour de Nostr, de la décentralisation et de la protection de la vie privée.</p><p>Annuaires, outils, services et ressources pratiques : ces projets permettent de découvrir de nouvelles solutions, d’approfondir ses connaissances et de gagner en autonomie numérique.</p><p>Pour les découvrir, il te suffit de consulter les présentations et de suivre les liens proposés.</p></div><div class="cards" role="group" aria-label="Autres initiatives FR"><article class="card"><h3 translate="no"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span>Nostr Map ✦</span></h3><img class="card-logo" src="IMG/Relais/Logo_NostrMap.png" alt="Logo Nostr Map" width="400" height="225" decoding="async" loading="lazy"><p class="desc">Nostr Map propose un annuaire de la communauté Nostr francophone #nostrfr et une extension de navigateur (« signer ») pour sécuriser ses connexions.</p><div class="addr"><a class="addr-text ext" href="https://nostrmap.fr" target="_blank" rel="noopener noreferrer" title="https://nostrmap.fr"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-link"/></svg><span>https://nostrmap.fr</span></a></div></article><article class="card"><h3 translate="no"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span>Decentralia Apps</span></h3><img class="card-logo" src="IMG/Relais/Logo_Apps-Decentralia.png" alt="Logo Decentralia Apps" width="400" height="400" decoding="async" loading="lazy"><p class="desc">Decentralia Apps est un annuaire d’applications et de protocoles libres et décentralisés, accompagné de guides pratiques pour protéger sa vie privée et reprendre le contrôle de ses données numériques.</p><div class="addr"><a class="addr-text ext" href="https://apps.decentralia.fr" target="_blank" rel="noopener noreferrer" title="https://apps.decentralia.fr"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-link"/></svg><span>https://apps.decentralia.fr</span></a></div></article><article class="card"><h3 translate="no"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span>Noeud Libre</span></h3><img class="card-logo" src="IMG/Relais/Logo_Noeud-Libre.png" alt="Logo Noeud Libre" width="400" height="400" decoding="async" loading="lazy"><p class="desc">Nœud Libre met à disposition un relais Nostr public et un serveur SimpleX pour favoriser des communications libres, décentralisées et respectueuses de la vie privée.</p><div class="addr"><a class="addr-text ext" href="https://noeudlibre.fr" target="_blank" rel="noopener noreferrer" title="https://noeudlibre.fr"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-link"/></svg><span>https://noeudlibre.fr</span></a></div></article><article class="card"><h3 translate="no"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg><span>Toolstr</span></h3><img class="card-logo" src="IMG/Relais/Logo_ToolStr.png" alt="Logo Toolstr" width="400" height="400" decoding="async" loading="lazy"><p class="desc">Toolstr est une plateforme d’outils et d’utilitaires dédiés à l’écosystème Nostr, conçue pour faciliter l’utilisation et l’exploration du protocole.</p><div class="addr"><a class="addr-text ext" href="https://toolstr.up.railway.app" target="_blank" rel="noopener noreferrer" title="https://toolstr.up.railway.app"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-link"/></svg><span>https://toolstr.up.railway.app</span></a></div></article></div></div>
 <div class="panel" id="contact" data-title="Contacter Libestria" hidden><div class="intro"><p>Une question, une suggestion ou une demande d’identifiant NIP-05 ? Tu peux contacter l’administrateur de Libestria par e-mail, par message privé Nostr (DM) ou via SimpleX.</p><p>Choisis ton moyen de contact préféré ci-dessous.</p></div><div class="contact-grid"><a class="contact-link" href="mailto:artefact@libestria.fr" aria-label="Contacter Libestria par e-mail" title="Envoyer un e-mail"><img src="IMG/IMG_contact-email.png" alt="Contacter Libestria par e-mail" decoding="async" loading="lazy" width="400" height="400"></a><a class="contact-link" href="nostr:npub155x4mkh2petvpnygvfs5hqlmtfpulj5006y4mjpfgtx49w6djzyqjwrxqp" aria-label="Contacter Libestria par message privé Nostr" title="Ouvrir le profil Nostr de l’administrateur"><img src="IMG/IMG_contact-nostr.png" alt="Contacter Libestria par message privé Nostr" decoding="async" loading="lazy" width="400" height="400"></a><a class="contact-link" href="https://smp17.simplex.im/a#PBtb1qYCzrXK0b1oQ2MOiEg5OtwyOznT0mqMCxU4_74" target="_blank" rel="noopener noreferrer" aria-label="Contacter Libestria sur SimpleX" title="Établir une connexion privée avec l’administrateur"><img src="IMG/IMG_contact-simplex.png" alt="Contacter Libestria sur SimpleX" decoding="async" loading="lazy" width="400" height="400"></a></div></div>
 <div class="panel" id="soutien" data-title="Soutenir Libestria" hidden><div class="intro"><p>Tu peux soutenir Libestria avec un don libre en Bitcoin via Lightning ou en Monero (XMR), selon ta préférence.</p><p>Chaque contribution, quel que soit son montant, aide le projet à continuer à évoluer.</p><p>Merci d’avance pour ton soutien !</p></div><div class="support-grid" role="group" aria-label="Moyens de soutien"><div class="support-item"><img src="IMG/IMG_soutien-btc.png" alt="Soutenir Libestria en Bitcoin Lightning" decoding="async" loading="lazy" width="400" height="400"><div class="actions-row"><button type="button" class="btn btn-copy btn-copy--wide" data-copy="artefact@coinos.io" data-done="Adresse copiée" aria-label="Copier l’adresse Lightning (BTC)" title="Copier l’adresse Lightning (BTC)"><svg class="i ic-copy" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><svg class="i ic-done i--bold" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span class="lbl">Copier adresse</span></button><button type="button" class="btn btn-round" data-qr="IMG/QR/QR_adresse-LN-BTC.png" data-qr-name="Adresse Lightning (BTC)" aria-haspopup="dialog" aria-label="Afficher le QR code Lightning (BTC)" title="Afficher le QR code Lightning (BTC)"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-qr"/></svg></button></div></div><div class="support-item"><img src="IMG/IMG_soutien-xmr.png" alt="Soutenir Libestria en Monero (XMR)" decoding="async" loading="lazy" width="400" height="400"><div class="actions-row"><button type="button" class="btn btn-copy btn-copy--wide" data-copy="4A8PF2wWq5acdQiCUjWcrHNZPT27GuZoxHGqiaHNACmYF4qoTK9i3yeAB9kcy1QWW5hLkp8WMNCNGaKQmgS1K3RNQSyqeQq" data-done="Adresse copiée" aria-label="Copier l’adresse Monero (XMR)" title="Copier l’adresse Monero (XMR)"><svg class="i ic-copy" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><svg class="i ic-done i--bold" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span class="lbl">Copier adresse</span></button><button type="button" class="btn btn-round" data-qr="IMG/QR/QR_adresse-XMR.png" data-qr-name="Adresse Monero (XMR)" aria-haspopup="dialog" aria-label="Afficher le QR code Monero (XMR)" title="Afficher le QR code Monero (XMR)"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-qr"/></svg></button></div></div></div></div>
+<div class="panel" id="mentions-legales" data-title="Mentions légales" hidden><section aria-labelledby="legal-1"><div class="intro"><h3 class="nostr-theme-title" id="legal-1"><svg aria-hidden="true" class="i" focusable="false"><use href="#i-info"></use></svg><strong>Édition et hébergement</strong></h3><p>Libestria.fr est un site personnel, indépendant et non commercial, édité à titre non professionnel depuis la France.</p><p>Hébergement : GitHub Pages — GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p><p>Contact : rubrique « Contacter Libestria ».</p></div></section><section aria-labelledby="legal-2"><div class="intro"><h3 class="nostr-theme-title" id="legal-2"><svg aria-hidden="true" class="i" focusable="false"><use href="#i-info"></use></svg><strong>Données personnelles</strong></h3><p>Le site ne nécessite aucune inscription et n’utilise aucun outil de suivi statistique propre.</p><p>GitHub et Cloudflare peuvent traiter des données techniques de connexion, notamment les adresses IP, pour assurer le fonctionnement et la sécurité du site.</p><p>Le service NIP-05 publie l’identifiant choisi et la clé publique Nostr associée. Les données communiquées lors des demandes sont utilisées uniquement pour y répondre et fournir le service sollicité.</p><p>Pour exercer tes droits, utilise la rubrique « Contacter Libestria ». Tu peux également saisir la CNIL (www.cnil.fr).</p></div></section><section aria-labelledby="legal-3"><div class="intro"><h3 class="nostr-theme-title" id="legal-3"><svg aria-hidden="true" class="i" focusable="false"><use href="#i-info"></use></svg><strong>Services externes</strong></h3><p>Les relais Nostr, serveurs SimpleX et autres services référencés restent sous la responsabilité de leurs opérateurs respectifs.</p></div></section></div>
 </div>
 </section>
 </main>
@@ -546,6 +576,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <div class="drawer-sep" aria-hidden="true"></div>
 <a class="drawer-link is-own" href="#contact"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg><span class="drawer-label">Contacter Libestria</span></a>
 <a class="drawer-link is-own" href="#soutien"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg><span class="drawer-label">Soutenir Libestria</span></a>
+<a class="drawer-link" href="#mentions-legales"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><span class="drawer-label">Mentions légales</span></a>
 </nav>
 <div class="drawer-foot">Nostr &amp; SimpleX</div>
 </aside>
