@@ -36,7 +36,7 @@
 /* ==========================================================================
    Libestria.fr : feuille de style unique
    1. Variables  2. Base  3. En-tête  4. Fenêtre  5. Contenu  6. Cartes
-   7. Boutons  8. Contact / Soutien  9. Menu latéral  10. QR  11. Pied  12. Responsive
+   7. Boutons  8. Contact / Soutien  9. Menu latéral  10. QR  11. Pied  12. Responsive  13. Alignement icônes
    ========================================================================== */
 
 /* 1. Variables ------------------------------------------------------------ */
@@ -52,18 +52,16 @@
   --btn-hover-bg: #211b30;
   --btn-hover-border: #8b63d8;
   --focus: #9b6bf2;
-  --nav-divider: rgb(168 85 247 / 28%);
+  --divider: linear-gradient(90deg, var(--stops));
   --nav-text: #e3dfeb;
   --nav-hover-bg: #211b2d;
   --nav-hover-text: #bca0ff;
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
-  --grad-frame: linear-gradient(135deg, #b45cff 0%, #f26adf 33%, #8e7bff 62%, #39c8ff 100%);
-  --grad-card: linear-gradient(160deg, #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%);
-  --grad-side: linear-gradient(180deg, #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%);
-  --glow-title: drop-shadow(0 0 10px rgb(180 92 255 / 30%));
+  --stops: #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%;
+  --grad-card: linear-gradient(160deg, var(--stops));
+  --grad-side: linear-gradient(180deg, var(--stops));
   --shadow-frame: 0 24px 70px rgb(0 0 0 / 55%), 0 0 22px rgb(139 63 217 / 12%), 0 0 12px rgb(57 200 255 / 5%);
   --r-sm: 6px; --r-md: 10px; --r-lg: 13px; --r-xl: 18px;
-  --card-bg: linear-gradient(180deg, #242424 0%, #000000 100%);
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -119,7 +117,7 @@ main {
 
 /* 3. En-tête -------------------------------------------------------------- */
 .banner { flex: none; display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); padding: 3px 0; }
-.brand-logo { display: block; flex: none; width: 115px; height: auto; filter: drop-shadow(0 0 18px rgb(139 63 217 / 16%)); }
+.brand-logo { display: block; flex: none; width: 115px; height: auto; }
 .wordmark {
   flex: 0 1 auto; min-width: 0;
   font: 400 clamp(2rem, 4.3vw, 4.1rem) / 1.12 var(--mono);
@@ -130,16 +128,15 @@ main {
   background: var(--grad-title);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: var(--glow-title);
 }
 .actions { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: none; }
-.icon-btn {
-  display: grid; place-items: center; flex: none;
-  width: 48px; height: 48px; padding: 0;
-  border: 1px solid var(--btn-border); border-radius: 50%;
-  background: var(--grad-card); color: #fff; text-decoration: none; line-height: 1;
+/* Base commune des boutons ronds : bouton d’en-tête, fermeture du menu, fermeture QR. */
+:is(.icon-btn, .drawer-close, .qr-close) {
+  display: grid; place-items: center; flex: none; padding: 0;
+  border: 1px solid var(--btn-border); border-radius: 50%; color: #fff;
   transition: background .2s, border-color .2s;
 }
+.icon-btn { width: 48px; height: 48px; background: var(--grad-card); text-decoration: none; line-height: 1; }
 .icon-btn .i { width: 30px; height: 30px; }
 .icon-btn[aria-expanded="true"] { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); }
 
@@ -147,20 +144,24 @@ main {
    Le double background (padding-box / border-box) dessine une bordure dégradée
    sans image supplémentaire. Le scroll reste limité à .win-content.
 */
+/* Cadre à bordure dégradée partagé (fenêtre, menu, QR). */
+:is(.window, .drawer, .qr-dialog) {
+  border: solid transparent;
+  background: linear-gradient(#000, #000) padding-box, var(--grad-side) border-box;
+}
 .window {
   flex: 1 1 0; min-height: 0;
   display: flex; flex-direction: column; overflow: hidden;
-  border: solid transparent; border-width: 0 0 0 4px; border-radius: var(--r-xl) var(--r-xl) 0 0;
-  background: linear-gradient(#000000, #000000) padding-box, var(--grad-side) border-box;
+  border-width: 0 0 0 4px; border-radius: var(--r-xl) var(--r-xl) 0 0;
   box-shadow: none;
 }
 .win-bar {
   flex: none; display: flex; align-items: center; gap: 10px;
   min-height: 55px; padding: 12px 20px;
-  border-bottom: 1px solid var(--nav-divider);
-  background: linear-gradient(90deg, #302044 0%, #281d40 21%, #20264a 42%, #10121d 60%, #000 75%);
+  border-bottom: 1px solid; border-image: var(--divider) 1;
+  background: linear-gradient(90deg, var(--stops));
 }
-.win-icon { display: inline-flex; flex: none; color: var(--cyan); filter: drop-shadow(0 0 5px rgb(57 200 255 / 28%)); }
+.win-icon { display: inline-flex; flex: none; color: var(--cyan); }
 .win-icon .i { width: 25px; height: 25px; }
 .win-title { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
 .win-title:focus { outline: none; }
@@ -202,7 +203,7 @@ main {
 
 .nostr-theme-title { display: flex; align-items: flex-start; gap: 10px; color: #fff; font-size: 18px; font-weight: 600; line-height: 1.4; }
 .nostr-theme-title .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2 + 1px); color: var(--cyan); }
-#ressources-nostr > section + section, #groupes > section + section, #mentions-legales > section + section { border-top: 1px solid var(--nav-divider); padding-top: 24px; }
+#ressources-nostr > section + section, #groupes > section + section, #mentions-legales > section + section { border-top: 1px solid; border-image: var(--divider) 1; padding-top: 24px; }
 
 /* 6. Cartes ---------------------------------------------------------------- */
 .cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; width: 100%; }
@@ -245,10 +246,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .card h3 {
   display: flex; align-items: flex-start; justify-content: center; gap: 12px; width: 100%;
   color: #fff; font-size: clamp(1.2rem, 1.7vw, 1.5rem); font-weight: 600; line-height: 1.3; letter-spacing: .03em;
-  text-shadow: 0 0 8px rgb(26 143 232 / 30%);
 }
 .card h3 .i { width: 21px; height: 21px; margin-top: calc((1.3em - 21px) / 2); color: var(--cyan); }
-.card-logo { display: block; height: 100px; width: auto; max-width: 100%; margin-top: 10px; object-fit: contain; }
+.card-logo, .contact-link img, .support-item img { display: block; width: auto; max-width: 100%; height: 100px; object-fit: contain; }
+.card-logo { margin-top: 10px; }
 .card-logo--lg { height: 150px; }
 .desc { width: 100%; color: var(--muted); line-height: 1.5; text-align: center; }
 
@@ -289,17 +290,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
    compatibles. :focus-visible délègue au navigateur la détection du focus
    pertinent, y compris pour les technologies d’assistance et sans JavaScript. */
 :is(a, button) { -webkit-tap-highlight-color: transparent; }
-:is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext, .win-content):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.win-content, .win-content:focus, .win-content:focus-visible { outline: none !important; }
+:is(.btn, .icon-btn, .drawer-link, .drawer-close, .qr-close, .contact-link, .ext):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.win-content { outline: none; } /* zone focusable (tabindex=0) sans cadre */
 @media (hover: hover) {
-  .btn:hover:not([aria-disabled="true"]), .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
-  /* Boutons de fermeture : même retour visuel que les boutons d’action.
-     Le survol n’est appliqué qu’aux périphériques disposant d’un vrai hover. */
-  :is(.drawer-close, .qr-close):hover {
-    background: var(--btn-hover-bg);
-    border-color: var(--btn-hover-border);
-    color: #fff;
-  }
+  :is(.btn:not([aria-disabled="true"]), .icon-btn, .drawer-close, .qr-close):hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
   .drawer-link:hover { background: var(--nav-hover-bg); color: var(--nav-hover-text); }
   .ext:hover { text-decoration: underline; }
 }
@@ -327,11 +321,9 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 /* 8. Contact / Soutien ------------------------------------------------------ */
 .contact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%; }
 .contact-link { display: flex; align-items: center; justify-content: center; min-width: 0; border-radius: var(--r-sm); }
-.contact-link img { display: block; width: auto; height: 100px; max-width: 100%; object-fit: contain; }
 .contact-link:focus-visible { outline-offset: 4px; }
 .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; }
 .support-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-width: 0; }
-.support-item img { display: block; width: auto; height: 100px; max-width: 100%; object-fit: contain; }
 
 /* 9. Menu latéral ------------------------------------------------------------
    Le panneau latéral et son voile sont indépendants du flux du document.
@@ -349,24 +341,19 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   position: fixed; inset: 0 0 0 auto; z-index: 1001;
   width: min(86vw, 380px); padding: 25px 23px 22px;
   display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain;
-  border: solid transparent; border-width: 0 0 0 4px; border-radius: var(--r-xl) 0 0 var(--r-xl);
-  background: linear-gradient(#000, #000) padding-box, var(--grad-side) border-box;
+  border-width: 0 0 0 4px; border-radius: var(--r-xl) 0 0 var(--r-xl);
   box-shadow: var(--shadow-frame);
   transform: translateX(105%); visibility: hidden;
   transition: transform .26s ease, visibility 0s .26s;
 }
 .drawer.is-open { transform: none; visibility: visible; transition-delay: 0s; }
-.drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 22px; border-bottom: 1px solid var(--nav-divider); }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 22px; border-bottom: 1px solid; border-image: var(--divider) 1; }
 .drawer-brand { display: flex; align-items: center; gap: 13px; min-width: 0; flex: 1; }
-.drawer-logo { display: block; flex: none; width: 48px; max-height: 48px; height: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgb(139 63 217 / 16%)); }
+.drawer-logo { display: block; flex: none; width: 48px; max-height: 48px; height: auto; object-fit: contain; }
 .drawer-title {
   font: 400 clamp(1.15rem, 2.5vw, 1.65rem) / 1.1 var(--mono); letter-spacing: .035em; white-space: nowrap;
 }
-:is(.drawer-close, .qr-close) {
-  display: grid; place-items: center; flex: none; width: 34px; height: 34px; padding: 0;
-  border: 1px solid var(--btn-border); border-radius: 50%; background: var(--btn-bg); color: #fff;
-  transition: background .2s, border-color .2s;
-}
+:is(.drawer-close, .qr-close) { width: 34px; height: 34px; background: var(--btn-bg); }
 :is(.drawer-close, .qr-close) .i { width: 18px; height: 18px; }
 .drawer-links { display: flex; flex-direction: column; gap: 3px; padding: 14px 0; }
 .drawer-link {
@@ -375,8 +362,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   transition: background .18s, color .18s;
 }
 .drawer-link .i { position: relative; top: .5px; width: 23px; height: 23px; margin-inline: 1.5px; color: var(--icon); }
-.drawer-link.is-own:not([aria-current="location"]) .i { color: var(--cyan); }
-.drawer-link[aria-current="location"] .i { color: var(--cyan); }
+.drawer-link:is(.is-own, [aria-current="location"]) .i { color: var(--cyan); }
 .drawer-link[aria-current="location"] {
   background: var(--grad-card);
   border-left: 5px solid var(--violet-light); padding-left: 7px; border-radius: var(--r-sm);
@@ -394,10 +380,10 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     12%, 22% { transform: scale(1.15); }
   }
 }
-.drawer-sep { margin: 5px 0 1px; border-top: 1px solid var(--nav-divider); }
+.drawer-sep { margin: 5px 0 1px; border-top: 1px solid; border-image: var(--divider) 1; }
 .drawer-sep--logo { display: flex; align-items: center; padding-top: 8px; }
 .drawer-sep--logo img { display: block; width: auto; max-width: 100%; height: 29px; object-fit: contain; }
-.drawer-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--nav-divider); font: 16px var(--mono); letter-spacing: 1px; color: #8a849e; text-align: right; }
+.drawer-foot { margin-top: auto; padding-top: 20px; border-top: 1px solid; border-image: var(--divider) 1; font: 16px var(--mono); letter-spacing: 1px; color: #8a849e; text-align: right; }
 
 /* 10. Fenêtre QR -------------------------------------------------------------
    Le composant HTML natif <dialog> gère le caractère modal et la touche Échap.
@@ -406,12 +392,11 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 .qr-dialog {
   position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%); margin: 0;
   width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto;
-  padding: 24px; border: 2px solid transparent; border-radius: var(--r-xl);
-  background: linear-gradient(#000, #000) padding-box, var(--grad-frame) border-box;
-  color: #fff; text-align: center; box-shadow: 0 16px 60px #0009;
+  padding: 24px; border-width: 4px; border-radius: var(--r-xl);
+  color: #fff; text-align: center; box-shadow: var(--shadow-frame);
 }
-.qr-dialog:focus, .qr-dialog:focus-visible { outline: none; }
-.qr-dialog:not(.kbd) .qr-close, .qr-dialog:not(.kbd) .qr-close:focus, .qr-dialog:not(.kbd) .qr-close:focus-visible { outline: none !important; }
+.qr-dialog { outline: none; }
+.qr-dialog:not(.kbd) .qr-close { outline: none; }
 .qr-dialog::backdrop { background: rgb(0 0 0 / 76%); }
 .qr-dialog img { display: block; width: min(250px, 100%); height: auto; aspect-ratio: 1; margin: 16px auto 8px; border-radius: var(--r-md); background: #fff; object-fit: contain; }
 .qr-dialog h2 { margin-top: 12px; font-size: 1.15rem; font-weight: 600; color: #fff; }
@@ -429,8 +414,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 @media (max-width: 760px) {
   .contact-grid { gap: clamp(6px, 2vw, 14px); }
   .contact-link { width: 100%; }
-  .contact-link img { width: 100%; height: auto; max-height: 100px; }
-  .support-item img { width: 100%; height: auto; max-height: 100px; }
+  .contact-link img, .support-item img { width: 100%; height: auto; max-height: 100px; }
 }
 @media (max-width: 699px) {
   .support-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -452,9 +436,8 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .drawer-brand { gap: 10px; }
   .drawer-title { font-size: 1.2rem; }
 }
-@media (max-width: 560px) { .win-bar { gap: 10px; } }
-@media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
 @media (max-width: 380px) { .wordmark { font-size: clamp(1.15rem, 5vw, 1.4rem); } }
+@media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -466,18 +449,18 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .dot { animation: none; }
 }
 
-/* Alignement des icônes et des diodes sur la ligne de base réelle du texte.
+/* 13. Alignement des icônes et des diodes -------------------------------------
+   Alignement des icônes et des diodes sur la ligne de base réelle du texte.
    Méthode unique : le conteneur aligne ses éléments sur la ligne de base (align-items: baseline),
    puis l’icône est décalée de « demi-taille − demi-hauteur de lettre » (unités cap / ex = métriques
    de la police réellement chargée). Le margin-top négatif (= taille de l’icône) l’exclut du calcul
    de hauteur de la ligne : seule la position visuelle change, pas la mise en page. Navigateurs sans l’unité « cap » : les réglages en px définis
    plus haut restent appliqués.
    --icon-lift : remontée des icônes par rapport au centre des majuscules (texte Exo 2).
-   --mono-drop : descente des icônes et diodes par rapport au centre des minuscules (adresses). */
+   --mono-drop : descente des diodes par rapport au centre des minuscules (adresses). */
 @supports (top: 1cap) {
-  :root { --icon-lift: .3px; --mono-drop: .6px; }
-
-    .win-bar { align-items: baseline; }
+  :root { --icon-lift: .3px; --mono-drop: .6px; --ext-drop: 0px; }
+  .win-bar { align-items: baseline; }
   .win-icon { position: relative; margin-top: -25px; top: calc(12.5px - .5cap - var(--icon-lift)); font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); }
   .nostr-theme-title { align-items: baseline; }
   .nostr-theme-title .i { position: relative; margin-top: 0; top: calc(12px - .5cap - var(--icon-lift)); }
@@ -488,17 +471,18 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
   .btn-copy, .btn-text { align-items: baseline; padding-block: calc((44px - 2px - 1.4em) / 2); }
   .btn-copy .i, .btn-text .i { position: relative; margin-top: -20px; top: calc(10px - .5cap - var(--icon-lift)); }
 
-    .addr { align-items: baseline; }
+  .addr { align-items: baseline; }
   .dot { position: relative; margin-top: -7px; top: calc(3.5px - .5ex + var(--mono-drop)); }
   .ext { align-items: baseline; }
-  .ext .i { position: relative; margin-top: -1em; top: calc(.5em - .5ex + var(--mono-drop)); }
+  /* Lien : centré entre le milieu des minuscules et celui des capitales (adresses riches en lettres hautes). --ext-drop : réglage fin, positif = plus bas. */
+  .ext .i { position: relative; margin-top: -1em; top: calc(.5em - .25ex - .25cap + var(--ext-drop)); }
 }
 </style>
 <noscript><style>
 /* Sans JavaScript : toutes les rubriques sont affichées à la suite. */
 .panel[hidden]{display:flex}
 .panel::before{content:attr(data-title);display:block;color:#fff;font:600 21px/1.4 var(--sans);padding-top:1rem}
-.panel + .panel{border-top:1px solid var(--nav-divider);margin-top:1.5rem}
+.panel + .panel{border-top:1px solid;border-image:var(--divider) 1;margin-top:1.5rem}
 .actions,.win-bar,.drawer,.overlay{display:none}
 </style></noscript>
 </head>
@@ -691,8 +675,38 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     winIcon.replaceChildren($('svg', link).cloneNode(true));
     document.title = panel.id === 'accueil' ? baseTitle : `${label} — Libestria.fr`;
     scroller.scrollTop = 0;
+    lockCopyWidths(panel);
     observeCards(panel);
   }
+
+  /**
+   * LARGEUR DES BOUTONS « COPIER »
+   * Le libellé change à la copie (« Copier WSS » → « WSS copié ») : sans précaution, le
+   * bouton change de largeur et décale ses voisins. La largeur minimale est donc fixée sur
+   * le plus large des deux états. La mesure exige une rubrique affichée : elle est refaite
+   * à chaque changement de rubrique, au chargement des polices et au redimensionnement.
+   */
+  function lockCopyWidths(root) {
+    $$('[data-copy]', root).forEach(btn => {
+      const label = $('.lbl', btn);
+      if (!label || !btn.offsetWidth || btn.classList.contains('is-copied') || btn.classList.contains('is-failed')) return;
+      const idle = label.textContent;
+      btn.style.minWidth = '';
+      const idleWidth = btn.getBoundingClientRect().width;
+      label.textContent = btn.dataset.done;
+      const doneWidth = btn.getBoundingClientRect().width;
+      label.textContent = idle;
+      btn.style.minWidth = `${Math.ceil(Math.max(idleWidth, doneWidth))}px`;
+    });
+  }
+  let lockFrame = 0;
+  const relock = () => {
+    cancelAnimationFrame(lockFrame);
+    lockFrame = requestAnimationFrame(() => { if (activePanel) lockCopyWidths(activePanel); });
+  };
+  addEventListener('resize', relock);
+  document.fonts?.addEventListener('loadingdone', relock);
+  document.fonts?.ready.then(relock);
 
   function hashId() {
     try { return decodeURIComponent(location.hash.slice(1)); } catch { return ''; }
