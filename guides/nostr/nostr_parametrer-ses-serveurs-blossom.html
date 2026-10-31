@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'" http-equiv="Content-Security-Policy"/>
+<title>Paramétrer ses serveurs de médias Blossom sur Nostr — Guide Libestria</title>
+<meta content="Choisis et configure tes serveurs Blossom dans une application Nostr compatible, puis vérifie tes envois et la disponibilité de tes médias." name="description"/>
+<meta content="#000000" name="theme-color"/>
+<link href="https://libestria.fr/guides/nostr/nostr_parametrer-ses-serveurs-blossom.html" rel="canonical"/>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/favicon.png" rel="apple-touch-icon"/>
+<meta content="article" property="og:type"/>
+<meta content="fr_FR" property="og:locale"/>
+<meta content="Libestria" property="og:site_name"/>
+<meta content="https://libestria.fr/guides/nostr/nostr_parametrer-ses-serveurs-blossom.html" property="og:url"/>
+<meta content="Paramétrer ses serveurs de médias Blossom sur Nostr — Guide Libestria" property="og:title"/>
+<meta content="Choisis et configure tes serveurs Blossom dans une application Nostr compatible, puis vérifie tes envois et la disponibilité de tes médias." property="og:description"/>
+<meta content="https://libestria.fr/guides/nostr/og-nostr.png" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="image/png" property="og:image:type"/>
+<meta content="Logo Nostr — Guide Libestria" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Paramétrer ses serveurs de médias Blossom sur Nostr — Guide Libestria" name="twitter:title"/>
+<meta content="Choisis et configure tes serveurs Blossom dans une application Nostr compatible, puis vérifie tes envois et la disponibilité de tes médias." name="twitter:description"/>
+<meta content="https://libestria.fr/guides/nostr/og-nostr.png" name="twitter:image"/>
+<link href="../guides.css" rel="stylesheet"/>
+</head>
+<body><div class="wrap"><header class="hero"><div class="libestria-brand"><a class="brand-link" href="https://libestria.fr/"><img alt="" decoding="async" fetchpriority="high" height="256" src="../../IMG/IMG_Libestria.webp" width="256"/><span class="libestria-wordmark">Libestria.fr</span></a><div class="actions"><a aria-label="Accueil Libestria" class="icon-btn icon-btn--home" href="https://libestria.fr/" title="Accueil Libestria"><svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a><a aria-label="Soutenir Libestria" class="icon-btn icon-btn--support" href="https://libestria.fr/#soutien" title="Soutenir Libestria"><svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></svg></a></div></div><img alt="Logo Nostr" class="proto-logo" decoding="async" height="166" src="../../IMG/Logo_Nostr.png" width="400"/><h1>Paramétrer ses serveurs de médias Blossom sur Nostr</h1><p>Apprends à choisir, ajouter et utiliser des serveurs Blossom pour tes images, vidéos et autres fichiers sur Nostr.</p><div class="platforms" aria-label="Plateformes couvertes"><span class="platform-pill">Android</span><span class="platform-pill">iOS</span><span class="platform-pill">Windows</span><span class="platform-pill">macOS</span><span class="platform-pill">Linux</span></div><p class="updated">Dernière mise à jour : <time datetime="2026-10-31">31/10/2026</time></p></header>
+<div class="toolbar"><button aria-label="Imprimer ou enregistrer le guide en PDF" data-print type="button">Imprimer / Enregistrer en PDF</button></div>
+<nav aria-labelledby="toc-title" class="toc"><h2 id="toc-title">Sommaire</h2><ul class="toc-list"><li><a href="#intro">Introduction</a></li><li><a href="#comprendre">1. Comprendre le rôle de Blossom</a></li><li><a href="#choisir">2. Choisir ses serveurs Blossom</a></li><li><a href="#configurer">3. Configurer les serveurs dans une application</a></li><li><a href="#liste">4. Comprendre la liste publique des serveurs</a></li><li><a href="#publier">5. Envoyer et retrouver ses médias</a></li><li><a href="#securite">6. Protéger ses fichiers et sa confidentialité</a></li><li><a href="#depanner">7. Vérifier et dépanner</a></li><li><a href="#conclusion">Conclusion</a></li></ul></nav><main>
+<section aria-labelledby="intro" class="card"><h2 id="intro">Introduction</h2>
+<p>Sur Nostr, une publication peut contenir du texte et des liens vers des images, vidéos ou autres fichiers. Ces médias ne sont pas nécessairement stockés sur les relais Nostr. <strong>Blossom</strong> est un protocole qui permet de les héberger sur des serveurs spécialisés, indépendants de ton application.</p>
+<p>Ce guide t’aide à choisir un serveur Blossom, à le configurer et à tester l’envoi d’un média. Les réglages varient selon les applications compatibles.</p>
+<p><strong>Prérequis :</strong> une identité Nostr, une application compatible avec l’envoi de médias via Blossom et l’adresse d’au moins un serveur Blossom acceptant tes fichiers. Tu n’as pas besoin d’héberger ton propre serveur.</p></section>
+<section aria-labelledby="comprendre" class="card"><h2 id="comprendre">1. Comprendre le rôle de Blossom</h2>
+<p>Les <strong>relais Nostr</strong> diffusent tes publications. Les <strong>serveurs Blossom</strong> hébergent les images, vidéos et autres fichiers auxquels elles renvoient.</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">Élément</th><th scope="col">Rôle</th><th scope="col">Adresse habituelle</th></tr></thead><tbody><tr><td>Relais Nostr</td><td>Recevoir et distribuer des événements.</td><td><code>wss://</code></td></tr><tr><td>Serveur Blossom</td><td>Héberger et fournir des fichiers.</td><td><code>https://</code></td></tr></tbody></table></div>
+<p>Chaque fichier possède une <strong>empreinte SHA-256</strong>, une sorte d’identifiant calculé à partir de son contenu. Un client compatible peut s’en servir pour reconnaître le même fichier sur plusieurs serveurs.</p>
+<div class="note"><strong>À retenir :</strong> ajouter un serveur Blossom ne remplace pas tes relais Nostr. Les deux réglages sont complémentaires.</div></section>
+<section aria-labelledby="choisir" class="card"><h2 id="choisir">2. Choisir ses serveurs Blossom</h2>
+<p>Choisis un serveur dont les conditions sont claires. Tu peux en ajouter un second, géré par un autre hébergeur, pour réduire ta dépendance au premier.</p>
+<ul><li><strong>Compatibilité :</strong> vérifie que le service annonce une prise en charge de Blossom, et pas seulement un hébergement d’images classique.</li><li><strong>Accès :</strong> certains serveurs acceptent les envois publics, d’autres exigent une authentification Nostr, une autorisation préalable ou un paiement.</li><li><strong>Limites :</strong> renseigne-toi sur les formats, la taille maximale, les quotas et la durée de conservation.</li><li><strong>Fiabilité :</strong> privilégie un service dont les règles et les modalités de contact sont claires.</li></ul>
+<h3>Exemples de serveurs Blossom</h3>
+<p>Voici cinq exemples. Leur présence dans ce tableau ne garantit ni un accès gratuit ni la possibilité d’envoyer des fichiers depuis ton application.</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">Serveur</th><th scope="col">Gratuité et conditions</th></tr></thead><tbody>
+<tr><td><code>https://blossom.nostr.build</code></td><td><strong>Envois gratuits annoncés</strong> depuis les clients compatibles, jusqu’à 20 Mio par fichier pour les images, vidéos et fichiers audio. Les PDF, SVG et ZIP ne sont pas inclus dans cette offre gratuite annoncée ; des formules payantes existent.</td></tr>
+<tr><td><code>https://cdn.nostrcheck.me</code></td><td><strong>Hébergement gratuit annoncé pour un usage personnel.</strong> Vérifie les modalités d’accès, les quotas et les limites d’envoi.</td></tr>
+<tr><td><code>https://blossom.primal.net</code></td><td><strong>Offre Primal Free :</strong> 1 Go de stockage multimédia et 100 Mo maximum par fichier annoncés. Ces limites concernent l’offre Primal Free ; leur application aux envois Blossom depuis des clients Nostr tiers n’est pas confirmée.</td></tr>
+<tr><td><code>https://blossom.ditto.pub/</code></td><td>Serveur associé à Ditto ; <strong>gratuité des envois depuis des clients tiers non confirmée</strong>.</td></tr>
+<tr><td><code>https://blossom.dreamith.to/</code></td><td><strong>Gratuité et conditions d’envoi non confirmées</strong>.</td></tr>
+</tbody></table></div>
+<div class="note"><strong>Conseil :</strong> commence par un serveur dont les conditions d’envoi sont documentées, puis teste l’envoi d’une petite image sans donnée personnelle. Une offre gratuite peut évoluer ou imposer une connexion.</div>
+<div class="warning"><strong>Attention :</strong> une adresse <code>https://</code> ne suffit pas à prouver qu’un serveur est compatible Blossom. Sa disponibilité et ses conditions peuvent également changer.</div></section>
+<section aria-labelledby="configurer" class="card"><h2 id="configurer">3. Configurer les serveurs dans une application</h2>
+<p>Certains clients proposent déjà un serveur de médias, qui n’utilise pas forcément Blossom. D’autres permettent de choisir un serveur Blossom. Les menus varient selon l’application.</p>
+<ol><li>Ouvre les <strong>« Paramètres »</strong> de ton application Nostr.</li><li>Repère la rubrique consacrée aux <strong>« Médias »</strong>, aux <strong>« Téléversements »</strong> ou à <strong>« Blossom »</strong>, si elle existe.</li><li>Ajoute l’<strong>adresse de base HTTPS</strong> du serveur choisi, sans chemin de fichier ni adresse de relais <code>wss://</code>.</li><li>Si l’application permet de définir un ordre de préférence, place ton serveur principal en premier.</li><li>Enregistre les réglages et répète l’opération pour un éventuel second serveur.</li><li>Teste l’envoi d’une petite image pour vérifier que le serveur l’accepte.</li></ol>
+<pre><code>https://blossom.exemple.org</code></pre>
+<div class="note"><strong>Adresse fictive :</strong> remplace <code>https://blossom.exemple.org</code> par l’adresse HTTPS réelle d’un serveur Blossom compatible. Cette adresse est un exemple, pas un service à utiliser.</div>
+<div class="warning"><strong>Authentification :</strong> si ton client te demande de signer une autorisation d’envoi, vérifie le serveur et l’action autorisée avant de confirmer. Ne colle jamais ta clé privée <code>nsec1…</code> dans un formulaire de serveur.</div></section>
+<section aria-labelledby="liste" class="card"><h2 id="liste">4. Comprendre la liste publique des serveurs</h2>
+<p>La spécification <strong>BUD-03</strong> permet de publier une liste de serveurs Blossom dans un événement Nostr de type <code>10063</code>. <strong>NIP-B7</strong> permet à certains clients de rechercher un fichier sur d’autres serveurs, mais tous ne proposent pas cette fonction.</p>
+<p>Les serveurs configurés dans ton application et ta liste publique sont deux choses différentes. Selon le client, ils peuvent être synchronisés ou gérés séparément.</p>
+<ol><li>Si ton application propose une option de <strong>« Publication de la liste Blossom »</strong> ou équivalente, vérifie les adresses et leur ordre.</li><li>Publie ou mets à jour la liste uniquement si tu souhaites annoncer ces serveurs au réseau.</li><li>Après un changement de serveur, vérifie si ton application a aussi mis à jour la liste publique.</li></ol>
+<div class="note"><strong>Important :</strong> l’ordre indique une préférence, sans garantir que chaque client essaiera tous les serveurs. Inscrire plusieurs serveurs dans la liste publique ne copie <strong>pas automatiquement</strong> tes fichiers sur chacun d’eux. La duplication dépend des fonctions du client et des serveurs.</div></section>
+<section aria-labelledby="publier" class="card"><h2 id="publier">5. Envoyer et retrouver ses médias</h2>
+<ol><li>Prépare une publication et joins une petite image sans donnée personnelle. Un client compatible l’envoie normalement au serveur Blossom configuré.</li><li>Attends la fin de l’envoi. Si le serveur demande une autorisation ou un paiement, examine la demande avant de poursuivre.</li><li>Publie le message, puis ouvre le média pour vérifier son affichage.</li><li>Si possible, consulte la publication depuis une autre session ou un autre client pour vérifier l’accès au fichier.</li><li>Pour un média important, conserve l’original et, si ton client le permet, crée une copie sur un autre serveur.</li></ol>
+<p><strong>Exemple :</strong> Blossom héberge ta photo et ta publication Nostr contient son lien. Ajouter un second serveur ne copie pas la photo : il faut aussi l’y envoyer.</p>
+<p>Si un serveur devient indisponible, certains clients peuvent rechercher une copie du fichier ailleurs grâce à son empreinte.</p>
+<div class="warning"><strong>Disponibilité :</strong> cette recherche n’est pas garantie. Il faut qu’une autre copie existe et que ton client sache la retrouver.</div></section>
+<section aria-labelledby="securite" class="card"><h2 id="securite">6. Protéger ses fichiers et sa confidentialité</h2>
+<ul><li><strong>Considère les médias publiés comme publics :</strong> Blossom ne chiffre pas automatiquement tes fichiers. Évite d’y envoyer des documents confidentiels ou des photos sensibles.</li><li><strong>Contrôle les métadonnées :</strong> une image peut contenir des informations comme la localisation ou le modèle de l’appareil. Supprime-les avant publication si nécessaire.</li><li><strong>Conserve les originaux :</strong> un serveur peut supprimer un fichier à l’expiration de sa période de conservation ou à la suite d’un changement de règles.</li><li><strong>Comprends les traces techniques :</strong> l’hébergeur peut connaître ton adresse IP, les horaires de connexion et les fichiers envoyés.</li><li><strong>Vérifie les suppressions :</strong> effacer un média d’un serveur ne garantit pas sa disparition des autres copies, caches ou publications qui le référencent.</li></ul>
+<div class="warning"><strong>Confidentialité :</strong> la signature Nostr peut servir à autoriser un envoi, mais elle ne rend pas le fichier privé. Ne confonds pas authentification et chiffrement.</div></section>
+<section aria-labelledby="depanner" class="card"><h2 id="depanner">7. Vérifier et dépanner</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Problème</th><th scope="col">À vérifier</th></tr></thead><tbody>
+<tr><td>Impossible d’ajouter un serveur</td><td>Prise en charge de Blossom par le client, adresse de base <code>https://</code> et format attendu.</td></tr>
+<tr><td>Envoi refusé</td><td>Authentification, droits d’accès, paiement éventuel, quota, taille et type de fichier.</td></tr>
+<tr><td>Envoi bloqué</td><td>Connexion réseau, disponibilité du serveur et limite de taille.</td></tr>
+<tr><td>Média absent de la publication</td><td>Fin réelle du téléversement, URL insérée dans le message et accessibilité du fichier.</td></tr>
+<tr><td>Fichier introuvable après un changement de serveur</td><td>Existence d’une copie sur le nouveau serveur ; la liste <code>10063</code> ne déplace pas les fichiers.</td></tr>
+<tr><td>Suppression impossible</td><td>Fonction de gestion proposée par le client, autorisations et règles du serveur.</td></tr>
+</tbody></table></div>
+<p>Pour isoler une panne, recommence avec un petit fichier non sensible et un seul serveur à la fois. Si ton application ne propose aucun réglage Blossom, vérifie sa compatibilité avant de chercher un menu inexistant.</p></section>
+<section aria-labelledby="conclusion" class="card"><h2 id="conclusion">Conclusion</h2>
+<p>Avec Blossom, tu peux choisir où héberger les médias associés à tes publications Nostr. Commence avec un serveur compatible et fiable, teste l’envoi d’un fichier, puis ajoute éventuellement un second hébergeur.</p>
+<p>Retiens surtout trois distinctions : <strong>Blossom n’est pas un relais Nostr</strong>, <strong>une liste publique n’est pas une sauvegarde</strong> et <strong>un fichier accessible publiquement n’est pas chiffré</strong>.</p></section>
+</main><footer><a href="https://libestria.fr" rel="noopener noreferrer" target="_blank">Libestria.fr</a></footer></div><script src="../guides.js"></script></body></html>
