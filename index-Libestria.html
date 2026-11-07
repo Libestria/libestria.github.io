@@ -219,7 +219,7 @@ main {
 #ressources-nostr .theme-accordion .intro { margin-bottom: 0; }
 #ressources-nostr .theme-accordion .cards { margin-top: 1rem; }
 #ressources-nostr .theme-accordion [hidden] { display: none; }
-.theme-toggle { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; }
+.theme-toggle { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .theme-toggle strong { flex: 1; font-weight: inherit; }
 .theme-toggle::after { content: ""; flex: none; width: 9px; height: 9px; margin: 7px 5px 0 0; border-right: 2px solid var(--cyan); border-bottom: 2px solid var(--cyan); transform: rotate(45deg); transition: transform .2s ease; }
 .theme-toggle[aria-expanded="true"]::after { transform: rotate(225deg); }
@@ -481,7 +481,7 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
    --mono-drop : descente des diodes par rapport au centre des minuscules (adresses). */
 @supports (top: 1cap) {
   :root { --icon-lift: .3px; --mono-drop: .6px; --ext-drop: 0px; }
-  :is(.win-bar, .section-title, .card :is(h3, h4), .drawer-link, .btn-copy, .btn-text, .addr, .ext) { align-items: baseline; }
+  :is(.win-bar, .section-title, .theme-toggle, .card :is(h3, h4), .drawer-link, .btn-copy, .btn-text, .addr, .ext) { align-items: baseline; }
   .btn-copy, .btn-text { padding-block: calc((44px - 2px - 1.4em) / 2); }
   .win-icon { font: var(--font-win-title); }
 
