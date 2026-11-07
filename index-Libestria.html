@@ -702,29 +702,25 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     winIcon.replaceChildren($('svg', link).cloneNode(true));
     document.title = panel.id === 'accueil' ? baseTitle : `${label} — Libestria.fr`;
     scroller.scrollTop = 0;
-    if (panel.id === 'ressources-nostr') {
-      $$('.theme-accordion', panel).forEach(section => {
-        $('.theme-toggle', section).setAttribute('aria-expanded', 'false');
-        $('.intro > p', section).hidden = true;
-        $('.cards', section).hidden = true;
-      });
-    }
+    if (panel.id === 'ressources-nostr') setNostrTheme();
     lockCopyWidths(panel);
     observeCards(panel);
   }
 
   const nostrResources = $('#ressources-nostr');
-  nostrResources.addEventListener('click', event => {
-    const toggle = event.target.closest('.theme-toggle');
-    if (!toggle || !nostrResources.contains(toggle)) return;
-    const opening = toggle.getAttribute('aria-expanded') !== 'true';
+  function setNostrTheme(activeToggle = null) {
     $$('.theme-accordion', nostrResources).forEach(section => {
       const button = $('.theme-toggle', section);
-      const expanded = opening && button === toggle;
+      const expanded = button === activeToggle;
       button.setAttribute('aria-expanded', String(expanded));
       $('.intro > p', section).hidden = !expanded;
       $('.cards', section).hidden = !expanded;
     });
+  }
+  nostrResources.addEventListener('click', event => {
+    const toggle = event.target.closest('.theme-toggle');
+    if (!toggle || !nostrResources.contains(toggle)) return;
+    setNostrTheme(toggle.getAttribute('aria-expanded') === 'true' ? null : toggle);
     observeCards(nostrResources);
     toggle.scrollIntoView({ block: 'nearest' });
   });
