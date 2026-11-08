@@ -19,7 +19,7 @@ button.main{background:var(--acc);color:var(--accink);border-color:var(--acc);fo
 button:disabled{opacity:.5;cursor:default}
 input{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .row{display:flex;gap:8px;align-items:center}
-.relay{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.relay{flex-wrap:wrap;display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .relay:first-child{border-top:0}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--mute);flex:none}
 .dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.slow{background:var(--warn)}
@@ -29,8 +29,13 @@ input{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px sol
 .seg button{border:0;border-radius:0;padding:4px 10px;font-size:.78rem;line-height:1.3;color:var(--mute);text-align:left;white-space:nowrap}
 .seg button+button{border-top:1px solid var(--line)}
 .seg button.on{background:var(--acc);color:var(--accink);font-weight:600}
-.x{padding:6px 10px;color:var(--mute)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;flex:1 0 100%;padding-left:20px}
+.acts button{font-size:.8rem;padding:5px 10px;color:var(--mute)}
+.acts button.on{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
+.acts .x{color:var(--bad);margin-left:auto}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips .lbl{flex:1 0 100%;font-size:.82rem;font-weight:600;margin-top:6px}
+.chips .lbl:first-child{margin-top:0}
 .chips button{font-size:.82rem;padding:4px 10px;border-radius:99px;color:var(--mute)}
 h2{font-size:1rem;margin:0 0 10px}
 .msg{font-size:.9rem;color:var(--mute);margin:8px 0 0}
@@ -88,13 +93,14 @@ h2{font-size:1rem;margin:0 0 10px}
 <script>
 const BOOT=["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://purplepag.es","wss://relay.nostr.band"];
 const LISTS={
-  pub:{kind:10002,tab:"Publics",title:"Relais publics (NIP-65)",rw:true,
+  pub:{kind:10002,tab:"Lecture (R) & Écriture (W)",title:"Relais publics (NIP-65)",rw:true,
     hint:"Les relais où vous publiez (écriture) et où les autres vous répondent (lecture).",
-    sugg:["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://relay.nostr.band","wss://purplepag.es","wss://nostr.wine"]},
-  dm:{kind:10050,tab:"Messages privés",title:"Relais de messages privés (NIP-17)",rw:false,
+    sugg:["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://relay.nostr.band","wss://purplepag.es","wss://nostr.wine"],
+    fr:["wss://relay.nostrmap.net","wss://relay.decentralia.fr","wss://relay.noeudlibre.fr"]},
+  dm:{kind:10050,tab:"Messages Privés (DM)",title:"Relais de messages privés (NIP-17)",rw:false,
     hint:"Les relais où l’on vous envoie vos messages privés. Choisissez-en 1 à 3 fiables, idéalement avec authentification.",
     sugg:["wss://auth.nostr1.com","wss://nip17.com","wss://inbox.nostr.wine","wss://relay.damus.io"]},
-  search:{kind:10007,tab:"Recherche",title:"Relais de recherche (NIP-51)",rw:false,
+  search:{kind:10007,tab:"Recherche (S)",title:"Relais de recherche (NIP-51)",rw:false,
     hint:"Les relais interrogés quand vous cherchez des profils ou des notes.",
     sugg:["wss://relay.nostr.band","wss://search.nos.today","wss://relay.noswhere.com","wss://nostr.wine"]}
 };
@@ -156,7 +162,7 @@ function parseTags(ev,rw){
 function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function renderTabs(){
   const t=$("tabs"); t.innerHTML="";
-  for(const k in LISTS){
+  for(const k of ["pub","search","dm"]){
     const b=document.createElement("button"); b.textContent=LISTS[k].tab+" ("+LISTS[k].relays.length+")";
     b.className=k===cur?"on":""; b.setAttribute("role","tab");
     b.onclick=()=>{cur=k;$("addMsg").textContent="";$("resCard").hidden=true;render();testAll()};
@@ -171,20 +177,23 @@ function render(){
   relays.forEach((r,i)=>{
     const s=status[r.url]; const cls=!s?"":s.err?"bad":s.ms>1200?"slow":"ok";
     const d=document.createElement("div"); d.className="relay";
-    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div>'+
-      (cfg.rw?'<div class="seg"><button data-k="read">Lecture (R)</button><button data-k="write">Écriture (W)</button></div>':'')+
-      '<button class="x" title="Retirer" aria-label="Retirer">✕</button>';
-    d.querySelector(".url").innerHTML=esc(r.url.replace(/^wss?:\/\//,""))+(s?"<small>"+(s.err?esc(s.err):s.ms+" ms")+"</small>":"");
-    d.querySelectorAll(".seg button").forEach(b=>{
-      b.classList.toggle("on",r[b.dataset.k]);
-      b.onclick=()=>{r[b.dataset.k]=!r[b.dataset.k]; if(!r.read&&!r.write)r[b.dataset.k=="read"?"write":"read"]=true; cfg.dirty=true;render()};
+    const mode=r.read&&r.write?"rw":r.read?"r":"w";
+    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div><div class="acts">'+
+      (cfg.rw?'<button data-m="r">Lecture seule (R)</button><button data-m="w">Écriture seule (W)</button><button data-m="rw">Lecture + Écriture (R+W)</button>':'')+
+      '<button class="x">Supprimer</button></div>';
+    d.querySelector(".url").innerHTML=esc(r.url)+(s?"<small>"+(s.err?esc(s.err):s.ms+" ms")+"</small>":"");
+    d.querySelectorAll("[data-m]").forEach(b=>{
+      b.classList.toggle("on",b.dataset.m===mode);
+      b.onclick=()=>{r.read=b.dataset.m.includes("r");r.write=b.dataset.m.includes("w");cfg.dirty=true;render()};
     });
     d.querySelector(".x").onclick=()=>{relays.splice(i,1);cfg.dirty=true;render()};
     l.appendChild(d);
   });
   const c=$("chips"); c.innerHTML="";
-  cfg.sugg.filter(u=>!relays.some(r=>r.url===u)).forEach(u=>{
-    const b=document.createElement("button"); b.textContent="+ "+u.replace("wss://",""); b.onclick=()=>add(u); c.appendChild(b);
+  [["Suggestions",cfg.sugg],["Francophones",cfg.fr]].forEach(([t,arr])=>{
+    const f=(arr||[]).filter(u=>!relays.some(r=>r.url===u)); if(!f.length)return;
+    const h=document.createElement("div"); h.className="lbl"; h.textContent=t; c.appendChild(h);
+    f.forEach(u=>{const b=document.createElement("button"); b.textContent="+ "+u; b.onclick=()=>add(u); c.appendChild(b)});
   });
 }
 function add(raw){
@@ -230,7 +239,7 @@ async function publish(){
   const res=await Promise.all(targets.map(u=>publishTo(u,ev)));
   const box=$("results"); box.innerHTML="";
   res.forEach(r=>{const p=document.createElement("div");p.className="res "+(r.ok?"ok":"bad");
-    p.textContent=r.url.replace("wss://","")+(r.ok?"":" — "+(r.msg||"refusé"));box.appendChild(p)});
+    p.textContent=r.url+(r.ok?"":" — "+(r.msg||"refusé"));box.appendChild(p)});
   const n=res.filter(r=>r.ok).length;
   const h=document.createElement("p");h.className="msg";
   h.textContent=n?"Liste publiée sur "+n+" relais sur "+res.length+".":"Aucun relais n’a accepté la liste. Vérifiez vos relais d’écriture.";
