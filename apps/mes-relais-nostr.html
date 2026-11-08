@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes relais Nostr</title>
+<style>
+:root{--bg:#f6f5fb;--card:#fff;--ink:#1b1930;--mute:#6b6886;--line:#e3e0f0;--acc:#5b3df5;--accink:#fff;--ok:#1a9d5c;--bad:#d03a4a;--warn:#c98a10}
+@media (prefers-color-scheme:dark){:root{--bg:#12101f;--card:#1b1830;--ink:#eeecfa;--mute:#9a96b8;--line:#2d2948;--acc:#8f7bff;--accink:#12101f;--ok:#41d08a;--bad:#ff6b7a;--warn:#f0b43c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:-.02em}
+p.sub{margin:0 0 20px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 14px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.main{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+input{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px;align-items:center}
+.relay{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.relay:first-child{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mute);flex:none}
+.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.slow{background:var(--warn)}
+.url{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace;font-size:.9rem}
+.url small{display:block;color:var(--mute);font-family:system-ui,sans-serif;font-size:.75rem}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.seg button{border:0;border-radius:0;padding:6px 10px;font-size:.82rem;color:var(--mute)}
+.seg button.on{background:var(--acc);color:var(--accink);font-weight:600}
+.x{padding:6px 10px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{font-size:.82rem;padding:4px 10px;border-radius:99px;color:var(--mute)}
+h2{font-size:1rem;margin:0 0 10px}
+.msg{font-size:.9rem;color:var(--mute);margin:8px 0 0}
+.empty{color:var(--mute);padding:8px 0;margin:0}
+.bar{position:sticky;bottom:0;padding:12px 16px;background:linear-gradient(transparent,var(--bg) 40%);display:flex;justify-content:center}
+.bar button{width:100%;max-width:608px;padding:12px}
+.res{font-size:.85rem;font-family:ui-monospace,Menlo,monospace;margin:4px 0}
+.res.ok::before{content:"✓ ";color:var(--ok)}.res.bad::before{content:"✕ ";color:var(--bad)}
+#who{font-size:.85rem;color:var(--mute);word-break:break-all}
+</style>
+</head>
+<body>
+<main>
+<h1>Mes relais Nostr</h1>
+<p class="sub">Ajoutez, retirez et testez vos relais, puis publiez votre liste publique (NIP-65).</p>
+
+<div class="card" id="login">
+  <button class="main" id="btnLogin">Se connecter avec mon extension</button>
+  <p class="msg" id="loginMsg">Nécessite une extension compatible NIP-07 (Alby, nos2x, Flamingo…). Votre clé privée ne quitte jamais l’extension.</p>
+</div>
+
+<div id="app" hidden>
+  <p id="who"></p>
+  <div class="card">
+    <h2>Mes relais</h2>
+    <div id="list"></div>
+    <div class="row" style="margin-top:12px">
+      <button id="btnTest">Tester la connexion</button>
+      <span class="msg" id="listMsg" style="margin:0"></span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Ajouter un relais</h2>
+    <div class="row">
+      <input id="newUrl" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
+      <button id="btnAdd">Ajouter</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <p class="msg" id="addMsg"></p>
+  </div>
+  <div class="card" id="resCard" hidden>
+    <h2>Résultat de la publication</h2>
+    <div id="results"></div>
+  </div>
+  <div class="bar"><button class="main" id="btnPub">Publier ma liste de relais</button></div>
+</div>
+</main>
+
+<script>
+const BOOT=["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://purplepag.es","wss://relay.nostr.band"];
+const SUGG=["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://relay.nostr.band","wss://purplepag.es","wss://relay.snort.social","wss://nostr.wine"];
+const $=id=>document.getElementById(id);
+let pk=null, relays=[], status={}, dirty=false;
+
+function norm(u){
+  u=(u||"").trim().replace(/^https:\/\//i,"wss://").replace(/^http:\/\//i,"ws://");
+  if(!/^wss?:\/\//i.test(u)) u="wss://"+u;
+  try{const x=new URL(u); if(!x.hostname.includes(".")&&x.hostname!=="localhost") return null;
+    return x.protocol+"//"+x.host+(x.pathname==="/"?"":x.pathname.replace(/\/$/,""));}catch(e){return null}
+}
+function openWS(url,ms=5000){
+  return new Promise((res,rej)=>{
+    let ws; const t=setTimeout(()=>{try{ws.close()}catch(e){};rej(new Error("délai dépassé"))},ms);
+    try{ws=new WebSocket(url)}catch(e){clearTimeout(t);return rej(e)}
+    ws.onopen=()=>{clearTimeout(t);res(ws)};
+    ws.onerror=()=>{clearTimeout(t);rej(new Error("connexion impossible"))};
+  });
+}
+async function fetchList(url){
+  try{
+    const ws=await openWS(url,4000);
+    return await new Promise(res=>{
+      let best=null; const t=setTimeout(()=>{ws.close();res(best)},4000);
+      ws.onmessage=m=>{let d;try{d=JSON.parse(m.data)}catch(e){return}
+        if(d[0]==="EVENT"&&d[2]&&(!best||d[2].created_at>best.created_at)) best=d[2];
+        if(d[0]==="EOSE"){clearTimeout(t);ws.close();res(best)}};
+      ws.send(JSON.stringify(["REQ","r",{kinds:[10002],authors:[pk],limit:1}]));
+    });
+  }catch(e){return null}
+}
+async function publishTo(url,ev){
+  try{
+    const ws=await openWS(url,5000);
+    return await new Promise(res=>{
+      const t=setTimeout(()=>{ws.close();res({url,ok:false,msg:"pas de réponse"})},6000);
+      ws.onmessage=m=>{let d;try{d=JSON.parse(m.data)}catch(e){return}
+        if(d[0]==="OK"&&d[1]===ev.id){clearTimeout(t);ws.close();res({url,ok:d[2],msg:d[3]||""})}};
+      ws.send(JSON.stringify(["EVENT",ev]));
+    });
+  }catch(e){return {url,ok:false,msg:e.message}}
+}
+async function ping(url){
+  const t0=performance.now();
+  try{const ws=await openWS(url,5000);const ms=Math.round(performance.now()-t0);ws.close();return {ms}}
+  catch(e){return {err:e.message}}
+}
+function parseTags(ev){
+  const out=[];
+  for(const t of ev.tags||[]){ if(t[0]!=="r")continue; const u=norm(t[1]); if(!u||out.some(r=>r.url===u))continue;
+    out.push({url:u,read:t[2]!=="write",write:t[2]!=="read"}); }
+  return out;
+}
+function render(){
+  const l=$("list"); l.innerHTML="";
+  if(!relays.length){l.innerHTML='<p class="empty">Aucun relais pour l’instant. Ajoutez-en un ci-dessous.</p>'}
+  relays.forEach((r,i)=>{
+    const s=status[r.url]; const cls=!s?"":s.err?"bad":s.ms>1200?"slow":"ok";
+    const d=document.createElement("div"); d.className="relay";
+    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div><div class="seg"><button data-k="read">Lecture</button><button data-k="write">Écriture</button></div><button class="x" title="Retirer" aria-label="Retirer">✕</button>';
+    d.querySelector(".url").innerHTML=esc(r.url.replace(/^wss?:\/\//,""))+(s?"<small>"+(s.err?esc(s.err):s.ms+" ms")+"</small>":"");
+    d.querySelectorAll(".seg button").forEach(b=>{
+      b.classList.toggle("on",r[b.dataset.k]);
+      b.onclick=()=>{r[b.dataset.k]=!r[b.dataset.k]; if(!r.read&&!r.write)r[b.dataset.k=="read"?"write":"read"]=true; dirty=true;render()};
+    });
+    d.querySelector(".x").onclick=()=>{relays.splice(i,1);dirty=true;render()};
+    l.appendChild(d);
+  });
+  const c=$("chips"); c.innerHTML="";
+  SUGG.filter(u=>!relays.some(r=>r.url===u)).forEach(u=>{
+    const b=document.createElement("button"); b.textContent="+ "+u.replace("wss://",""); b.onclick=()=>add(u); c.appendChild(b);
+  });
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function add(raw){
+  const u=norm(raw), m=$("addMsg");
+  if(!u){m.textContent="Adresse invalide. Exemple : relay.damus.io";return}
+  if(relays.some(r=>r.url===u)){m.textContent="Ce relais est déjà dans votre liste.";return}
+  relays.push({url:u,read:true,write:true}); dirty=true; m.textContent=""; $("newUrl").value=""; render(); testOne(u);
+}
+async function testOne(u){status[u]=await ping(u);render()}
+async function testAll(){
+  $("listMsg").textContent="Test en cours…";
+  await Promise.all(relays.map(r=>testOne(r.url)));
+  $("listMsg").textContent=""
+}
+async function login(){
+  const m=$("loginMsg");
+  if(!window.nostr){m.textContent="Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page.";return}
+  try{pk=await window.nostr.getPublicKey()}catch(e){m.textContent="Connexion refusée par l’extension.";return}
+  $("login").hidden=true; $("app").hidden=false; $("who").textContent="Clé publique : "+pk.slice(0,12)+"…"+pk.slice(-8);
+  $("listMsg").textContent="Chargement de votre liste actuelle…";
+  const evs=(await Promise.all(BOOT.map(fetchList))).filter(Boolean);
+  const best=evs.sort((a,b)=>b.created_at-a.created_at)[0];
+  relays=best?parseTags(best):[];
+  $("listMsg").textContent=best?"Liste chargée ("+relays.length+" relais).":"Aucune liste publiée trouvée : créez la vôtre.";
+  render(); testAll();
+}
+async function publish(){
+  if(!relays.length){$("listMsg").textContent="Ajoutez au moins un relais avant de publier.";return}
+  const b=$("btnPub"); b.disabled=true; b.textContent="Signature…";
+  const tags=relays.map(r=>r.read&&r.write?["r",r.url]:["r",r.url,r.read?"read":"write"]);
+  let ev;
+  try{ev=await window.nostr.signEvent({kind:10002,created_at:Math.floor(Date.now()/1000),tags,content:""})}
+  catch(e){b.disabled=false;b.textContent="Publier ma liste de relais";$("listMsg").textContent="Signature refusée.";return}
+  b.textContent="Publication…";
+  const targets=[...new Set([...relays.filter(r=>r.write).map(r=>r.url),...BOOT])];
+  const res=await Promise.all(targets.map(u=>publishTo(u,ev)));
+  const box=$("results"); box.innerHTML="";
+  res.forEach(r=>{const p=document.createElement("div");p.className="res "+(r.ok?"ok":"bad");
+    p.textContent=r.url.replace("wss://","")+(r.ok?"":" — "+(r.msg||"refusé"));box.appendChild(p)});
+  const n=res.filter(r=>r.ok).length;
+  const h=document.createElement("p");h.className="msg";
+  h.textContent=n?"Liste publiée sur "+n+" relais sur "+res.length+".":"Aucun relais n’a accepté la liste. Vérifiez vos relais d’écriture.";
+  box.prepend(h); $("resCard").hidden=false; dirty=false;
+  b.disabled=false;b.textContent="Publier ma liste de relais";
+  $("resCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("btnLogin").onclick=login;
+$("btnAdd").onclick=()=>add($("newUrl").value);
+$("newUrl").onkeydown=e=>{if(e.key==="Enter")add(e.target.value)};
+$("btnTest").onclick=testAll;
+$("btnPub").onclick=publish;
+window.onbeforeunload=()=>dirty?"":undefined;
+</script>
+</body>
+</html>
