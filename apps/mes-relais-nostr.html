@@ -230,10 +230,19 @@ input::placeholder { color: var(--muted); }
 .profile-name { font-weight: 600; font-size: 1.1rem; color: #fff; line-height: 1.3; overflow-wrap: anywhere; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
-/* 7. Navigation des listes -------------------------------------------- */
-.tabs { display: flex; gap: 6px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 2px; }
-.tabs button { white-space: nowrap; border-radius: 99px; }
-.tabs button.on { background: var(--grad-card); border-color: var(--violet-light); color: var(--cyan); font-weight: 700; }
+/* 7. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
+.relay-accordions { display: grid; gap: 14px; }
+.relay-accordion { min-width: 0; }
+.relay-accordion-heading { margin: 0; color: #fff; font-size: 18px; font-weight: 600; line-height: 1.4; }
+.theme-toggle { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 0; min-height: 0; border: 0; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.theme-toggle strong { flex: 1; font-weight: inherit; }
+.theme-toggle::after { content: ""; flex: none; width: 9px; height: 9px; margin: 7px 5px 0 0; border-right: 2px solid var(--cyan); border-bottom: 2px solid var(--cyan); transform: rotate(45deg); transition: transform .2s ease; }
+.theme-toggle[aria-expanded="true"]::after { transform: rotate(225deg); }
+.theme-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
+.relay-accordion-content { margin-top: 14px; }
+.relay-accordion-content > .card { margin: 0; }
+@media (hover: hover) { .theme-toggle:hover { background: none; border-color: transparent; color: #fff; } }
+@media (prefers-reduced-motion: reduce) { .theme-toggle::after { transition: none; } }
 
 /* 8. Relais et indicateurs -------------------------------------------- */
 .relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 0; border-top: 2px solid; border-image: var(--divider) 1; }
@@ -266,7 +275,6 @@ input::placeholder { color: var(--muted); }
   .card { padding: 18px 12px; }
 
   .profile { gap: 10px; }
-  .tabs { margin-bottom: 14px; }
   .relay { gap: 8px; }
   .modes { padding-left: 16px; }
 }
@@ -279,7 +287,6 @@ input::placeholder { color: var(--muted); }
   .relay .url { flex-basis: calc(100% - 20px); }
   .relay .lat { margin-left: 16px; }
   .modes { padding-left: 0; }
-  .tabs button { flex: none; }
 }
 @media (max-width: 380px) {
   .card { padding: 16px 10px; }
@@ -358,9 +365,9 @@ input::placeholder { color: var(--muted); }
         <p>• <span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM). Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
       </div>
     </div>
-    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais"></div>
 
-    <div class="card">
+    <div class="card" id="relayListCard" hidden>
       <h2 id="listTitle"></h2>
       <p class="hint" id="listHint"></p>
       <div id="list"></div>
@@ -625,23 +632,67 @@ function relayRow(list, relay, index) {
   return row;
 }
 
-function renderTabs() {
-  const tabs = $("tabs");
-  tabs.innerHTML = "";
+let accordionOpen = true;
+
+// Les en-têtes restent dans le DOM : les mises à jour ne détruisent ni le focus
+// clavier ni les éléments de la carte contenant la liste de relais.
+function initRelayAccordions() {
+  const container = $("relayAccordions");
   for (const [key, list] of Object.entries(LISTS)) {
-    const btn = document.createElement("button");
-    btn.textContent = `${list.tab} (${list.relays.length})`;
-    btn.className = key === current ? "on" : "";
-    btn.setAttribute("role", "tab");
-    btn.onclick = () => {
-      current = key;
-      $("addMsg").textContent = "";
-      $("resCard").hidden = true;
-      render();
-      testAll();
-    };
-    tabs.appendChild(btn);
+    const section = document.createElement("section");
+    section.className = "relay-accordion";
+    const heading = document.createElement("h3");
+    heading.className = "relay-accordion-heading";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "theme-toggle";
+    button.setAttribute("aria-controls", `relay-panel-${key}`);
+    button.setAttribute("aria-expanded", "false");
+    button.dataset.relayCategory = key;
+    const label = document.createElement("strong");
+    label.textContent = list.tab;
+    button.appendChild(label);
+    heading.appendChild(button);
+    const panel = document.createElement("div");
+    panel.className = "relay-accordion-content";
+    panel.id = `relay-panel-${key}`;
+    panel.hidden = true;
+    section.append(heading, panel);
+    container.appendChild(section);
   }
+  container.addEventListener("click", event => {
+    const button = event.target.closest("button[data-relay-category]");
+    if (!button || !container.contains(button)) return;
+    const key = button.dataset.relayCategory;
+    if (key === current && accordionOpen) {
+      accordionOpen = false;
+      updateRelayAccordions();
+      return;
+    }
+    const changed = key !== current;
+    current = key;
+    accordionOpen = true;
+    $("addMsg").textContent = "";
+    $("resCard").hidden = true;
+    render();
+    if (changed) testAll();
+  });
+}
+
+function updateRelayAccordions() {
+  const container = $("relayAccordions");
+  const listCard = $("relayListCard");
+  const activeKey = accordionOpen ? current : null;
+  for (const button of container.querySelectorAll("button[data-relay-category]")) {
+    const key = button.dataset.relayCategory;
+    const expanded = key === activeKey;
+    button.setAttribute("aria-expanded", String(expanded));
+    button.querySelector("strong").textContent = `${LISTS[key].tab} (${LISTS[key].relays.length})`;
+    const panel = $("relay-panel-" + key);
+    if (expanded) panel.appendChild(listCard);
+    panel.hidden = !expanded;
+  }
+  listCard.hidden = !activeKey;
 }
 
 function renderSuggestions(list) {
@@ -674,7 +725,7 @@ function render() {
   $("searchRelayCount").textContent = LISTS.search.relays.length;
   $("dmRelayCount").textContent = LISTS.dm.relays.length;
   const list = currentList();
-  renderTabs();
+  updateRelayAccordions();
   $("listTitle").textContent = list.title;
   $("listHint").textContent = list.hint;
 
@@ -892,6 +943,7 @@ function showResults(results) {
 }
 
 /* 9. Écouteurs d’événements ------------------------------------------- */
+initRelayAccordions();
 $("btnLogin").addEventListener("click", login);
 $("btnAdd").addEventListener("click", () => addRelay($("newUrl").value));
 $("newUrl").addEventListener("keydown", e => {
