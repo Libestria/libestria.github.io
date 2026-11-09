@@ -248,6 +248,7 @@ input::placeholder { color: var(--muted); }
 .theme-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
 .relay-accordion-content { margin-top: 14px; }
 .relay-accordion-content > .card { margin: 0; }
+.relay-accordion-content > .card + .card { margin-top: 16px; }
 @media (hover: hover) { .theme-toggle:hover { background: none; border-color: transparent; color: #fff; } }
 @media (prefers-reduced-motion: reduce) { .theme-toggle::after { transition: none; } }
 @supports (top: 1cap) {
@@ -398,7 +399,7 @@ input::placeholder { color: var(--muted); }
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="relayAddCard" hidden>
       <h2>Ajouter un relais</h2>
       <div class="row">
         <input id="newUrl" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
@@ -737,17 +738,23 @@ function initRelayAccordions() {
 function updateRelayAccordions() {
   const container = $("relayAccordions");
   const listCard = $("relayListCard");
+  const addCard = $("relayAddCard");
   const activeKey = accordionOpen ? current : null;
   for (const button of container.querySelectorAll("button[data-relay-category]")) {
     const key = button.dataset.relayCategory;
     const expanded = key === activeKey;
     button.setAttribute("aria-expanded", String(expanded));
-    button.querySelector("strong").textContent = `${LISTS[key].tab} (${LISTS[key].relays.length})`;
+    button.querySelector("strong").textContent = LISTS[key].tab;
     const panel = $("relay-panel-" + key);
-    if (expanded) panel.insertBefore(listCard, panel.querySelector(".publish-actions"));
+    if (expanded) {
+      const actions = panel.querySelector(".publish-actions");
+      panel.insertBefore(listCard, actions);
+      panel.insertBefore(addCard, actions);
+    }
     panel.hidden = !expanded;
   }
   listCard.hidden = !activeKey;
+  addCard.hidden = !activeKey;
 }
 
 function renderSuggestions(list) {
