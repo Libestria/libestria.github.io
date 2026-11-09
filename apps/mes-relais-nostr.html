@@ -111,6 +111,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .msg.inline { margin: 0; }
 .alert { color: var(--bad-text); }
 .alert:empty { display: none; }
+#loginMsg:not(:empty) { margin-top: 16px; }
 .login-title { display: flex; align-items: center; gap: 10px; }
 .login-icon { width: 25px; height: 25px; flex: none; color: var(--cyan); }
 .help { margin-top: 14px; font-size: .9rem; color: var(--muted); }
@@ -287,7 +288,7 @@ input::placeholder { color: var(--muted); }
 <main>
 <header class="banner">
 <a class="banner" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Libestria.fr — À propos de Libestria">
-<img class="brand-logo" src="https://libestria.fr/IMG/IMG_Libestria.webp" width="256" height="256" alt="" fetchpriority="high" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.local){this.dataset.local=1;this.src='IMG/IMG_Libestria.webp'}else{this.remove()}">
+<img class="brand-logo" src="../IMG/IMG_Libestria.webp" width="256" height="256" alt="" fetchpriority="high" decoding="async">
 <h1 class="wordmark" translate="no">Libestria.fr</h1>
 </a>
 <div class="actions">
@@ -299,7 +300,7 @@ input::placeholder { color: var(--muted); }
 <div class="win-bar"><span class="win-icon" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-relays"/></svg></span><h2 class="win-title" id="win-title">Gestion des relais Nostr</h2></div>
 <div class="page">
 <div class="content">
-  <div class="proto-logos"><img src="IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div>
+  <div class="proto-logos"><img src="../IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div>
   <div class="sub">
     <p>Cette application web Libestria te permet de configurer facilement tes relais Nostr et de mettre à jour tes listes publiques :</p>
     <ul>
@@ -672,16 +673,74 @@ async function testAll() {
 }
 
 /* ---------- Session ---------- */
-async function login() {
-  const msg = $("loginMsg");
-  if (!window.nostr) { msg.textContent = "Aucune extension NIP-07 détectée. Installe Alby ou nos2x, puis recharge la page."; return; }
-  try { pubkey = await window.nostr.getPublicKey(); }
-  catch { msg.textContent = "Connexion refusée par l’extension."; return; }
+const LOGIN_TIMEOUT_MS = 30000;
+const LOGIN_ERRORS = Object.freeze({
+  missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recharge la page.",
+  denied: "Connexion refusée. Autorise l’accès à ta clé publique dans ton signer, puis réessaie.",
+  technical: "Impossible de communiquer avec ton signer Nostr. Vérifie qu’il fonctionne, puis réessaie.",
+  timeout: "Ton signer Nostr ne répond pas. Vérifie ton extension, puis réessaie."
+});
 
+function showLoginError(message) {
+  $("loginMsg").textContent = `⚠️ ${message}`;
+}
+
+function loginError(error) {
+  // Seuls les refus explicitement signalés par le signer sont classés comme tels.
+  return error?.code === 4001 || error?.code === "4001" || error?.name === "NotAllowedError"
+    ? LOGIN_ERRORS.denied
+    : LOGIN_ERRORS.technical;
+}
+
+async function getPublicKeyWithTimeout(signer) {
+  let timer;
+  try {
+    return await Promise.race([
+      Promise.resolve().then(() => signer.getPublicKey()),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("NIP07_TIMEOUT")), LOGIN_TIMEOUT_MS);
+      })
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function login() {
+  const button = $("btnLogin");
+  if (button.disabled) return;
+  $("loginMsg").textContent = "";
+
+  const signer = window.nostr;
+  if (typeof signer?.getPublicKey !== "function") {
+    showLoginError(LOGIN_ERRORS.missing);
+    return;
+  }
+
+  button.disabled = true;
+  let key;
+  try {
+    key = await getPublicKeyWithTimeout(signer);
+    if (typeof key !== "string" || !/^[0-9a-f]{64}$/i.test(key)) {
+      throw new Error("INVALID_PUBLIC_KEY");
+    }
+  } catch (error) {
+    showLoginError(error?.message === "NIP07_TIMEOUT" ? LOGIN_ERRORS.timeout : loginError(error));
+    return;
+  } finally {
+    button.disabled = false;
+  }
+
+  // La connexion a réussi : un éventuel échec de chargement n'est pas une erreur NIP-07.
+  pubkey = key;
   $("login").hidden = true;
   $("app").hidden = false;
   showProfile();
-  await loadAccount();
+  try {
+    await loadAccount();
+  } catch {
+    $("listMsg").textContent = "Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.";
+  }
 }
 
 async function loadAccount() {
@@ -695,7 +754,7 @@ async function loadAccount() {
   }
   $("listMsg").textContent = "";
   render();
-  testAll();
+  void testAll();
 }
 
 async function publish() {
