@@ -34,10 +34,7 @@
 html { background: #000; -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: #000; color: var(--text); font: 16px/1.5 var(--sans); }
 main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
-h1 {
-  margin: 0 0 6px; font: 400 clamp(1.9rem, 6vw, 2.8rem) / 1.12 var(--mono);
-  color: transparent; background: var(--grad-title); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-}
+h1 { margin: 0 0 6px; font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
 h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
 .sub { margin: 0 0 22px; color: var(--text-2); letter-spacing: .02em; }
 .card {
@@ -52,6 +49,17 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 main { scrollbar-width: thin; }
 html { scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; }
+
+/* ---------- Bandeau Libestria ---------- */
+.banner { display: flex; align-items: center; margin-bottom: 18px; padding: 3px 0; }
+.brand { display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); min-width: 0; text-decoration: none; }
+.brand:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--r-sm); }
+.brand-logo { display: block; flex: none; width: 115px; height: auto; }
+.wordmark {
+  font: 400 clamp(2rem, 4.3vw, 3.4rem) / 1.12 var(--mono); white-space: nowrap;
+  color: transparent; background: var(--grad-title); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+@media (max-width: 699px) { .brand-logo { width: 75px; } .wordmark { font-size: clamp(1.5rem, 7vw, 2.2rem); letter-spacing: -.035em; } }
 
 /* ---------- Champs et boutons ---------- */
 button {
@@ -69,6 +77,17 @@ input {
 }
 input:focus { border-color: var(--btn-hover-border); }
 input::placeholder { color: var(--muted); }
+
+/* ---------- Connexion ---------- */
+.login-sep { margin-top: 22px; }
+.mt { margin-top: 10px; }
+a.btn {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px; color: var(--icon); text-decoration: none;
+  border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg); transition: background .2s, border-color .2s, color .2s;
+}
+a.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (hover: hover) { a.btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
+#connectUri { margin-top: 10px; font: .8rem var(--mono); color: var(--cyan); }
 
 /* ---------- Profil ---------- */
 .profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
@@ -118,12 +137,35 @@ input::placeholder { color: var(--muted); }
 </head>
 <body>
 <main>
+  <header class="banner">
+    <a class="brand" href="https://libestria.fr/" aria-label="Libestria.fr">
+      <img class="brand-logo" src="IMG/IMG_Libestria.webp" width="256" height="256" alt="" decoding="async" onerror="this.remove()">
+      <span class="wordmark" translate="no">Libestria.fr</span>
+    </a>
+  </header>
   <h1>Mes relais Nostr</h1>
   <p class="sub">Gérez vos relais publics, de messages privés et de recherche, puis publiez chaque liste.</p>
 
   <div class="card" id="login">
-    <button class="main" id="btnLogin">Se connecter avec mon extension</button>
-    <p class="msg" id="loginMsg">Nécessite une extension compatible NIP-07 (Alby, nos2x, Flamingo…). Votre clé privée ne quitte jamais l’extension.</p>
+    <h2>Se connecter</h2>
+    <button class="main" id="btnLogin">Extension de navigateur (NIP-07)</button>
+
+    <h2 class="login-sep">Signataire distant (NIP-46)</h2>
+    <div class="row">
+      <input id="bunkerInput" placeholder="bunker://… ou nom@domaine.fr" autocapitalize="off" autocomplete="off" spellcheck="false">
+      <button id="btnBunker">Connecter</button>
+    </div>
+    <button class="mt" id="btnConnect">Générer un lien nostrconnect://</button>
+    <div id="connectBox" hidden>
+      <input id="connectUri" readonly aria-label="Lien nostrconnect">
+      <div class="row mt">
+        <button id="btnCopyUri">Copier</button>
+        <a class="btn" id="connectOpen" href="#">Ouvrir dans mon signataire</a>
+      </div>
+      <p class="msg">En attente de l’approbation dans votre signataire…</p>
+    </div>
+
+    <p class="msg" id="loginMsg">Votre clé privée ne quitte jamais l’extension ou le signataire.</p>
   </div>
 
   <div id="app" hidden>
@@ -472,11 +514,77 @@ async function testAll() {
   $("listMsg").textContent = "";
 }
 
-async function login() {
-  const msg = $("loginMsg");
-  if (!window.nostr) { msg.textContent = "Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page."; return; }
-  try { pubkey = await window.nostr.getPublicKey(); }
-  catch { msg.textContent = "Connexion refusée par l’extension."; return; }
+/* Signataires distants (NIP-46) : bibliothèque chargée uniquement à la demande.
+   Si la page est servie avec une CSP stricte, hébergez le fichier et changez cette URL. */
+const NOSTR_TOOLS_URL = "https://cdn.jsdelivr.net/npm/nostr-tools@2.10.4/lib/nostr.bundle.js";
+const CONNECT_RELAYS = ["wss://relay.nsec.app", "wss://relay.damus.io", "wss://nos.lol"];
+const CONNECT_WAIT = 120000;
+let signer = null;
+
+const setLoginMsg = text => { $("loginMsg").textContent = text; };
+const openAuth = url => window.open(url, "nostr-auth", "width=500,height=720");
+
+function loadNostrTools() {
+  if (window.NostrTools) return Promise.resolve(window.NostrTools);
+  return new Promise((resolve, reject) => {
+    const el = document.createElement("script");
+    el.src = NOSTR_TOOLS_URL;
+    el.onload = () => resolve(window.NostrTools);
+    el.onerror = () => reject(new Error("bibliothèque nostr-tools inaccessible"));
+    document.head.appendChild(el);
+  });
+}
+
+async function loginExtension() {
+  if (!window.nostr) { setLoginMsg("Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page."); return; }
+  signer = window.nostr;
+  await startSession();
+}
+
+async function loginBunker() {
+  const input = $("bunkerInput").value.trim();
+  if (!input) { setLoginMsg("Collez une adresse bunker:// ou un identifiant NIP-05."); return; }
+  setLoginMsg("Connexion au signataire…");
+  try {
+    const nt = await loadNostrTools();
+    const pointer = await nt.nip46.parseBunkerInput(input);
+    if (!pointer) throw new Error("adresse bunker invalide");
+    const remote = nt.nip46.BunkerSigner.fromBunker(nt.generateSecretKey(), pointer, { onauth: openAuth });
+    await remote.connect();
+    signer = remote;
+  } catch (e) { setLoginMsg("Échec de la connexion : " + e.message); return; }
+  await startSession();
+}
+
+async function loginNostrConnect() {
+  setLoginMsg("");
+  try {
+    const nt = await loadNostrTools();
+    const secretKey = nt.generateSecretKey();
+    const uri = nt.nip46.createNostrConnectURI({
+      clientPubkey: nt.getPublicKey(secretKey),
+      relays: CONNECT_RELAYS,
+      secret: Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, "0")).join(""),
+      perms: ["get_public_key", ...Object.values(LISTS).map(l => `sign_event:${l.kind}`)],
+      name: "Libestria – relais Nostr",
+    });
+    $("connectUri").value = uri;
+    $("connectOpen").href = uri;
+    $("connectBox").hidden = false;
+    signer = await nt.nip46.BunkerSigner.fromURI(secretKey, uri, { onauth: openAuth }, CONNECT_WAIT);
+  } catch (e) { setLoginMsg("Échec de la connexion : " + e.message); return; }
+  $("connectBox").hidden = true;
+  await startSession();
+}
+
+async function copyConnectUri() {
+  try { await navigator.clipboard.writeText($("connectUri").value); setLoginMsg("Lien copié."); }
+  catch { $("connectUri").select(); setLoginMsg("Sélectionnez le lien et copiez-le manuellement."); }
+}
+
+async function startSession() {
+  try { pubkey = await signer.getPublicKey(); }
+  catch { setLoginMsg("Connexion refusée par le signataire."); return; }
 
   $("login").hidden = true;
   $("app").hidden = false;
@@ -505,7 +613,7 @@ async function publish() {
 
   let event;
   try {
-    event = await window.nostr.signEvent({ kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" });
+    event = await signer.signEvent({ kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" });
   } catch {
     resetButton();
     $("listMsg").textContent = "Signature refusée.";
@@ -548,7 +656,11 @@ function showResults(results) {
 }
 
 /* ---------- Événements ---------- */
-$("btnLogin").onclick = login;
+$("btnLogin").onclick = loginExtension;
+$("btnBunker").onclick = loginBunker;
+$("bunkerInput").onkeydown = e => { if (e.key === "Enter") loginBunker(); };
+$("btnConnect").onclick = loginNostrConnect;
+$("btnCopyUri").onclick = copyConnectUri;
 $("btnAdd").onclick = () => addRelay($("newUrl").value);
 $("newUrl").onkeydown = e => { if (e.key === "Enter") addRelay(e.target.value); };
 $("btnTest").onclick = testAll;
