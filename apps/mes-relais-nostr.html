@@ -100,6 +100,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .sub p { margin: 0; }
 .sub > * + * { margin-top: 1rem; }
 .sub ul { margin: 1rem 0 0; padding-left: 22px; }
+.sub li + li { margin-top: 1rem; }
 .sub li::marker { color: var(--violet-light); }
 .card {
   background: var(--grad-card); border-radius: var(--r-lg); padding: 20px 18px; margin-bottom: 0;
@@ -123,6 +124,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .relay-summary { color: var(--muted); font-size: .95rem; line-height: 1.6; }
 .relay-summary p { margin: 0 0 10px; }
 .relay-summary p:last-child { margin-bottom: 0; }
+.relay-summary strong { color: var(--cyan); }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 
 /* Transition de connexion : indicateur sans dépendance externe. */
@@ -237,6 +239,7 @@ input::placeholder { color: var(--muted); }
 .relay-accordions { display: grid; gap: 0; }
 .relay-accordion { min-width: 0; border: 0 solid; border-top-width: var(--divider-width); border-image: var(--divider) 1; padding: 24px 0; }
 .relay-accordion-heading { margin: 0; color: #fff; font-size: 18px; font-weight: 600; line-height: 1.4; }
+.relay-accordion-heading .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2 + 1px); color: var(--cyan); }
 .theme-toggle { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 0; min-height: 0; border: 0; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .theme-toggle strong { flex: 1; font-weight: inherit; }
 .theme-toggle::after { content: ""; flex: none; width: 9px; height: 9px; margin: 7px 5px 0 0; border-right: 2px solid var(--cyan); border-bottom: 2px solid var(--cyan); transform: rotate(45deg); transition: transform .2s ease; }
@@ -246,6 +249,10 @@ input::placeholder { color: var(--muted); }
 .relay-accordion-content > .card { margin: 0; }
 @media (hover: hover) { .theme-toggle:hover { background: none; border-color: transparent; color: #fff; } }
 @media (prefers-reduced-motion: reduce) { .theme-toggle::after { transition: none; } }
+@supports (top: 1cap) {
+  .relay-accordion-heading .theme-toggle { align-items: baseline; }
+  .relay-accordion-heading .i { position: relative; top: calc(12px - .5cap - .3px); margin-top: 0; }
+}
 
 /* 8. Relais et indicateurs -------------------------------------------- */
 .relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 0; border-top: 2px solid; border-image: var(--divider) 1; }
@@ -315,7 +322,7 @@ input::placeholder { color: var(--muted); }
 </style>
 </head>
 <body>
-<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol></svg>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol><symbol id="i-radio" viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></symbol></svg>
 <main>
 <header class="banner">
 <a class="banner" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Libestria.fr — À propos de Libestria">
@@ -669,6 +676,13 @@ function initRelayAccordions() {
     button.setAttribute("aria-controls", `relay-panel-${key}`);
     button.setAttribute("aria-expanded", "false");
     button.dataset.relayCategory = key;
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("class", "i");
+    icon.setAttribute("aria-hidden", "true");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", "#i-radio");
+    icon.appendChild(use);
+    button.appendChild(icon);
     const label = document.createElement("strong");
     label.textContent = list.tab;
     button.appendChild(label);
