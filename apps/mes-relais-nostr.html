@@ -228,6 +228,9 @@ input::placeholder { color: var(--muted); }
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-name { font-weight: 600; font-size: 1.1rem; color: #fff; line-height: 1.3; overflow-wrap: anywhere; }
+.profile-nip05 { margin: 3px 0; font-size: .9rem; color: var(--muted); overflow-wrap: anywhere; }
+.profile-nip05.is-verified { color: #49c878; }
+.profile-nip05 .verified-mark { font-weight: 700; margin-left: 5px; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
 /* 7. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
@@ -362,6 +365,7 @@ input::placeholder { color: var(--muted); }
         <div class="avatar" id="avatar" aria-hidden="true"></div>
         <div>
           <div class="profile-name" id="profileName"></div>
+          <div class="profile-nip05" id="profileNip05" hidden></div>
           <div class="profile-key" id="profileKey"></div>
         </div>
       </div>
@@ -771,10 +775,51 @@ function render() {
   renderSuggestions(list);
 }
 
+let nip05VerificationSequence = 0;
+
+// Le NIP-05 annoncé dans kind 0 n'est pas une preuve : vérifier nostr.json.
+async function verifyNip05(identifier, expectedPubkey, signal) {
+  const match = /^(?:(?<user>[a-z0-9._-]+)@)?(?<domain>[a-z0-9.-]+\.[a-z]{2,})$/i.exec(identifier);
+  if (!match) return false;
+  const user = (match.groups.user || "_").toLowerCase();
+  const domain = match.groups.domain.toLowerCase();
+  const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${encodeURIComponent(user)}`, {
+    signal, mode: "cors", credentials: "omit", redirect: "error", cache: "no-store"
+  });
+  if (!response.ok) return false;
+  const json = await response.json();
+  return typeof json?.names?.[user] === "string" && json.names[user].toLowerCase() === expectedPubkey.toLowerCase();
+}
+
+async function showNip05(profile) {
+  const element = $("profileNip05");
+  const sequence = ++nip05VerificationSequence;
+  const identifier = typeof profile.nip05 === "string" ? profile.nip05.trim() : "";
+  element.replaceChildren();
+  element.classList.remove("is-verified");
+  element.hidden = !identifier;
+  if (!identifier) return;
+  element.textContent = identifier;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const verified = await verifyNip05(identifier, pubkey, controller.signal);
+    if (sequence !== nip05VerificationSequence || !verified) return;
+    element.classList.add("is-verified");
+    const mark = document.createElement("span");
+    mark.className = "verified-mark";
+    mark.textContent = "✓";
+    mark.setAttribute("aria-label", "NIP-05 vérifié");
+    element.appendChild(mark);
+  } catch { /* Domaine indisponible, CORS ou délai dépassé : pas de coche. */ }
+  finally { clearTimeout(timeout); }
+}
+
 function showProfile(profile = {}) {
   const name = (profile.display_name || profile.name || "").trim();
   $("profileName").textContent = name || "Profil sans nom";
   $("profileKey").textContent = npubEncode(pubkey);
+  void showNip05(profile);
 
   const avatar = $("avatar");
   avatar.replaceChildren();
