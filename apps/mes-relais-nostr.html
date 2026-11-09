@@ -89,6 +89,12 @@ a.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) { a.btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
 #connectUri { margin-top: 10px; font: .8rem var(--mono); color: var(--cyan); }
 
+/* ---------- Crédits ---------- */
+.site-footer { max-width: 720px; margin: 0 auto; padding: 0 16px 28px; color: var(--muted); font: .8rem/1.6 var(--mono); text-align: center; text-wrap: balance; }
+.site-footer p { margin: 0 0 6px; }
+.site-footer a { color: var(--cyan); text-decoration: none; }
+.site-footer a:hover, .site-footer a:focus-visible { text-decoration: underline; }
+
 /* ---------- Profil ---------- */
 .profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .avatar {
@@ -139,7 +145,7 @@ a.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 <main>
   <header class="banner">
     <a class="brand" href="https://libestria.fr/" aria-label="Libestria.fr">
-      <img class="brand-logo" src="IMG/IMG_Libestria.webp" width="256" height="256" alt="" decoding="async" onerror="this.remove()">
+      <img class="brand-logo" src="https://libestria.fr/IMG/IMG_Libestria.webp" width="256" height="256" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.local){this.dataset.local=1;this.src='IMG/IMG_Libestria.webp'}else{this.remove()}">
       <span class="wordmark" translate="no">Libestria.fr</span>
     </a>
   </header>
@@ -206,6 +212,13 @@ a.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
     <div class="bar"><button class="main" id="btnPub">Publier cette liste</button></div>
   </div>
 </main>
+
+<footer class="site-footer">
+  <p>Crédits :
+    <a href="https://github.com/nbd-wtf/nostr-tools" target="_blank" rel="noopener noreferrer">nostr-tools</a> (licence Unlicense),
+    chargée via <a href="https://www.jsdelivr.com/" target="_blank" rel="noopener noreferrer">jsDelivr</a>
+  </p>
+</footer>
 
 <script>
 /* ---------- Configuration ---------- */
@@ -515,8 +528,9 @@ async function testAll() {
 }
 
 /* Signataires distants (NIP-46) : bibliothèque chargée uniquement à la demande.
-   Si la page est servie avec une CSP stricte, hébergez le fichier et changez cette URL. */
-const NOSTR_TOOLS_URL = "https://cdn.jsdelivr.net/npm/nostr-tools@2.10.4/lib/nostr.bundle.js";
+   Plusieurs versions sont essayées dans l'ordre jusqu'à en trouver une qui gère nostrconnect://.
+   Avec une CSP stricte, hébergez le fichier et remplacez ces adresses. */
+const NOSTR_TOOLS_URLS = ["2.23.3", "2.20.0", "2.17.0"].map(v => `https://cdn.jsdelivr.net/npm/nostr-tools@${v}/lib/nostr.bundle.js`);
 const CONNECT_RELAYS = ["wss://relay.nsec.app", "wss://relay.damus.io", "wss://nos.lol"];
 const CONNECT_WAIT = 120000;
 let signer = null;
@@ -524,15 +538,37 @@ let signer = null;
 const setLoginMsg = text => { $("loginMsg").textContent = text; };
 const openAuth = url => window.open(url, "nostr-auth", "width=500,height=720");
 
-function loadNostrTools() {
-  if (window.NostrTools) return Promise.resolve(window.NostrTools);
+const supportsNip46 = nt => typeof nt?.nip46?.BunkerSigner?.fromURI === "function" && typeof nt.nip46.parseBunkerInput === "function";
+
+function loadScript(url) {
   return new Promise((resolve, reject) => {
     const el = document.createElement("script");
-    el.src = NOSTR_TOOLS_URL;
-    el.onload = () => resolve(window.NostrTools);
-    el.onerror = () => reject(new Error("bibliothèque nostr-tools inaccessible"));
+    el.src = url;
+    el.onload = resolve;
+    el.onerror = () => { el.remove(); reject(new Error("chargement impossible")); };
     document.head.appendChild(el);
   });
+}
+
+async function loadNostrTools() {
+  if (supportsNip46(window.NostrTools)) return window.NostrTools;
+  for (const url of NOSTR_TOOLS_URLS) {
+    try {
+      delete window.NostrTools;
+      await loadScript(url);
+      if (supportsNip46(window.NostrTools)) return window.NostrTools;
+    } catch { /* on essaie la version suivante */ }
+  }
+  throw new Error("bibliothèque nostr-tools inaccessible ou incompatible (vérifiez votre connexion et la politique de sécurité de la page)");
+}
+
+function buildNostrConnectUri(clientPubkey, secret) {
+  const q = (k, v) => `${k}=${encodeURIComponent(v)}`;
+  const perms = ["get_public_key", ...Object.values(LISTS).map(l => `sign_event:${l.kind}`)].join(",");
+  return `nostrconnect://${clientPubkey}?` + [
+    ...CONNECT_RELAYS.map(r => q("relay", r)),
+    q("secret", secret), q("perms", perms), q("name", "Libestria – relais Nostr"),
+  ].join("&");
 }
 
 async function loginExtension() {
@@ -549,7 +585,7 @@ async function loginBunker() {
     const nt = await loadNostrTools();
     const pointer = await nt.nip46.parseBunkerInput(input);
     if (!pointer) throw new Error("adresse bunker invalide");
-    const remote = nt.nip46.BunkerSigner.fromBunker(nt.generateSecretKey(), pointer, { onauth: openAuth });
+    const remote = nt.nip46.BunkerSigner.fromBunker(nt.generateSecretKey(), pointer, { pool: new nt.SimplePool(), onauth: openAuth });
     await remote.connect();
     signer = remote;
   } catch (e) { setLoginMsg("Échec de la connexion : " + e.message); return; }
@@ -561,17 +597,12 @@ async function loginNostrConnect() {
   try {
     const nt = await loadNostrTools();
     const secretKey = nt.generateSecretKey();
-    const uri = nt.nip46.createNostrConnectURI({
-      clientPubkey: nt.getPublicKey(secretKey),
-      relays: CONNECT_RELAYS,
-      secret: Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, "0")).join(""),
-      perms: ["get_public_key", ...Object.values(LISTS).map(l => `sign_event:${l.kind}`)],
-      name: "Libestria – relais Nostr",
-    });
+    const secret = Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, "0")).join("");
+    const uri = buildNostrConnectUri(nt.getPublicKey(secretKey), secret);
     $("connectUri").value = uri;
     $("connectOpen").href = uri;
     $("connectBox").hidden = false;
-    signer = await nt.nip46.BunkerSigner.fromURI(secretKey, uri, { onauth: openAuth }, CONNECT_WAIT);
+    signer = await nt.nip46.BunkerSigner.fromURI(secretKey, uri, { pool: new nt.SimplePool(), onauth: openAuth }, CONNECT_WAIT);
   } catch (e) { setLoginMsg("Échec de la connexion : " + e.message); return; }
   $("connectBox").hidden = true;
   await startSession();
