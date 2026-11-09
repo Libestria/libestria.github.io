@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#000000">
 <title>Mes relais Nostr</title>
 <style>
-/* Polices Libestria : si le fichier est déployé à côté du dossier fonts/, elles sont utilisées ; sinon, polices système. */
+/* Polices Libestria : chemins relatifs au dossier /apps/. */
 @font-face { font-family: "Exo 2"; font-weight: 400; font-display: swap; src: local("Exo 2"), url(../fonts/exo-2-v26-latin-regular.woff2) format("woff2"); }
 @font-face { font-family: "Exo 2"; font-weight: 600; font-display: swap; src: local("Exo 2 SemiBold"), url(../fonts/exo-2-v26-latin-600.woff2) format("woff2"); }
 @font-face { font-family: "Exo 2"; font-weight: 700; font-display: swap; src: local("Exo 2 Bold"), url(../fonts/exo-2-v26-latin-700.woff2) format("woff2"); }
 @font-face { font-family: "Share Tech Mono"; font-weight: 400; font-display: swap; src: local("Share Tech Mono"), url(../fonts/share-tech-mono-v16-latin-regular.woff2) format("woff2"); }
 
-/* ---------- Variables (palette Libestria) ---------- */
+/* 1. Variables et typographies ---------------------------------------- */
 :root {
   color-scheme: dark;
   --violet-light: #a855f7; --cyan: #39c8ff;
@@ -29,7 +29,7 @@
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-/* ---------- Base : bandeau, fenêtre défilante et footer selon Libestria ---------- */
+/* 2. Base et structure ------------------------------------------------ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; min-height: 100%; }
 html { background: #000; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -122,7 +122,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 
-/* ---------- En-tête Libestria (fixe) ---------- */
+/* 3. En-tête ---------------------------------------------------------- */
 .banner { flex: none; display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); padding: 3px 0; }
 .banner > a.banner { flex: 0 1 auto; min-width: 0; padding: 0; text-decoration: none; }
 .brand-logo { display: block; flex: none; width: 115px; height: auto; }
@@ -178,14 +178,14 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 @media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 
-/* ---------- Pied de page : même disposition que Libestria ---------- */
+/* 4. Pied de page ----------------------------------------------------- */
 .site-footer {
   width: 90%; max-width: 1600px; margin: 0 auto; padding: 8px 0 max(12px, env(safe-area-inset-bottom));
   min-height: 34px;
   color: var(--text-2); font: 400 clamp(.7rem, 1.9vw, .8rem) var(--mono); text-align: center; text-wrap: balance;
 }
 
-/* ---------- Champs et boutons ---------- */
+/* 5. Formulaires et boutons ------------------------------------------- */
 button {
   font: inherit; color: var(--icon); cursor: pointer; min-height: 40px; padding: 8px 14px;
   border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg);
@@ -207,7 +207,7 @@ input {
 input:focus { border-color: var(--btn-hover-border); }
 input::placeholder { color: var(--muted); }
 
-/* ---------- Profil ---------- */
+/* 6. Profil Nostr ----------------------------------------------------- */
 .profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .profile > div:last-child { min-width: 0; }
 .avatar {
@@ -218,12 +218,12 @@ input::placeholder { color: var(--muted); }
 .profile-name { font-weight: 600; font-size: 1.1rem; color: #fff; line-height: 1.3; overflow-wrap: anywhere; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
-/* ---------- Onglets ---------- */
+/* 7. Navigation des listes -------------------------------------------- */
 .tabs { display: flex; gap: 6px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 2px; }
 .tabs button { white-space: nowrap; border-radius: 99px; }
 .tabs button.on { background: var(--grad-card); border-color: var(--violet-light); color: var(--cyan); font-weight: 700; }
 
-/* ---------- Ligne de relais ---------- */
+/* 8. Relais et indicateurs -------------------------------------------- */
 .relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 0; border-top: 2px solid; border-image: var(--divider) 1; }
 .relay:first-child { border-top: 0; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
@@ -241,13 +241,13 @@ input::placeholder { color: var(--muted); }
 .modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; }
 .modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 700; }
 
-/* ---------- Suggestions ---------- */
+/* 9. Suggestions de relais -------------------------------------------- */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .chips .lbl { flex: 1 0 100%; font-size: .9rem; font-weight: 600; color: #fff; margin-top: 8px; }
 .chips .lbl:first-child { margin-top: 0; }
 .chips button { min-height: 32px; font: .82rem var(--mono); padding: 3px 10px; border-radius: 99px; }
 
-/* ---------- Adaptations propres à l’application ----------
+/* 10. Responsive de l’application ----------------------------------------
    Les seuils et dimensions de l’en-tête restent ceux de Libestria. */
 @media (max-width: 699px) {
   .content { padding-bottom: 18px; }
@@ -275,7 +275,7 @@ input::placeholder { color: var(--muted); }
   .modes button { padding-inline: 8px; }
 }
 
-/* ---------- Publication ---------- */
+/* 11. Publication et résultats ---------------------------------------- */
 .bar { position: sticky; bottom: 0; padding: 14px 0 0; background: linear-gradient(transparent, #000 45%); display: flex; justify-content: center; }
 .bar button { width: 100%; padding: 12px; min-height: 48px; }
 .res { font: .88rem var(--mono); margin: 4px 0; color: var(--text-2); overflow-wrap: anywhere; }
@@ -365,8 +365,22 @@ input::placeholder { color: var(--muted); }
 <footer class="site-footer">© 2026 Libestria.fr | Propulsé par ΛRTΞFΛCT</footer>
 
 <script>
-/* ---------- Configuration ---------- */
-const BOOT_RELAYS = ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://purplepag.es", "wss://relay.nostr.band"];
+(() => {
+'use strict';
+
+/* 1. Configuration ------------------------------------------------------- */
+const BOOT_RELAYS = [
+  "wss://nos.lol",
+  "wss://relay.damus.io",
+  "wss://relay.primal.net",
+  "wss://relay.nostrmap.net",
+  "wss://relay.decentralia.fr",
+  "wss://relay.noeudlibre.fr",
+  "wss://relay.ditto.pub",
+  "wss://nostr.mom",
+  "wss://nostr-01.yakihonne.com",
+];
+const FETCH_CONCURRENCY = 5;
 const PROFILE_KIND = 0;
 const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
 const LATENCY = { fast: 500, slow: 1200 }; // ms : vert < fast, orange < slow, rouge au-delà
@@ -379,6 +393,7 @@ const LISTS = {
     hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
     suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
+    longform: ["wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
   },
   search: {
     kind: 10007, rw: false, tag: "relay",
@@ -395,7 +410,7 @@ const LISTS = {
 };
 for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false; }
 
-/* ---------- État ---------- */
+/* 2. État et références DOM ------------------------------------------- */
 let pubkey = null;
 let current = "pub";
 const latencies = {}; // url -> { ms } | { err }
@@ -403,7 +418,7 @@ const latencies = {}; // url -> { ms } | { err }
 const $ = id => document.getElementById(id);
 const currentList = () => LISTS[current];
 
-/* ---------- Réseau ---------- */
+/* 3. Communications WebSocket ----------------------------------------- */
 function normalizeUrl(input) {
   let u = (input || "").trim().replace(/^https:\/\//i, "wss://").replace(/^http:\/\//i, "ws://");
   if (!/^wss?:\/\//i.test(u)) u = "wss://" + u;
@@ -428,7 +443,7 @@ function parseMessage(raw) {
   try { return JSON.parse(raw); } catch { return []; }
 }
 
-async function fetchEvents(url) {
+async function fetchEvents(url, kinds) {
   try {
     const ws = await openSocket(url, TIMEOUT.fetch);
     return await new Promise(resolve => {
@@ -440,7 +455,6 @@ async function fetchEvents(url) {
         if (type === "EVENT" && event) events.push(event);
         if (type === "EOSE" || type === "CLOSED") done();
       };
-      const kinds = [PROFILE_KIND, ...Object.values(LISTS).map(l => l.kind)];
       ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }]));
     });
   } catch { return []; }
@@ -470,7 +484,7 @@ async function ping(url) {
   } catch (e) { return { err: e.message }; }
 }
 
-/* ---------- Encodage npub (bech32, NIP-19) ---------- */
+/* 4. Encodage NIP-19 -------------------------------------------------- */
 const BECH32_CHARS = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
 function bech32Polymod(values) {
@@ -501,8 +515,14 @@ function npubEncode(hex) {
   return hrp + "1" + [...words, ...checksum].map(w => BECH32_CHARS[w]).join("");
 }
 
-/* ---------- Conversion liste <-> événement ---------- */
-const latestEvent = (events, kind) => events.filter(e => e.kind === kind).sort((a, b) => b.created_at - a.created_at)[0];
+/* 5. Conversion des événements ---------------------------------------- */
+function latestEvent(events, kind) {
+  let latest;
+  for (const event of events) {
+    if (event.kind === kind && (!latest || event.created_at > latest.created_at)) latest = event;
+  }
+  return latest;
+}
 
 function profileFromEvents(events) {
   const event = latestEvent(events, PROFILE_KIND);
@@ -527,7 +547,7 @@ function tagsFromList(list) {
   });
 }
 
-/* ---------- Affichage ---------- */
+/* 6. Affichage et composants ------------------------------------------ */
 function latencyView(status) {
   if (!status) return { cls: "", bars: 0, text: "…" };
   if (status.err) return { cls: "r", bars: 0, text: "hors ligne" };
@@ -598,7 +618,11 @@ function renderTabs() {
 function renderSuggestions(list) {
   const chips = $("chips");
   chips.innerHTML = "";
-  for (const [label, urls] of [["Suggestions", list.suggestions], ["Francophones", list.french]]) {
+  for (const [label, urls] of [
+    ["Suggestions", list.suggestions],
+    ["Relais francophones :", list.french],
+    ["Relais gérants les articles long-form :", list.longform],
+  ]) {
     const available = (urls || []).filter(u => !list.relays.some(r => r.url === u));
     if (!available.length) continue;
     const title = document.createElement("div");
@@ -646,7 +670,7 @@ function showProfile(profile = {}) {
   }
 }
 
-/* ---------- Actions ---------- */
+/* 7. Actions sur les relais ------------------------------------------- */
 function addRelay(input) {
   const list = currentList();
   const url = normalizeUrl(input);
@@ -672,7 +696,7 @@ async function testAll() {
   $("listMsg").textContent = "";
 }
 
-/* ---------- Session ---------- */
+/* 8. Session NIP-07 et chargement ------------------------------------- */
 const LOGIN_TIMEOUT_MS = 30000;
 const LOGIN_ERRORS = Object.freeze({
   missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recharge la page.",
@@ -743,9 +767,29 @@ async function login() {
   }
 }
 
+// Interroge plusieurs relais par groupes pour limiter les connexions simultanées.
+async function fetchFromRelays(urls, kinds) {
+  const events = [];
+  for (let i = 0; i < urls.length; i += FETCH_CONCURRENCY) {
+    const batch = await Promise.all(urls.slice(i, i + FETCH_CONCURRENCY)
+      .map(url => fetchEvents(url, kinds)));
+    events.push(...batch.flat());
+  }
+  return events;
+}
+
 async function loadAccount() {
   $("listMsg").textContent = "Chargement de tes listes…";
-  const events = (await Promise.all(BOOT_RELAYS.map(fetchEvents))).flat();
+
+  // Découverte NIP-65 depuis les relais initiaux.
+  const discoveryEvents = await fetchFromRelays(BOOT_RELAYS, [10002]);
+  const nip65 = latestEvent(discoveryEvents, LISTS.pub.kind);
+  const personalRelays = nip65 ? relaysFromEvent(nip65, LISTS.pub).map(r => r.url) : [];
+
+  // Tous les relais NIP-65, en lecture et/ou écriture, sans doublons.
+  const targets = [...new Set([...BOOT_RELAYS, ...personalRelays])];
+  const otherKinds = [PROFILE_KIND, ...Object.values(LISTS).map(l => l.kind)];
+  const events = [...discoveryEvents, ...await fetchFromRelays(targets, otherKinds)];
 
   showProfile(profileFromEvents(events));
   for (const list of Object.values(LISTS)) {
@@ -810,15 +854,18 @@ function showResults(results) {
   $("resCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-/* ---------- Événements ---------- */
-$("btnLogin").onclick = login;
-$("btnAdd").onclick = () => addRelay($("newUrl").value);
-$("newUrl").onkeydown = e => { if (e.key === "Enter") addRelay(e.target.value); };
-$("btnTest").onclick = testAll;
-$("btnPub").onclick = publish;
+/* 9. Écouteurs d’événements ------------------------------------------- */
+$("btnLogin").addEventListener("click", login);
+$("btnAdd").addEventListener("click", () => addRelay($("newUrl").value));
+$("newUrl").addEventListener("keydown", e => {
+  if (e.key === "Enter") addRelay(e.target.value);
+});
+$("btnTest").addEventListener("click", testAll);
+$("btnPub").addEventListener("click", publish);
 window.addEventListener("beforeunload", e => {
   if (Object.values(LISTS).some(l => l.dirty)) e.preventDefault();
 });
+})();
 </script>
 </body>
 </html>
