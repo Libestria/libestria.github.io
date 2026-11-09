@@ -329,6 +329,13 @@ input::placeholder { color: var(--muted); }
         <div class="profile-key" id="profileKey"></div>
       </div>
     </div>
+    <div class="card" aria-labelledby="nip65SummaryTitle">
+      <h2 id="nip65SummaryTitle">Relais NIP-65 actuellement connectés :</h2>
+      <ul>
+        <li><strong><span id="nip65ReadCount">0</span> relais en lecture (R).</strong> Ce sont les relais sur lesquels tu lis les événements Nostr.</li>
+        <li><strong><span id="nip65WriteCount">0</span> relais en écriture (W).</strong> Ce sont les relais sur lesquels tu publies tes événements Nostr.</li>
+      </ul>
+    </div>
     <div class="tabs" id="tabs" role="tablist"></div>
 
     <div class="card">
@@ -639,6 +646,9 @@ function renderSuggestions(list) {
 }
 
 function render() {
+  const nip65Relays = LISTS.pub.relays;
+  $("nip65ReadCount").textContent = nip65Relays.filter(relay => relay.read).length;
+  $("nip65WriteCount").textContent = nip65Relays.filter(relay => relay.write).length;
   const list = currentList();
   renderTabs();
   $("listTitle").textContent = list.title;
