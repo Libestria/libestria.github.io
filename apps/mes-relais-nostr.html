@@ -333,11 +333,11 @@ input::placeholder { color: var(--muted); }
 <div class="content">
   <div class="proto-logos"><img src="../IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div>
   <div class="sub">
-    <p>Cette application web Libestria te permet de configurer facilement tes relais Nostr et de mettre à jour tes listes publiques :</p>
+    <p>Cette application web te permet de configurer tes relais Nostr et de mettre à jour tes listes publiques :</p>
     <ul>
-      <li>Relais de lecture (R) et d’écriture (W) — NIP-65 ;</li>
-      <li>Relais de messages privés (DM) — NIP-17 ;</li>
-      <li>Relais de recherche (S) — NIP-51.</li>
+      <li>Relais NIP-65 pour la lecture (R) et l’écriture (W) d’événements Nostr ;</li>
+      <li>Relais NIP-51 pour la recherche (S) d’événements et de profils Nostr ;</li>
+      <li>Relais NIP-17 pour la réception de messages privés (DM) Nostr.</li>
     </ul>
   </div>
 
@@ -346,7 +346,7 @@ input::placeholder { color: var(--muted); }
     <div class="help">
       <p>• Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby Extension, Nostr Map Signer, Nostash…).</p>
       <p>• Ta clé privée (NSEC) ne quitte jamais l’extension de ton navigateur.</p>
-      <p>• Trouve un signer compatible dans <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
+      <p>• Tu peux rechercher et installer un signer compatible en consultant la rubrique <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
     </div>
     <button class="btn-connect" id="btnLogin" type="button"><svg class="i" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecter</span></button>
     <p class="msg alert" id="loginMsg" role="alert"></p>
