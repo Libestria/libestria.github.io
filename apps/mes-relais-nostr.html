@@ -24,19 +24,22 @@
   --divider: linear-gradient(90deg, var(--stops));
   --grad-card: linear-gradient(160deg, var(--stops));
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
-  --r-sm: 6px; --r-md: 10px; --r-lg: 13px;
+  --r-sm: 6px; --r-lg: 13px;
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
 /* ---------- Base ---------- */
 * { box-sizing: border-box; }
-html { background: #000; -webkit-text-size-adjust: 100%; }
+html { background: #000; -webkit-text-size-adjust: 100%; scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; }
 body { margin: 0; background: #000; color: var(--text); font: 16px/1.5 var(--sans); }
 main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
 h1 { margin: 0 0 6px; font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
 h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
 .sub { margin: 0 0 22px; color: var(--text-2); letter-spacing: .02em; }
+.sub p { margin: 0 0 10px; }
+.sub ul { margin: 0; padding-left: 22px; }
+.sub li::marker { color: var(--violet-light); }
 .card {
   background: var(--grad-card); border-radius: var(--r-lg); padding: 20px 18px; margin-bottom: 18px;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
@@ -45,9 +48,15 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .row.top { margin-top: 14px; }
 .msg { font-size: .9rem; color: var(--muted); margin: 8px 0 0; }
 .msg.inline { margin: 0; }
+.alert { color: var(--bad-text); }
+.alert:empty { display: none; }
+.help { margin-top: 14px; font-size: .9rem; color: var(--muted); }
+.help p { margin: 0 0 8px; }
+.help a { color: var(--cyan); text-decoration: none; }
+.help a:hover, .help a:focus-visible { text-decoration: underline; }
+.help strong { color: var(--text-2); }
 .hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
-html { scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; }
 
 /* ---------- Bandeau Libestria ---------- */
 .banner { display: flex; align-items: center; margin-bottom: 18px; padding: 3px 0; }
@@ -80,9 +89,10 @@ input::placeholder { color: var(--muted); }
 /* ---------- Profil ---------- */
 .profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .avatar {
-  width: 52px; height: 52px; border-radius: 50%; flex: none; object-fit: cover; border: 1px solid var(--btn-border);
+  width: 52px; height: 52px; border-radius: 50%; flex: none; overflow: hidden; border: 1px solid var(--btn-border);
   background: var(--btn-bg); color: var(--cyan); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.3rem;
 }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-name { font-weight: 600; font-size: 1.1rem; color: #fff; line-height: 1.3; overflow-wrap: anywhere; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
@@ -131,13 +141,25 @@ input::placeholder { color: var(--muted); }
       <span class="wordmark" translate="no">Libestria.fr</span>
     </a>
   </header>
-  <h1>Mes relais Nostr</h1>
-  <p class="sub">Gérez vos relais publics, de messages privés et de recherche, puis publiez chaque liste.</p>
+  <h1>App web de gestion de tes relais Nostr</h1>
+  <div class="sub">
+    <p>Cette application web Libestria te permet de configurer facilement tes relais Nostr et de mettre à jour tes listes publiques :</p>
+    <ul>
+      <li>Relais de lecture (R) et d’écriture (W) — NIP-65 ;</li>
+      <li>Relais de messages privés (DM) — NIP-17 ;</li>
+      <li>Relais de recherche (S) — NIP-51.</li>
+    </ul>
+  </div>
 
   <div class="card" id="login">
-    <h2>Se connecter</h2>
-    <button class="main" id="btnLogin">Extension de navigateur (NIP-07)</button>
-    <p class="msg" id="loginMsg">Nécessite une extension compatible NIP-07 (Alby, nos2x, Flamingo…). Votre clé privée ne quitte jamais l’extension.</p>
+    <h2>Connecter ton compte Nostr</h2>
+    <button class="main" id="btnLogin">Connecter</button>
+    <p class="msg alert" id="loginMsg" role="alert"></p>
+    <div class="help">
+      <p>Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby, nos2x…).</p>
+      <p><strong>Information :</strong> ta clé privée ne quitte jamais l’extension.</p>
+      <p>Tu peux trouver des signers compatibles dans <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
+    </div>
   </div>
 
   <div id="app" hidden>
@@ -179,7 +201,6 @@ input::placeholder { color: var(--muted); }
   </div>
 </main>
 
-
 <script>
 /* ---------- Configuration ---------- */
 const BOOT_RELAYS = ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://purplepag.es", "wss://relay.nostr.band"];
@@ -192,20 +213,20 @@ const LISTS = {
   pub: {
     kind: 10002, rw: true, tag: "r",
     tab: "Lecture (R) & Écriture (W)", title: "Relais publics (NIP-65)",
-    hint: "Les relais où vous publiez (écriture) et où les autres vous répondent (lecture).",
+    hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
     suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
   },
   search: {
     kind: 10007, rw: false, tag: "relay",
     tab: "Recherche (S)", title: "Relais de recherche (NIP-51)",
-    hint: "Les relais interrogés quand vous cherchez des profils ou des notes.",
+    hint: "Les relais interrogés quand tu cherches des profils ou des notes.",
     suggestions: ["wss://relay.nostr.band", "wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine"],
   },
   dm: {
     kind: 10050, rw: false, tag: "relay",
     tab: "Messages Privés (DM)", title: "Relais de messages privés (NIP-17)",
-    hint: "Les relais où l’on vous envoie vos messages privés. Choisissez-en 1 à 3 fiables, idéalement avec authentification.",
+    hint: "Les relais où l’on t’envoie tes messages privés. Choisis-en 1 à 3 fiables, idéalement avec authentification.",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://inbox.nostr.wine", "wss://relay.damus.io"],
   },
 };
@@ -318,6 +339,13 @@ function npubEncode(hex) {
 }
 
 /* ---------- Conversion liste <-> événement ---------- */
+const latestEvent = (events, kind) => events.filter(e => e.kind === kind).sort((a, b) => b.created_at - a.created_at)[0];
+
+function profileFromEvents(events) {
+  const event = latestEvent(events, PROFILE_KIND);
+  try { return event ? JSON.parse(event.content) : {}; } catch { return {}; }
+}
+
 function relaysFromEvent(event, list) {
   const relays = [];
   for (const [name, rawUrl, marker] of event.tags || []) {
@@ -430,7 +458,7 @@ function render() {
   $("listHint").textContent = list.hint;
 
   const container = $("list");
-  container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoutez-en un ci-dessous.</p>';
+  container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoute-en un ci-dessous.</p>';
   list.relays.forEach((relay, i) => container.appendChild(relayRow(list, relay, i)));
   renderSuggestions(list);
 }
@@ -448,17 +476,11 @@ function showProfile(profile = {}) {
 
   if (/^https:\/\//i.test(profile.picture || "")) {
     const img = new Image();
-    img.className = "avatar";
     img.alt = "";
     img.referrerPolicy = "no-referrer";
-    img.onload = () => avatar.replaceWith(Object.assign(img, { id: "avatar" }));
+    img.onload = () => avatar.replaceChildren(img);
     img.src = profile.picture;
   }
-}
-
-function latestProfile(events) {
-  const latest = events.filter(e => e.kind === PROFILE_KIND).sort((a, b) => b.created_at - a.created_at)[0];
-  try { return latest ? JSON.parse(latest.content) : {}; } catch { return {}; }
 }
 
 /* ---------- Actions ---------- */
@@ -488,22 +510,25 @@ async function testAll() {
 }
 
 /* ---------- Session ---------- */
-const setLoginMsg = text => { $("loginMsg").textContent = text; };
-
 async function login() {
-  if (!window.nostr) { setLoginMsg("Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page."); return; }
+  const msg = $("loginMsg");
+  if (!window.nostr) { msg.textContent = "Aucune extension NIP-07 détectée. Installe Alby ou nos2x, puis recharge la page."; return; }
   try { pubkey = await window.nostr.getPublicKey(); }
-  catch { setLoginMsg("Connexion refusée par l’extension."); return; }
+  catch { msg.textContent = "Connexion refusée par l’extension."; return; }
 
   $("login").hidden = true;
   $("app").hidden = false;
   showProfile();
-  $("listMsg").textContent = "Chargement de vos listes…";
+  await loadAccount();
+}
 
+async function loadAccount() {
+  $("listMsg").textContent = "Chargement de tes listes…";
   const events = (await Promise.all(BOOT_RELAYS.map(fetchEvents))).flat();
-  showProfile(latestProfile(events));
+
+  showProfile(profileFromEvents(events));
   for (const list of Object.values(LISTS)) {
-    const latest = events.filter(e => e.kind === list.kind).sort((a, b) => b.created_at - a.created_at)[0];
+    const latest = latestEvent(events, list.kind);
     list.relays = latest ? relaysFromEvent(latest, list) : [];
   }
   $("listMsg").textContent = "";
@@ -513,7 +538,7 @@ async function login() {
 
 async function publish() {
   const list = currentList();
-  if (!list.relays.length) { $("listMsg").textContent = "Ajoutez au moins un relais avant de publier."; return; }
+  if (!list.relays.length) { $("listMsg").textContent = "Ajoute au moins un relais avant de publier."; return; }
 
   const button = $("btnPub");
   const resetButton = () => { button.disabled = false; button.textContent = "Publier cette liste"; };
@@ -551,7 +576,7 @@ function showResults(results) {
   summary.className = "msg";
   summary.textContent = accepted
     ? `Liste publiée sur ${accepted} relais sur ${results.length}.`
-    : "Aucun relais n’a accepté la liste. Vérifiez vos relais d’écriture.";
+    : "Aucun relais n’a accepté la liste. Vérifie tes relais d’écriture.";
   box.appendChild(summary);
 
   for (const r of results) {
