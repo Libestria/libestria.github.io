@@ -301,7 +301,7 @@ input::placeholder { color: var(--muted); }
 .publish-feedback[hidden] { display: none; }
 .publish-feedback .loading-spinner { width: 24px; height: 24px; border-width: 3px; flex: none; }
 .publish-check { font-size: 1.6rem; line-height: 1; color: var(--ok); }
-.publish-dialog { width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; color: var(--text-2); background: #171320; border: 1px solid var(--btn-border); border-radius: var(--r-lg); box-shadow: 0 16px 50px #000b; }
+.publish-dialog { position: fixed; inset: 0; margin: auto; width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; color: var(--text-2); background: #171320; border: 1px solid var(--btn-border); border-radius: var(--r-lg); box-shadow: 0 16px 50px #000b; }
 .publish-dialog::backdrop { background: rgb(0 0 0 / 72%); }
 .publish-dialog p { margin: 0 0 14px; line-height: 1.5; }
 .publish-confirm-actions { justify-content: flex-end; margin-top: 18px; }
@@ -404,7 +404,6 @@ input::placeholder { color: var(--muted); }
     <dialog id="publishConfirm" class="publish-dialog" aria-labelledby="publishConfirmTitle" aria-describedby="publishConfirmText">
       <h2 id="publishConfirmTitle">Confirmer la publication</h2>
       <p id="publishConfirmText"></p>
-      <p class="hint">Cette action mettra à jour la liste publiée sur ton compte Nostr.</p>
       <div class="row publish-confirm-actions">
         <button type="button" id="publishNo">Non</button>
         <button type="button" class="main" id="publishYes">Oui</button>
@@ -958,7 +957,7 @@ function requestPublish(key) {
     return;
   }
   pendingPublishKey = key;
-  $("publishConfirmText").textContent = `Souhaites-tu publier ta liste « ${LISTS[key].tab} » sur Nostr ?`;
+  $("publishConfirmText").textContent = `Souhaites-tu mettre à jour ta liste publique de relais NIP-${LISTS[key].kind === 10002 ? "65" : LISTS[key].kind === 10007 ? "51" : "17"} ?`;
   $("publishConfirm").showModal();
   $("publishNo").focus();
 }
