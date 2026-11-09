@@ -211,7 +211,9 @@ input:focus { border-color: var(--btn-hover-border); }
 input::placeholder { color: var(--muted); }
 
 /* 6. Profil Nostr ----------------------------------------------------- */
-.profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.profile { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; }
+/* Même filet dégradé que les séparateurs de l’index Libestria. */
+.profile-divider { border: 0 solid; border-top-width: var(--divider-width); border-image: var(--divider) 1; margin: 20px 0; }
 .profile > div:last-child { min-width: 0; }
 .avatar {
   width: 52px; height: 52px; border-radius: 50%; flex: none; overflow: hidden; border: 1px solid var(--btn-border);
@@ -325,20 +327,22 @@ input::placeholder { color: var(--muted); }
   </div>
 
   <div id="app" hidden>
-    <div class="profile">
-      <div class="avatar" id="avatar" aria-hidden="true"></div>
-      <div>
-        <div class="profile-name" id="profileName"></div>
-        <div class="profile-key" id="profileKey"></div>
+    <div class="card" aria-labelledby="accountTitle">
+      <h2 id="accountTitle">Compte connecté à l’application :</h2>
+      <div class="profile">
+        <div class="avatar" id="avatar" aria-hidden="true"></div>
+        <div>
+          <div class="profile-name" id="profileName"></div>
+          <div class="profile-key" id="profileKey"></div>
+        </div>
       </div>
-    </div>
-    <div class="card" aria-labelledby="relaySummaryTitle">
-      <h2 id="relaySummaryTitle">Relais actuellement connectés :</h2>
+      <div class="profile-divider" aria-hidden="true"></div>
+      <h2 id="relaySummaryTitle">Relais actuellement configurés :</h2>
       <div class="relay-summary">
-        <p>• <span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R). Ce sont les relais sur lesquels tu lis les événements Nostr.</p>
+        <p>• <span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R). Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
         <p>• <span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W). Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
-        <p>• <span id="searchRelayCount">0</span> relais NIP-51 de recherche (S). Ce sont les relais sur lesquels tu recherches des événements ou des comptes Nostr.</p>
-        <p>• <span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM). Ce sont les relais pour te contacter par messages privés sur Nostr.</p>
+        <p>• <span id="searchRelayCount">0</span> relais NIP-51 de recherche (S). Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
+        <p>• <span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM). Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
       </div>
     </div>
     <div class="tabs" id="tabs" role="tablist"></div>
