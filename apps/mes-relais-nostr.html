@@ -231,8 +231,8 @@ input::placeholder { color: var(--muted); }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
 /* 7. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
-.relay-accordions { display: grid; gap: 14px; }
-.relay-accordion { min-width: 0; }
+.relay-accordions { display: grid; gap: 0; }
+.relay-accordion { min-width: 0; border: 0 solid; border-top-width: var(--divider-width); border-image: var(--divider) 1; padding: 24px 0; }
 .relay-accordion-heading { margin: 0; color: #fff; font-size: 18px; font-weight: 600; line-height: 1.4; }
 .theme-toggle { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 0; min-height: 0; border: 0; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .theme-toggle strong { flex: 1; font-weight: inherit; }
@@ -425,7 +425,7 @@ const LATENCY = { fast: 500, slow: 1200 }; // ms : vert < fast, orange < slow, r
 const LISTS = {
   pub: {
     kind: 10002, rw: true, tag: "r",
-    tab: "Lecture (R) & Écriture (W)", title: "Relais publics (NIP-65)",
+    tab: "Relais NIP-65 de lecture (R) et d’écriture (W)", title: "Relais publics (NIP-65)",
     hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
     suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
@@ -433,13 +433,13 @@ const LISTS = {
   },
   search: {
     kind: 10007, rw: false, tag: "relay",
-    tab: "Recherche (S)", title: "Relais de recherche (NIP-51)",
+    tab: "Relais NIP-51 de recherche (S)", title: "Relais de recherche (NIP-51)",
     hint: "Les relais interrogés quand tu cherches des profils ou des notes.",
     suggestions: ["wss://relay.nostr.band", "wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine"],
   },
   dm: {
     kind: 10050, rw: false, tag: "relay",
-    tab: "Messages Privés (DM)", title: "Relais de messages privés (NIP-17)",
+    tab: "Relais NIP-17 de messages privés (DM)", title: "Relais de messages privés (NIP-17)",
     hint: "Les relais où l’on t’envoie tes messages privés. Choisis-en 1 à 3 fiables, idéalement avec authentification.",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://inbox.nostr.wine", "wss://relay.damus.io"],
   },
@@ -632,7 +632,7 @@ function relayRow(list, relay, index) {
   return row;
 }
 
-let accordionOpen = true;
+let accordionOpen = false;
 
 // Les en-têtes restent dans le DOM : les mises à jour ne détruisent ni le focus
 // clavier ni les éléments de la carte contenant la liste de relais.
