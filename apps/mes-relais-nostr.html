@@ -99,7 +99,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .sub { margin: 0 0 1rem; color: var(--text-2); letter-spacing: .02em; }
 .sub p { margin: 0; }
 .sub > * + * { margin-top: 1rem; }
-.sub ul { margin: 0; padding-left: 22px; }
+.sub ul { margin: 1rem 0 0; padding-left: 22px; }
 .sub li::marker { color: var(--violet-light); }
 .card {
   background: var(--grad-card); border-radius: var(--r-lg); padding: 20px 18px; margin-bottom: 0;
@@ -335,9 +335,9 @@ input::placeholder { color: var(--muted); }
   <div class="sub">
     <p>Cette application web te permet de configurer tes relais Nostr et de mettre à jour tes listes publiques :</p>
     <ul>
-      <li>Relais NIP-65 pour la lecture (R) et l’écriture (W) d’événements Nostr ;</li>
-      <li>Relais NIP-51 pour la recherche (S) d’événements et de profils Nostr ;</li>
-      <li>Relais NIP-17 pour la réception de messages privés (DM) Nostr.</li>
+      <li><strong>Relais NIP-65</strong> pour la lecture (R) et l’écriture (W) d’événements Nostr ;</li>
+      <li><strong>Relais NIP-51</strong> pour la recherche (S) d’événements et de profils Nostr ;</li>
+      <li><strong>Relais NIP-17</strong> pour la réception de messages privés (DM) Nostr.</li>
     </ul>
   </div>
 
@@ -372,10 +372,10 @@ input::placeholder { color: var(--muted); }
       <div class="profile-divider" aria-hidden="true"></div>
       <h2 id="relaySummaryTitle">Relais actuellement configurés :</h2>
       <div class="relay-summary">
-        <p>• <span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R). Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
-        <p>• <span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W). Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
-        <p>• <span id="searchRelayCount">0</span> relais NIP-51 de recherche (S). Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
-        <p>• <span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM). Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
+        <p>• <strong><span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
+        <p>• <strong><span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
+        <p>• <strong><span id="searchRelayCount">0</span> relais NIP-51 de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
+        <p>• <strong><span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
       </div>
     </div>
     <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais"></div>
