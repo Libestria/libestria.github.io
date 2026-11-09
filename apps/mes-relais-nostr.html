@@ -125,6 +125,13 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .relay-summary p:last-child { margin-bottom: 0; }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 
+/* Transition de connexion : indicateur sans dépendance externe. */
+.loading-card:not([hidden]) { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 190px; text-align: center; }
+.loading-spinner { width: 48px; height: 48px; border: 4px solid rgb(168 85 247 / 20%); border-top-color: var(--violet-light); border-radius: 50%; animation: loading-spin .9s linear infinite; }
+.loading-card p { color: var(--text-2); }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; border-top-color: var(--cyan); } }
+
 /* 3. En-tête ---------------------------------------------------------- */
 .banner { flex: none; display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); padding: 3px 0; }
 .banner > a.banner { flex: 0 1 auto; min-width: 0; padding: 0; text-decoration: none; }
@@ -324,6 +331,12 @@ input::placeholder { color: var(--muted); }
     </div>
     <button class="btn-connect" id="btnLogin" type="button"><svg class="i" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecter</span></button>
     <p class="msg alert" id="loginMsg" role="alert"></p>
+  </div>
+
+  <div class="card loading-card" id="loginLoading" role="status" aria-live="polite" aria-label="Connexion au compte Nostr en cours" hidden>
+    <span class="loading-spinner" aria-hidden="true"></span>
+    <h2>Connexion au compte Nostr…</h2>
+    <p id="loadingMessage">Autorise la connexion dans ton signer si nécessaire.</p>
   </div>
 
   <div id="app" hidden>
@@ -763,28 +776,31 @@ async function login() {
   }
 
   button.disabled = true;
-  let key;
+  $("login").hidden = true;
+  $("loginLoading").hidden = false;
+  $("loadingMessage").textContent = "Autorise la connexion dans ton signer si nécessaire.";
   try {
-    key = await getPublicKeyWithTimeout(signer);
+    const key = await getPublicKeyWithTimeout(signer);
     if (typeof key !== "string" || !/^[0-9a-f]{64}$/i.test(key)) {
       throw new Error("INVALID_PUBLIC_KEY");
     }
+
+    pubkey = key;
+    $("loadingMessage").textContent = "Chargement de ton profil et de tes listes de relais…";
+    showProfile();
+    try {
+      await loadAccount();
+    } catch {
+      $("listMsg").textContent = "Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.";
+    }
+    $("loginLoading").hidden = true;
+    $("app").hidden = false;
   } catch (error) {
+    $("loginLoading").hidden = true;
+    $("login").hidden = false;
     showLoginError(error?.message === "NIP07_TIMEOUT" ? LOGIN_ERRORS.timeout : loginError(error));
-    return;
   } finally {
     button.disabled = false;
-  }
-
-  // La connexion a réussi : un éventuel échec de chargement n'est pas une erreur NIP-07.
-  pubkey = key;
-  $("login").hidden = true;
-  $("app").hidden = false;
-  showProfile();
-  try {
-    await loadAccount();
-  } catch {
-    $("listMsg").textContent = "Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.";
   }
 }
 
