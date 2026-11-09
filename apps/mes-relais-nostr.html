@@ -295,8 +295,17 @@ input::placeholder { color: var(--muted); }
 }
 
 /* 11. Publication et résultats ---------------------------------------- */
-.bar { position: sticky; bottom: 0; padding: 14px 0 0; background: linear-gradient(transparent, #000 45%); display: flex; justify-content: center; }
-.bar button { width: 100%; padding: 12px; min-height: 48px; }
+.publish-actions { margin-top: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.publish-actions > button { min-height: 48px; }
+.publish-feedback { display: flex; align-items: center; gap: 10px; min-height: 26px; color: var(--text-2); }
+.publish-feedback[hidden] { display: none; }
+.publish-feedback .loading-spinner { width: 24px; height: 24px; border-width: 3px; flex: none; }
+.publish-check { font-size: 1.6rem; line-height: 1; color: var(--ok); }
+.publish-dialog { width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; color: var(--text-2); background: #171320; border: 1px solid var(--btn-border); border-radius: var(--r-lg); box-shadow: 0 16px 50px #000b; }
+.publish-dialog::backdrop { background: rgb(0 0 0 / 72%); }
+.publish-dialog p { margin: 0 0 14px; line-height: 1.5; }
+.publish-confirm-actions { justify-content: flex-end; margin-top: 18px; }
+.publish-confirm-actions button { min-width: 86px; }
 .res { font: .88rem var(--mono); margin: 4px 0; color: var(--text-2); overflow-wrap: anywhere; }
 .res.ok::before { content: "✓ "; color: var(--ok); }
 .res.bad::before { content: "✕ "; color: var(--bad); }
@@ -392,7 +401,15 @@ input::placeholder { color: var(--muted); }
       <div id="results"></div>
     </div>
 
-    <div class="bar"><button class="main" id="btnPub">Publier cette liste</button></div>
+    <dialog id="publishConfirm" class="publish-dialog" aria-labelledby="publishConfirmTitle" aria-describedby="publishConfirmText">
+      <h2 id="publishConfirmTitle">Confirmer la publication</h2>
+      <p id="publishConfirmText"></p>
+      <p class="hint">Cette action mettra à jour la liste publiée sur ton compte Nostr.</p>
+      <div class="row publish-confirm-actions">
+        <button type="button" id="publishNo">Non</button>
+        <button type="button" class="main" id="publishYes">Oui</button>
+      </div>
+    </dialog>
   </div>
 </div>
 </div>
@@ -657,10 +674,30 @@ function initRelayAccordions() {
     panel.className = "relay-accordion-content";
     panel.id = `relay-panel-${key}`;
     panel.hidden = true;
+    const actions = document.createElement("div");
+    actions.className = "publish-actions";
+    const publishButton = document.createElement("button");
+    publishButton.type = "button";
+    publishButton.className = "main";
+    publishButton.textContent = "Publier cette liste";
+    publishButton.dataset.publishCategory = key;
+    const feedback = document.createElement("div");
+    feedback.className = "publish-feedback";
+    feedback.id = `publish-feedback-${key}`;
+    feedback.setAttribute("role", "status");
+    feedback.setAttribute("aria-live", "polite");
+    feedback.hidden = true;
+    actions.append(publishButton, feedback);
+    panel.appendChild(actions);
     section.append(heading, panel);
     container.appendChild(section);
   }
   container.addEventListener("click", event => {
+    const publishButton = event.target.closest("button[data-publish-category]");
+    if (publishButton && container.contains(publishButton)) {
+      requestPublish(publishButton.dataset.publishCategory);
+      return;
+    }
     const button = event.target.closest("button[data-relay-category]");
     if (!button || !container.contains(button)) return;
     const key = button.dataset.relayCategory;
@@ -689,7 +726,7 @@ function updateRelayAccordions() {
     button.setAttribute("aria-expanded", String(expanded));
     button.querySelector("strong").textContent = `${LISTS[key].tab} (${LISTS[key].relays.length})`;
     const panel = $("relay-panel-" + key);
-    if (expanded) panel.appendChild(listCard);
+    if (expanded) panel.insertBefore(listCard, panel.querySelector(".publish-actions"));
     panel.hidden = !expanded;
   }
   listCard.hidden = !activeKey;
@@ -889,35 +926,79 @@ async function loadAccount() {
   void testAll();
 }
 
-async function publish() {
-  const list = currentList();
-  if (!list.relays.length) { $("listMsg").textContent = "Ajoute au moins un relais avant de publier."; return; }
+let publishing = false;
+let pendingPublishKey = null;
 
-  const button = $("btnPub");
-  const resetButton = () => { button.disabled = false; button.textContent = "Publier cette liste"; };
-  button.disabled = true;
-  button.textContent = "Signature…";
+function setPublishFeedback(key, state, message) {
+  const feedback = $("publish-feedback-" + key);
+  feedback.replaceChildren();
+  feedback.hidden = !state;
+  if (!state) return;
+  if (state === "loading") {
+    const spinner = document.createElement("span");
+    spinner.className = "loading-spinner";
+    spinner.setAttribute("aria-hidden", "true");
+    feedback.appendChild(spinner);
+  } else if (state === "success") {
+    const check = document.createElement("span");
+    check.className = "publish-check";
+    check.textContent = "✓";
+    check.setAttribute("aria-hidden", "true");
+    feedback.appendChild(check);
+  }
+  const label = document.createElement("span");
+  label.textContent = message;
+  feedback.appendChild(label);
+}
 
-  let event;
-  try {
-    event = await window.nostr.signEvent({ kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" });
-  } catch {
-    resetButton();
-    $("listMsg").textContent = "Signature refusée.";
+function requestPublish(key) {
+  if (publishing || !LISTS[key]) return;
+  if (!LISTS[key].relays.length) {
+    setPublishFeedback(key, "error", "Ajoute au moins un relais avant de publier.");
     return;
   }
+  pendingPublishKey = key;
+  $("publishConfirmText").textContent = `Souhaites-tu publier ta liste « ${LISTS[key].tab} » sur Nostr ?`;
+  $("publishConfirm").showModal();
+  $("publishNo").focus();
+}
 
-  button.textContent = "Publication…";
-  const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
-  const targets = [...new Set([
-    ...(list.rw ? writeRelays(list.relays) : []),
-    ...writeRelays(LISTS.pub.relays),
-    ...BOOT_RELAYS,
-  ])];
-  const results = await Promise.all(targets.map(url => publishTo(url, event)));
-  showResults(results);
-  list.dirty = false;
-  resetButton();
+async function publish(key) {
+  const list = LISTS[key];
+  if (!list || publishing || !list.relays.length) return;
+  publishing = true;
+  const buttons = [...document.querySelectorAll("[data-publish-category]")];
+  buttons.forEach(button => { button.disabled = true; });
+  setPublishFeedback(key, "loading", "Signature de la liste…");
+  try {
+    const event = await window.nostr.signEvent({
+      kind: list.kind, created_at: Math.floor(Date.now() / 1000),
+      tags: tagsFromList(list), content: ""
+    });
+    setPublishFeedback(key, "loading", "Publication en cours…");
+    const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
+    const targets = [...new Set([
+      ...(list.rw ? writeRelays(list.relays) : []),
+      ...writeRelays(LISTS.pub.relays), ...BOOT_RELAYS,
+    ])];
+    const results = await Promise.all(targets.map(url => publishTo(url, event)));
+    const accepted = results.filter(result => result.ok).length;
+    showResults(results);
+    if (!accepted) {
+      setPublishFeedback(key, "error", "Aucun relais n’a confirmé la publication.");
+      return;
+    }
+    list.dirty = false;
+    setPublishFeedback(key, "success", `Liste publiée avec succès sur ${accepted} relais.`);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    render();
+    setPublishFeedback(key, null, "");
+  } catch (error) {
+    setPublishFeedback(key, "error", error?.message ? `Publication impossible : ${error.message}` : "Signature refusée ou publication impossible.");
+  } finally {
+    publishing = false;
+    buttons.forEach(button => { button.disabled = false; });
+  }
 }
 
 function showResults(results) {
@@ -950,7 +1031,13 @@ $("newUrl").addEventListener("keydown", e => {
   if (e.key === "Enter") addRelay(e.target.value);
 });
 $("btnTest").addEventListener("click", testAll);
-$("btnPub").addEventListener("click", publish);
+$("publishNo").addEventListener("click", () => $("publishConfirm").close());
+$("publishConfirm").addEventListener("close", () => { pendingPublishKey = null; });
+$("publishYes").addEventListener("click", () => {
+  const key = pendingPublishKey;
+  $("publishConfirm").close();
+  if (key) void publish(key);
+});
 window.addEventListener("beforeunload", e => {
   if (Object.values(LISTS).some(l => l.dirty)) e.preventDefault();
 });
