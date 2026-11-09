@@ -24,32 +24,95 @@
   --divider: linear-gradient(90deg, var(--stops));
   --grad-card: linear-gradient(160deg, var(--stops));
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
-  --r-sm: 6px; --r-lg: 13px;
+  --r-sm: 6px; --r-lg: 13px; --r-xl: 18px; --divider-width: 2px; --grad-side: linear-gradient(180deg, var(--stops));
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-/* ---------- Base ---------- */
-* { box-sizing: border-box; }
-html { background: #000; -webkit-text-size-adjust: 100%; scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; }
-body { margin: 0; background: #000; color: var(--text); font: 16px/1.5 var(--sans); }
-main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
-h1 { margin: 0 0 6px; font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
+/* ---------- Base : bandeau, fenêtre défilante et footer selon Libestria ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; min-height: 100%; }
+html { background: #000; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000;
+  color: var(--text);
+  font-family: var(--sans);
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.i {
+  display: block; flex: none; width: 20px; height: 20px;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+main {
+  min-height: 0;
+  height: 100%;
+  width: 90%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: clamp(10px, 2vh, 24px) 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 20px);
+  overflow: hidden;
+}
+
+/* Cadre de fenêtre Libestria : bordure latérale dégradée et titre fixe. */
+.window {
+  flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+  border: solid transparent; border-width: 0 0 0 4px;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background: linear-gradient(#000, #000) padding-box, var(--grad-side) border-box;
+}
+.win-bar {
+  flex: none; display: flex; align-items: center; gap: 10px;
+  min-height: 55px; padding: 12px 20px;
+  border-bottom: var(--divider-width) solid transparent;
+  background: linear-gradient(90deg, var(--stops));
+}
+.win-icon { display: inline-flex; flex: none; color: var(--cyan); }
+.win-icon .i { width: 25px; height: 25px; }
+.win-title { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
+/* Alignement optique de l’icône et du titre : mêmes règles que Libestria. */
+@supports (top: 1cap) {
+  .win-bar { align-items: baseline; }
+  .win-icon { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); --s: 25px; }
+  .win-icon {
+    position: relative;
+    top: calc(var(--s) / 2 - .5cap - .3px);
+    margin-top: calc(-1 * var(--s));
+  }
+}
+.proto-logos { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 7vw, 64px); width: 100%; }
+.proto-logos img { display: block; width: auto; height: clamp(38px, 8vw, 54px); max-width: 42%; object-fit: contain; }
+/* Zone défilante sous le bandeau de fenêtre */
+.page { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; padding: 0; -webkit-overflow-scrolling: touch; }
+.content { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 720px; margin: 0 auto; padding: 34px clamp(22px, 3vw, 48px); }
 h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
-.sub { margin: 0 0 22px; color: var(--text-2); letter-spacing: .02em; }
-.sub p { margin: 0 0 10px; }
+.sub { margin: 0 0 1rem; color: var(--text-2); letter-spacing: .02em; }
+.sub p { margin: 0; }
+.sub > * + * { margin-top: 1rem; }
 .sub ul { margin: 0; padding-left: 22px; }
 .sub li::marker { color: var(--violet-light); }
 .card {
-  background: var(--grad-card); border-radius: var(--r-lg); padding: 20px 18px; margin-bottom: 18px;
+  background: var(--grad-card); border-radius: var(--r-lg); padding: 20px 18px; margin-bottom: 0;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
 }
-.row { display: flex; gap: 8px; align-items: center; }
+.row { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .row.top { margin-top: 14px; }
 .msg { font-size: .9rem; color: var(--muted); margin: 8px 0 0; }
 .msg.inline { margin: 0; }
 .alert { color: var(--bad-text); }
 .alert:empty { display: none; }
+.login-title { display: flex; align-items: center; gap: 10px; }
+.login-icon { width: 25px; height: 25px; flex: none; color: var(--cyan); }
 .help { margin-top: 14px; font-size: .9rem; color: var(--muted); }
 .help p { margin: 0 0 8px; }
 .help a { color: var(--cyan); text-decoration: none; }
@@ -58,16 +121,68 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 
-/* ---------- Bandeau Libestria ---------- */
-.banner { display: flex; align-items: center; margin-bottom: 18px; padding: 3px 0; }
-.brand { display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); min-width: 0; text-decoration: none; }
-.brand:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--r-sm); }
+/* ---------- En-tête Libestria (fixe) ---------- */
+.banner { flex: none; display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); padding: 3px 0; }
+.banner > a.banner { flex: 0 1 auto; min-width: 0; padding: 0; text-decoration: none; }
 .brand-logo { display: block; flex: none; width: 115px; height: auto; }
 .wordmark {
-  font: 400 clamp(2rem, 4.3vw, 3.4rem) / 1.12 var(--mono); white-space: nowrap;
-  color: transparent; background: var(--grad-title); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  flex: 0 1 auto; min-width: 0;
+  font: 400 clamp(2rem, 4.3vw, 4.1rem) / 1.12 var(--mono);
+  white-space: nowrap;
+  color: transparent;
+  background: var(--grad-title);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-@media (max-width: 699px) { .brand-logo { width: 75px; } .wordmark { font-size: clamp(1.5rem, 7vw, 2.2rem); letter-spacing: -.035em; } }
+.actions { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: none; }
+.icon-btn {
+  display: grid; place-items: center; flex: none; padding: 0;
+  border: 1px solid var(--btn-border); border-radius: 50%; color: #fff;
+  transition: background .2s, border-color .2s;
+  width: 48px; height: 48px; background: var(--grad-card); text-decoration: none; line-height: 1;
+}
+.icon-btn .i { width: 30px; height: 30px; }
+.icon-btn[href$="#accueil"] .i { color: var(--icon); }
+.icon-btn[href$="#soutien"] .i { color: var(--cyan); }
+.icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
+@media (hover: hover) { .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
+.icon-btn:active { background: var(--btn-hover-bg); }
+
+@keyframes support-heartbeat {
+  0%, 8%, 18%, 28%, 100% { transform: scale(1); }
+  12%, 22% { transform: scale(1.15); }
+}
+/* Battement discret du bouton Soutenir */
+@media (prefers-reduced-motion: no-preference) {
+  .actions .icon-btn[href$="#soutien"] .i { animation: support-heartbeat 5s ease-in-out infinite; transform-origin: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
+
+@media (max-width: 699px) {
+  main { width: 96%; padding: 8px 0; gap: 9px; }
+  .win-bar { min-height: 40px; padding: 8px 10px; }
+  .content { padding: 18px 12px; }
+  .site-footer { width: 96%; padding: 5px 0 8px; }
+  .banner { gap: 8px; }
+  .brand-logo { width: 75px; }
+  .wordmark { font-size: clamp(1.35rem, 5.3vw, 2.2rem); letter-spacing: -.035em; }
+}
+@media (max-width: 600px) {
+  .icon-btn { width: 43px; height: 43px; }
+  .icon-btn .i { width: 27px; height: 27px; }
+}
+@media (max-width: 380px) { .wordmark { font-size: clamp(1.15rem, 5vw, 1.4rem); } }
+@media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
+@media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
+
+/* ---------- Pied de page : même disposition que Libestria ---------- */
+.site-footer {
+  width: 90%; max-width: 1600px; margin: 0 auto; padding: 8px 0 max(12px, env(safe-area-inset-bottom));
+  min-height: 34px;
+  color: var(--text-2); font: 400 clamp(.7rem, 1.9vw, .8rem) var(--mono); text-align: center; text-wrap: balance;
+}
 
 /* ---------- Champs et boutons ---------- */
 button {
@@ -79,8 +194,13 @@ button:disabled { opacity: .5; cursor: default; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) { button:not(:disabled):hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
 button.main { color: #fff; border-color: var(--btn-hover-border); background: var(--btn-hover-bg); font-weight: 600; }
+/* Bouton de connexion : présentation des boutons Copier de Libestria. */
+#login .help + .btn-connect { margin-top: 16px; }
+button.btn-connect { display: inline-flex; align-items: center; justify-content: center; gap: 8px; max-width: 100%; min-width: 144px; min-height: 44px; padding: 9px 14px; background: var(--btn-bg); border-color: var(--btn-border); color: var(--icon); font-size: 1rem; font-weight: 400; letter-spacing: normal; line-height: 1.4; white-space: nowrap; }
+button.btn-connect .i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@supports (top: 1cap) { button.btn-connect { align-items: baseline; padding-block: calc((44px - 2px - 1.4em) / 2); } button.btn-connect .i { --s: 20px; position: relative; top: calc(var(--s) / 2 - .5cap - .3px); margin-top: calc(-1 * var(--s)); } }
 input {
-  font: inherit; width: 100%; padding: 9px 12px; color: var(--text);
+  font: inherit; width: 100%; min-width: 0; padding: 9px 12px; color: var(--text);
   border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg);
 }
 input:focus { border-color: var(--btn-hover-border); }
@@ -88,6 +208,7 @@ input::placeholder { color: var(--muted); }
 
 /* ---------- Profil ---------- */
 .profile { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.profile > div:last-child { min-width: 0; }
 .avatar {
   width: 52px; height: 52px; border-radius: 50%; flex: none; overflow: hidden; border: 1px solid var(--btn-border);
   background: var(--btn-bg); color: var(--cyan); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.3rem;
@@ -125,23 +246,60 @@ input::placeholder { color: var(--muted); }
 .chips .lbl:first-child { margin-top: 0; }
 .chips button { min-height: 32px; font: .82rem var(--mono); padding: 3px 10px; border-radius: 99px; }
 
+/* ---------- Adaptations propres à l’application ----------
+   Les seuils et dimensions de l’en-tête restent ceux de Libestria. */
+@media (max-width: 699px) {
+  .content { padding-bottom: 18px; }
+  .card { padding: 18px 12px; }
+
+  .profile { gap: 10px; }
+  .tabs { margin-bottom: 14px; }
+  .relay { gap: 8px; }
+  .modes { padding-left: 16px; }
+}
+@media (max-width: 600px) {
+  .row.top { align-items: stretch; flex-direction: column; }
+  .row.top button { align-self: flex-start; }
+  .row:has(#newUrl) { flex-wrap: wrap; }
+  #newUrl { flex: 1 1 100%; }
+  #btnAdd { width: 100%; }
+  .relay .url { flex-basis: calc(100% - 20px); }
+  .relay .lat { margin-left: 16px; }
+  .modes { padding-left: 0; }
+  .tabs button { flex: none; }
+}
+@media (max-width: 380px) {
+  .card { padding: 16px 10px; }
+  .relay .url { font-size: .85rem; }
+  .modes button { padding-inline: 8px; }
+}
+
 /* ---------- Publication ---------- */
-.bar { position: sticky; bottom: 0; padding: 14px 16px; background: linear-gradient(transparent, #000 45%); display: flex; justify-content: center; }
-.bar button { width: 100%; max-width: 688px; padding: 12px; min-height: 48px; }
+.bar { position: sticky; bottom: 0; padding: 14px 0 0; background: linear-gradient(transparent, #000 45%); display: flex; justify-content: center; }
+.bar button { width: 100%; padding: 12px; min-height: 48px; }
 .res { font: .88rem var(--mono); margin: 4px 0; color: var(--text-2); overflow-wrap: anywhere; }
 .res.ok::before { content: "✓ "; color: var(--ok); }
 .res.bad::before { content: "✕ "; color: var(--bad); }
 </style>
 </head>
 <body>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol></svg>
 <main>
-  <header class="banner">
-    <a class="brand" href="https://libestria.fr/" aria-label="Libestria.fr">
-      <img class="brand-logo" src="https://libestria.fr/IMG/IMG_Libestria.webp" width="256" height="256" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.local){this.dataset.local=1;this.src='IMG/IMG_Libestria.webp'}else{this.remove()}">
-      <span class="wordmark" translate="no">Libestria.fr</span>
-    </a>
-  </header>
-  <h1>App web de gestion de tes relais Nostr</h1>
+<header class="banner">
+<a class="banner" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Libestria.fr — À propos de Libestria">
+<img class="brand-logo" src="https://libestria.fr/IMG/IMG_Libestria.webp" width="256" height="256" alt="" fetchpriority="high" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.local){this.dataset.local=1;this.src='IMG/IMG_Libestria.webp'}else{this.remove()}">
+<h1 class="wordmark" translate="no">Libestria.fr</h1>
+</a>
+<div class="actions">
+<a class="icon-btn" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Accueil — À propos de Libestria" title="À propos de Libestria"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></a>
+<a class="icon-btn" href="https://libestria.fr/#soutien" target="_blank" rel="noopener noreferrer" aria-label="Soutenir Libestria" title="Soutenir Libestria"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg></a>
+</div>
+</header>
+<section class="window" aria-labelledby="win-title">
+<div class="win-bar"><span class="win-icon" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-relays"/></svg></span><h2 class="win-title" id="win-title">Gestion des relais Nostr</h2></div>
+<div class="page">
+<div class="content">
+  <div class="proto-logos"><img src="IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div>
   <div class="sub">
     <p>Cette application web Libestria te permet de configurer facilement tes relais Nostr et de mettre à jour tes listes publiques :</p>
     <ul>
@@ -152,14 +310,14 @@ input::placeholder { color: var(--muted); }
   </div>
 
   <div class="card" id="login">
-    <h2>Connecter ton compte Nostr</h2>
-    <button class="main" id="btnLogin">Connecter</button>
-    <p class="msg alert" id="loginMsg" role="alert"></p>
+    <h2 class="login-title"><svg class="login-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecte ton compte Nostr</span></h2>
     <div class="help">
-      <p>Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby, nos2x…).</p>
-      <p><strong>Information :</strong> ta clé privée ne quitte jamais l’extension.</p>
-      <p>Tu peux trouver des signers compatibles dans <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
+      <p>• Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby Extension, Nostr Map Signer, Nostash…).</p>
+      <p>• Ta clé privée (NSEC) ne quitte jamais l’extension de ton navigateur.</p>
+      <p>• Trouve un signer compatible dans <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
     </div>
+    <button class="btn-connect" id="btnLogin" type="button"><svg class="i" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecter</span></button>
+    <p class="msg alert" id="loginMsg" role="alert"></p>
   </div>
 
   <div id="app" hidden>
@@ -199,7 +357,11 @@ input::placeholder { color: var(--muted); }
 
     <div class="bar"><button class="main" id="btnPub">Publier cette liste</button></div>
   </div>
+</div>
+</div>
+</section>
 </main>
+<footer class="site-footer">© 2026 Libestria.fr | Propulsé par ΛRTΞFΛCT</footer>
 
 <script>
 /* ---------- Configuration ---------- */
