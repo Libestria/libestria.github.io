@@ -5,260 +5,454 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mes relais Nostr</title>
 <style>
-:root{--bg:#f6f5fb;--card:#fff;--ink:#1b1930;--mute:#6b6886;--line:#e3e0f0;--acc:#5b3df5;--accink:#fff;--ok:#1a9d5c;--bad:#d03a4a;--warn:#c98a10}
-@media (prefers-color-scheme:dark){:root{--bg:#12101f;--card:#1b1830;--ink:#eeecfa;--mute:#9a96b8;--line:#2d2948;--acc:#8f7bff;--accink:#12101f;--ok:#41d08a;--bad:#ff6b7a;--warn:#f0b43c}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:640px;margin:0 auto;padding:24px 16px 80px}
-h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:-.02em}
-p.sub{margin:0 0 20px;color:var(--mute)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
-button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 14px}
-button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-button.main{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
-button:disabled{opacity:.5;cursor:default}
-input{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
-.row{display:flex;gap:8px;align-items:center}
-.relay{flex-wrap:wrap;display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.relay:first-child{border-top:0}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--mute);flex:none}
-.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.slow{background:var(--warn)}
-.url{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace;font-size:.9rem}
-.url small{display:block;color:var(--mute);font-family:system-ui,sans-serif;font-size:.75rem}
-.seg{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
-.seg button{border:0;border-radius:0;padding:4px 10px;font-size:.78rem;line-height:1.3;color:var(--mute);text-align:left;white-space:nowrap}
-.seg button+button{border-top:1px solid var(--line)}
-.seg button.on{background:var(--acc);color:var(--accink);font-weight:600}
-.acts{display:flex;gap:6px;flex-wrap:wrap;flex:1 0 100%;padding-left:20px}
-.acts button{font-size:.8rem;padding:5px 10px;color:var(--mute)}
-.acts button.on{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
-.relay>.x{color:var(--bad);font-size:.8rem;padding:5px 10px}
-.lat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--mute);flex:none;white-space:nowrap}
-.lat svg{width:16px;height:12px}
-.lat.g svg{color:var(--ok)}.lat.o svg{color:var(--warn)}.lat.r svg{color:var(--bad)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.chips .lbl{flex:1 0 100%;font-size:.82rem;font-weight:600;margin-top:6px}
-.chips .lbl:first-child{margin-top:0}
-.chips button{font-size:.82rem;padding:4px 10px;border-radius:99px;color:var(--mute)}
-h2{font-size:1rem;margin:0 0 10px}
-.msg{font-size:.9rem;color:var(--mute);margin:8px 0 0}
-.empty{color:var(--mute);padding:8px 0;margin:0}
-.bar{position:sticky;bottom:0;padding:12px 16px;background:linear-gradient(transparent,var(--bg) 40%);display:flex;justify-content:center}
-.bar button{width:100%;max-width:608px;padding:12px}
-.res{font-size:.85rem;font-family:ui-monospace,Menlo,monospace;margin:4px 0}
-.res.ok::before{content:"✓ ";color:var(--ok)}.res.bad::before{content:"✕ ";color:var(--bad)}
-.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto}
-.tabs button{white-space:nowrap;border-radius:99px;color:var(--mute)}
-.tabs button.on{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
-.hint{margin:0 0 12px;color:var(--mute);font-size:.9rem}
-#who{font-size:.85rem;color:var(--mute);word-break:break-all}
+/* ---------- Thème ---------- */
+:root {
+  --bg: #f6f5fb; --card: #fff; --ink: #1b1930; --mute: #6b6886; --line: #e3e0f0;
+  --acc: #5b3df5; --accink: #fff;
+  --ok: #1a9d5c; --okink: #fff; --bad: #d03a4a; --warn: #c98a10;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12101f; --card: #1b1830; --ink: #eeecfa; --mute: #9a96b8; --line: #2d2948;
+    --acc: #8f7bff; --accink: #12101f;
+    --ok: #41d08a; --okink: #0b1f14; --bad: #ff6b7a; --warn: #f0b43c;
+  }
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 640px; margin: 0 auto; padding: 24px 16px 80px; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; letter-spacing: -.02em; }
+h2 { font-size: 1rem; margin: 0 0 10px; }
+.sub { margin: 0 0 20px; color: var(--mute); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row.top { margin-top: 12px; }
+.msg { font-size: .9rem; color: var(--mute); margin: 8px 0 0; }
+.msg.inline { margin: 0; }
+.hint { margin: 0 0 12px; color: var(--mute); font-size: .9rem; }
+.empty { color: var(--mute); padding: 8px 0; margin: 0; }
+#who { font-size: .85rem; color: var(--mute); word-break: break-all; }
+
+/* ---------- Champs et boutons ---------- */
+button { font: inherit; cursor: pointer; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--ink); padding: 8px 14px; }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+button.main { background: var(--acc); color: var(--accink); border-color: var(--acc); font-weight: 600; }
+input { font: inherit; width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+
+/* ---------- Onglets ---------- */
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
+.tabs button { white-space: nowrap; border-radius: 99px; color: var(--mute); }
+.tabs button.on { background: var(--acc); color: var(--accink); border-color: var(--acc); font-weight: 600; }
+
+/* ---------- Ligne de relais ---------- */
+.relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.relay:first-child { border-top: 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mute); flex: none; }
+.dot.ok { background: var(--ok); }
+.dot.bad { background: var(--bad); }
+.url { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: .9rem ui-monospace, Menlo, monospace; }
+.lat { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; color: var(--mute); flex: none; white-space: nowrap; }
+.lat svg { width: 16px; height: 12px; }
+.lat.g svg { color: var(--ok); }
+.lat.o svg { color: var(--warn); }
+.lat.r svg { color: var(--bad); }
+.del { color: var(--bad); font-size: .8rem; padding: 5px 10px; }
+.modes { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 0 100%; padding-left: 20px; }
+.modes button { font-size: .8rem; padding: 5px 10px; color: var(--mute); }
+.modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 600; }
+
+/* ---------- Suggestions ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chips .lbl { flex: 1 0 100%; font-size: .82rem; font-weight: 600; margin-top: 6px; }
+.chips .lbl:first-child { margin-top: 0; }
+.chips button { font-size: .82rem; padding: 4px 10px; border-radius: 99px; color: var(--mute); }
+
+/* ---------- Publication ---------- */
+.bar { position: sticky; bottom: 0; padding: 12px 16px; background: linear-gradient(transparent, var(--bg) 40%); display: flex; justify-content: center; }
+.bar button { width: 100%; max-width: 608px; padding: 12px; }
+.res { font: .85rem ui-monospace, Menlo, monospace; margin: 4px 0; }
+.res.ok::before { content: "✓ "; color: var(--ok); }
+.res.bad::before { content: "✕ "; color: var(--bad); }
 </style>
 </head>
 <body>
 <main>
-<h1>Mes relais Nostr</h1>
-<p class="sub">Gérez vos relais publics, de messages privés et de recherche, puis publiez chaque liste.</p>
+  <h1>Mes relais Nostr</h1>
+  <p class="sub">Gérez vos relais publics, de messages privés et de recherche, puis publiez chaque liste.</p>
 
-<div class="card" id="login">
-  <button class="main" id="btnLogin">Se connecter avec mon extension</button>
-  <p class="msg" id="loginMsg">Nécessite une extension compatible NIP-07 (Alby, nos2x, Flamingo…). Votre clé privée ne quitte jamais l’extension.</p>
-</div>
+  <div class="card" id="login">
+    <button class="main" id="btnLogin">Se connecter avec mon extension</button>
+    <p class="msg" id="loginMsg">Nécessite une extension compatible NIP-07 (Alby, nos2x, Flamingo…). Votre clé privée ne quitte jamais l’extension.</p>
+  </div>
 
-<div id="app" hidden>
-  <p id="who"></p>
-  <div class="tabs" id="tabs" role="tablist"></div>
-  <div class="card">
-    <h2 id="lt"></h2>
-    <p class="hint" id="lh"></p>
-    <div id="list"></div>
-    <div class="row" style="margin-top:12px">
-      <button id="btnTest">Tester la connexion</button>
-      <span class="msg" id="listMsg" style="margin:0"></span>
+  <div id="app" hidden>
+    <p id="who"></p>
+    <div class="tabs" id="tabs" role="tablist"></div>
+
+    <div class="card">
+      <h2 id="listTitle"></h2>
+      <p class="hint" id="listHint"></p>
+      <div id="list"></div>
+      <div class="row top">
+        <button id="btnTest">Tester la connexion</button>
+        <span class="msg inline" id="listMsg"></span>
+      </div>
     </div>
-  </div>
-  <div class="card">
-    <h2>Ajouter un relais</h2>
-    <div class="row">
-      <input id="newUrl" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
-      <button id="btnAdd">Ajouter</button>
+
+    <div class="card">
+      <h2>Ajouter un relais</h2>
+      <div class="row">
+        <input id="newUrl" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
+        <button id="btnAdd">Ajouter</button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <p class="msg" id="addMsg"></p>
     </div>
-    <div class="chips" id="chips"></div>
-    <p class="msg" id="addMsg"></p>
+
+    <div class="card" id="resCard" hidden>
+      <h2>Résultat de la publication</h2>
+      <div id="results"></div>
+    </div>
+
+    <div class="bar"><button class="main" id="btnPub">Publier cette liste</button></div>
   </div>
-  <div class="card" id="resCard" hidden>
-    <h2>Résultat de la publication</h2>
-    <div id="results"></div>
-  </div>
-  <div class="bar"><button class="main" id="btnPub">Publier cette liste</button></div>
-</div>
 </main>
 
 <script>
-const BOOT=["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://purplepag.es","wss://relay.nostr.band"];
-const LISTS={
-  pub:{kind:10002,tab:"Lecture (R) & Écriture (W)",title:"Relais publics (NIP-65)",rw:true,
-    hint:"Les relais où vous publiez (écriture) et où les autres vous répondent (lecture).",
-    sugg:["wss://relay.damus.io","wss://nos.lol","wss://relay.primal.net","wss://relay.nostr.band","wss://purplepag.es","wss://nostr.wine"],
-    fr:["wss://relay.nostrmap.net","wss://relay.decentralia.fr","wss://relay.noeudlibre.fr"]},
-  dm:{kind:10050,tab:"Messages Privés (DM)",title:"Relais de messages privés (NIP-17)",rw:false,
-    hint:"Les relais où l’on vous envoie vos messages privés. Choisissez-en 1 à 3 fiables, idéalement avec authentification.",
-    sugg:["wss://auth.nostr1.com","wss://nip17.com","wss://inbox.nostr.wine","wss://relay.damus.io"]},
-  search:{kind:10007,tab:"Recherche (S)",title:"Relais de recherche (NIP-51)",rw:false,
-    hint:"Les relais interrogés quand vous cherchez des profils ou des notes.",
-    sugg:["wss://relay.nostr.band","wss://search.nos.today","wss://relay.noswhere.com","wss://nostr.wine"]}
-};
-const $=id=>document.getElementById(id);
-let pk=null, cur="pub", status={};
-for(const k in LISTS){LISTS[k].relays=[];LISTS[k].dirty=false}
-const L=()=>LISTS[cur];
+/* ---------- Configuration ---------- */
+const BOOT_RELAYS = ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://purplepag.es", "wss://relay.nostr.band"];
+const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
+const LATENCY = { fast: 500, slow: 1200 }; // ms : vert < fast, orange < slow, rouge au-delà
 
-function norm(u){
-  u=(u||"").trim().replace(/^https:\/\//i,"wss://").replace(/^http:\/\//i,"ws://");
-  if(!/^wss?:\/\//i.test(u)) u="wss://"+u;
-  try{const x=new URL(u); if(!x.hostname.includes(".")&&x.hostname!=="localhost") return null;
-    return x.protocol+"//"+x.host+(x.pathname==="/"?"":x.pathname.replace(/\/$/,""));}catch(e){return null}
+// L'ordre des clés = l'ordre des onglets.
+const LISTS = {
+  pub: {
+    kind: 10002, rw: true, tag: "r",
+    tab: "Lecture (R) & Écriture (W)", title: "Relais publics (NIP-65)",
+    hint: "Les relais où vous publiez (écriture) et où les autres vous répondent (lecture).",
+    suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
+    french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
+  },
+  search: {
+    kind: 10007, rw: false, tag: "relay",
+    tab: "Recherche (S)", title: "Relais de recherche (NIP-51)",
+    hint: "Les relais interrogés quand vous cherchez des profils ou des notes.",
+    suggestions: ["wss://relay.nostr.band", "wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine"],
+  },
+  dm: {
+    kind: 10050, rw: false, tag: "relay",
+    tab: "Messages Privés (DM)", title: "Relais de messages privés (NIP-17)",
+    hint: "Les relais où l’on vous envoie vos messages privés. Choisissez-en 1 à 3 fiables, idéalement avec authentification.",
+    suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://inbox.nostr.wine", "wss://relay.damus.io"],
+  },
+};
+for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false; }
+
+/* ---------- État ---------- */
+let pubkey = null;
+let current = "pub";
+const latencies = {}; // url -> { ms } | { err }
+
+const $ = id => document.getElementById(id);
+const currentList = () => LISTS[current];
+
+/* ---------- Réseau ---------- */
+function normalizeUrl(input) {
+  let u = (input || "").trim().replace(/^https:\/\//i, "wss://").replace(/^http:\/\//i, "ws://");
+  if (!/^wss?:\/\//i.test(u)) u = "wss://" + u;
+  try {
+    const x = new URL(u);
+    if (!x.hostname.includes(".") && x.hostname !== "localhost") return null;
+    return x.protocol + "//" + x.host + x.pathname.replace(/\/$/, "");
+  } catch { return null; }
 }
-function openWS(url,ms=5000){
-  return new Promise((res,rej)=>{
-    let ws; const t=setTimeout(()=>{try{ws.close()}catch(e){};rej(new Error("délai dépassé"))},ms);
-    try{ws=new WebSocket(url)}catch(e){clearTimeout(t);return rej(e)}
-    ws.onopen=()=>{clearTimeout(t);res(ws)};
-    ws.onerror=()=>{clearTimeout(t);rej(new Error("connexion impossible"))};
+
+function openSocket(url, timeout = TIMEOUT.connect) {
+  return new Promise((resolve, reject) => {
+    let ws;
+    const timer = setTimeout(() => { try { ws.close(); } catch {} reject(new Error("délai dépassé")); }, timeout);
+    try { ws = new WebSocket(url); } catch (e) { clearTimeout(timer); return reject(e); }
+    ws.onopen = () => { clearTimeout(timer); resolve(ws); };
+    ws.onerror = () => { clearTimeout(timer); reject(new Error("connexion impossible")); };
   });
 }
-async function fetchLists(url){
-  try{
-    const ws=await openWS(url,4000);
-    return await new Promise(res=>{
-      const evs=[]; const t=setTimeout(()=>{ws.close();res(evs)},4000);
-      ws.onmessage=m=>{let d;try{d=JSON.parse(m.data)}catch(e){return}
-        if(d[0]==="EVENT"&&d[2]) evs.push(d[2]);
-        if(d[0]==="EOSE"||d[0]==="CLOSED"){clearTimeout(t);ws.close();res(evs)}};
-      ws.send(JSON.stringify(["REQ","r",{kinds:[10002,10050,10007],authors:[pk]}]));
+
+function parseMessage(raw) {
+  try { return JSON.parse(raw); } catch { return []; }
+}
+
+async function fetchEvents(url) {
+  try {
+    const ws = await openSocket(url, TIMEOUT.fetch);
+    return await new Promise(resolve => {
+      const events = [];
+      const done = () => { clearTimeout(timer); ws.close(); resolve(events); };
+      const timer = setTimeout(done, TIMEOUT.fetch);
+      ws.onmessage = ({ data }) => {
+        const [type, , event] = parseMessage(data);
+        if (type === "EVENT" && event) events.push(event);
+        if (type === "EOSE" || type === "CLOSED") done();
+      };
+      const kinds = Object.values(LISTS).map(l => l.kind);
+      ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }]));
     });
-  }catch(e){return []}
+  } catch { return []; }
 }
-async function publishTo(url,ev){
-  try{
-    const ws=await openWS(url,5000);
-    return await new Promise(res=>{
-      const t=setTimeout(()=>{ws.close();res({url,ok:false,msg:"pas de réponse"})},6000);
-      ws.onmessage=m=>{let d;try{d=JSON.parse(m.data)}catch(e){return}
-        if(d[0]==="OK"&&d[1]===ev.id){clearTimeout(t);ws.close();res({url,ok:d[2],msg:d[3]||""})}};
-      ws.send(JSON.stringify(["EVENT",ev]));
+
+async function publishTo(url, event) {
+  try {
+    const ws = await openSocket(url);
+    return await new Promise(resolve => {
+      const timer = setTimeout(() => { ws.close(); resolve({ url, ok: false, msg: "pas de réponse" }); }, TIMEOUT.publish);
+      ws.onmessage = ({ data }) => {
+        const [type, id, ok, msg] = parseMessage(data);
+        if (type === "OK" && id === event.id) { clearTimeout(timer); ws.close(); resolve({ url, ok, msg: msg || "" }); }
+      };
+      ws.send(JSON.stringify(["EVENT", event]));
     });
-  }catch(e){return {url,ok:false,msg:e.message}}
+  } catch (e) { return { url, ok: false, msg: e.message }; }
 }
-async function ping(url){
-  const t0=performance.now();
-  try{const ws=await openWS(url,5000);const ms=Math.round(performance.now()-t0);ws.close();return {ms}}
-  catch(e){return {err:e.message}}
+
+async function ping(url) {
+  const start = performance.now();
+  try {
+    const ws = await openSocket(url);
+    const ms = Math.round(performance.now() - start);
+    ws.close();
+    return { ms };
+  } catch (e) { return { err: e.message }; }
 }
-function parseTags(ev,rw){
-  const out=[];
-  for(const t of ev.tags||[]){
-    if(t[0]!==(rw?"r":"relay"))continue; const u=norm(t[1]); if(!u||out.some(r=>r.url===u))continue;
-    out.push({url:u,read:t[2]!=="write",write:t[2]!=="read"});
+
+/* ---------- Conversion liste <-> événement ---------- */
+function relaysFromEvent(event, list) {
+  const relays = [];
+  for (const [name, rawUrl, marker] of event.tags || []) {
+    const url = normalizeUrl(rawUrl);
+    if (name !== list.tag || !url || relays.some(r => r.url === url)) continue;
+    relays.push({ url, read: marker !== "write", write: marker !== "read" });
   }
-  return out;
+  return relays;
 }
-function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function renderTabs(){
-  const t=$("tabs"); t.innerHTML="";
-  for(const k of ["pub","search","dm"]){
-    const b=document.createElement("button"); b.textContent=LISTS[k].tab+" ("+LISTS[k].relays.length+")";
-    b.className=k===cur?"on":""; b.setAttribute("role","tab");
-    b.onclick=()=>{cur=k;$("addMsg").textContent="";$("resCard").hidden=true;render();testAll()};
-    t.appendChild(b);
-  }
-}
-function render(){
-  const cfg=L(), relays=cfg.relays;
-  renderTabs(); $("lt").textContent=cfg.title; $("lh").textContent=cfg.hint;
-  const l=$("list"); l.innerHTML="";
-  if(!relays.length){l.innerHTML='<p class="empty">Aucun relais pour l’instant. Ajoutez-en un ci-dessous.</p>'}
-  relays.forEach((r,i)=>{
-    const s=status[r.url]; const cls=!s?"":s.err?"bad":"ok";
-    const d=document.createElement("div"); d.className="relay";
-    const mode=r.read&&r.write?"rw":r.read?"r":"w";
-    let lc="",n=0,txt="…";
-    if(s){ if(s.err){lc="r";n=0;txt="hors ligne"} else {n=s.ms<500?3:s.ms<1200?2:1; lc=["","r","o","g"][n]; txt=s.ms+" ms"} }
-    const bars=[[0,8,4],[6,4,8],[12,0,12]].map((v,j)=>'<rect x="'+v[0]+'" y="'+v[1]+'" width="4" height="'+v[2]+'" rx="1" fill="currentColor"'+(j<n?'':' opacity=".25"')+'/>').join("");
-    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div>'+
-      '<span class="lat '+lc+'" title="Temps de réponse"><svg viewBox="0 0 16 12" aria-hidden="true">'+bars+'</svg>'+txt+'</span>'+
-      '<button class="x">Supprimer</button>'+
-      (cfg.rw?'<div class="acts"><button data-m="r">Lecture seule (R)</button><button data-m="w">Écriture seule (W)</button><button data-m="rw">Lecture + Écriture (R+W)</button></div>':'');
-    d.querySelector(".url").textContent=r.url;
-    d.querySelectorAll("[data-m]").forEach(b=>{
-      b.classList.toggle("on",b.dataset.m===mode);
-      b.onclick=()=>{r.read=b.dataset.m.includes("r");r.write=b.dataset.m.includes("w");cfg.dirty=true;render()};
-    });
-    d.querySelector(".x").onclick=()=>{relays.splice(i,1);cfg.dirty=true;render()};
-    l.appendChild(d);
-  });
-  const c=$("chips"); c.innerHTML="";
-  [["Suggestions",cfg.sugg],["Francophones",cfg.fr]].forEach(([t,arr])=>{
-    const f=(arr||[]).filter(u=>!relays.some(r=>r.url===u)); if(!f.length)return;
-    const h=document.createElement("div"); h.className="lbl"; h.textContent=t; c.appendChild(h);
-    f.forEach(u=>{const b=document.createElement("button"); b.textContent="+ "+u; b.onclick=()=>add(u); c.appendChild(b)});
+
+function tagsFromList(list) {
+  return list.relays.map(r => {
+    if (!list.rw) return ["relay", r.url];
+    if (r.read && r.write) return ["r", r.url];
+    return ["r", r.url, r.read ? "read" : "write"];
   });
 }
-function add(raw){
-  const u=norm(raw), m=$("addMsg"), cfg=L();
-  if(!u){m.textContent="Adresse invalide. Exemple : relay.damus.io";return}
-  if(cfg.relays.some(r=>r.url===u)){m.textContent="Ce relais est déjà dans cette liste.";return}
-  cfg.relays.push({url:u,read:true,write:true}); cfg.dirty=true; m.textContent=""; $("newUrl").value=""; render(); testOne(u);
+
+/* ---------- Affichage ---------- */
+function latencyView(status) {
+  if (!status) return { cls: "", bars: 0, text: "…" };
+  if (status.err) return { cls: "r", bars: 0, text: "hors ligne" };
+  const bars = status.ms < LATENCY.fast ? 3 : status.ms < LATENCY.slow ? 2 : 1;
+  return { cls: ["", "r", "o", "g"][bars], bars, text: status.ms + " ms" };
 }
-async function testOne(u){status[u]=await ping(u);render()}
-async function testAll(){
-  $("listMsg").textContent="Test en cours…";
-  await Promise.all(L().relays.map(r=>testOne(r.url)));
-  $("listMsg").textContent=""
+
+function signalSvg(lit) {
+  const bars = [[0, 8, 4], [6, 4, 8], [12, 0, 12]]
+    .map(([x, y, h], i) => `<rect x="${x}" y="${y}" width="4" height="${h}" rx="1" fill="currentColor"${i < lit ? "" : ' opacity=".25"'}/>`)
+    .join("");
+  return `<svg viewBox="0 0 16 12" aria-hidden="true">${bars}</svg>`;
 }
-async function login(){
-  const m=$("loginMsg");
-  if(!window.nostr){m.textContent="Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page.";return}
-  try{pk=await window.nostr.getPublicKey()}catch(e){m.textContent="Connexion refusée par l’extension.";return}
-  $("login").hidden=true; $("app").hidden=false; $("who").textContent="Clé publique : "+pk.slice(0,12)+"…"+pk.slice(-8);
-  $("listMsg").textContent="Chargement de vos listes…";
-  const evs=(await Promise.all(BOOT.map(fetchLists))).flat();
-  for(const k in LISTS){
-    const best=evs.filter(e=>e.kind===LISTS[k].kind).sort((a,b)=>b.created_at-a.created_at)[0];
-    LISTS[k].relays=best?parseTags(best,LISTS[k].rw):[];
+
+function relayRow(list, relay, index) {
+  const status = latencies[relay.url];
+  const lat = latencyView(status);
+  const mode = relay.read && relay.write ? "rw" : relay.read ? "r" : "w";
+
+  const row = document.createElement("div");
+  row.className = "relay";
+  row.innerHTML =
+    `<span class="dot ${status ? (status.err ? "bad" : "ok") : ""}"></span>` +
+    `<div class="url"></div>` +
+    `<span class="lat ${lat.cls}" title="Temps de réponse">${signalSvg(lat.bars)}${lat.text}</span>` +
+    `<button class="del">Supprimer</button>` +
+    (list.rw
+      ? `<div class="modes">
+           <button data-mode="r">Lecture seule (R)</button>
+           <button data-mode="w">Écriture seule (W)</button>
+           <button data-mode="rw">Lecture + Écriture (R+W)</button>
+         </div>`
+      : "");
+
+  row.querySelector(".url").textContent = relay.url;
+  row.querySelector(".del").onclick = () => { list.relays.splice(index, 1); list.dirty = true; render(); };
+  row.querySelectorAll("[data-mode]").forEach(btn => {
+    btn.classList.toggle("on", btn.dataset.mode === mode);
+    btn.onclick = () => {
+      relay.read = btn.dataset.mode.includes("r");
+      relay.write = btn.dataset.mode.includes("w");
+      list.dirty = true;
+      render();
+    };
+  });
+  return row;
+}
+
+function renderTabs() {
+  const tabs = $("tabs");
+  tabs.innerHTML = "";
+  for (const [key, list] of Object.entries(LISTS)) {
+    const btn = document.createElement("button");
+    btn.textContent = `${list.tab} (${list.relays.length})`;
+    btn.className = key === current ? "on" : "";
+    btn.setAttribute("role", "tab");
+    btn.onclick = () => {
+      current = key;
+      $("addMsg").textContent = "";
+      $("resCard").hidden = true;
+      render();
+      testAll();
+    };
+    tabs.appendChild(btn);
   }
-  $("listMsg").textContent="";
-  render(); testAll();
 }
-async function publish(){
-  const cfg=L(), relays=cfg.relays;
-  if(!relays.length){$("listMsg").textContent="Ajoutez au moins un relais avant de publier.";return}
-  const b=$("btnPub"); b.disabled=true; b.textContent="Signature…";
-  const reset=()=>{b.disabled=false;b.textContent="Publier cette liste"};
-  const tags=cfg.rw
-    ? relays.map(r=>r.read&&r.write?["r",r.url]:["r",r.url,r.read?"read":"write"])
-    : relays.map(r=>["relay",r.url]);
-  let ev;
-  try{ev=await window.nostr.signEvent({kind:cfg.kind,created_at:Math.floor(Date.now()/1000),tags,content:""})}
-  catch(e){reset();$("listMsg").textContent="Signature refusée.";return}
-  b.textContent="Publication…";
-  const outbox=LISTS.pub.relays.filter(r=>r.write).map(r=>r.url);
-  const targets=[...new Set([...(cfg.rw?relays.filter(r=>r.write).map(r=>r.url):[]),...outbox,...BOOT])];
-  const res=await Promise.all(targets.map(u=>publishTo(u,ev)));
-  const box=$("results"); box.innerHTML="";
-  res.forEach(r=>{const p=document.createElement("div");p.className="res "+(r.ok?"ok":"bad");
-    p.textContent=r.url+(r.ok?"":" — "+(r.msg||"refusé"));box.appendChild(p)});
-  const n=res.filter(r=>r.ok).length;
-  const h=document.createElement("p");h.className="msg";
-  h.textContent=n?"Liste publiée sur "+n+" relais sur "+res.length+".":"Aucun relais n’a accepté la liste. Vérifiez vos relais d’écriture.";
-  box.prepend(h); $("resCard").hidden=false; cfg.dirty=false; reset();
-  $("resCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+
+function renderSuggestions(list) {
+  const chips = $("chips");
+  chips.innerHTML = "";
+  for (const [label, urls] of [["Suggestions", list.suggestions], ["Francophones", list.french]]) {
+    const available = (urls || []).filter(u => !list.relays.some(r => r.url === u));
+    if (!available.length) continue;
+    const title = document.createElement("div");
+    title.className = "lbl";
+    title.textContent = label;
+    chips.appendChild(title);
+    for (const url of available) {
+      const btn = document.createElement("button");
+      btn.textContent = "+ " + url;
+      btn.onclick = () => addRelay(url);
+      chips.appendChild(btn);
+    }
+  }
 }
-$("btnLogin").onclick=login;
-$("btnAdd").onclick=()=>add($("newUrl").value);
-$("newUrl").onkeydown=e=>{if(e.key==="Enter")add(e.target.value)};
-$("btnTest").onclick=testAll;
-$("btnPub").onclick=publish;
-window.onbeforeunload=()=>Object.values(LISTS).some(l=>l.dirty)?"":undefined;
+
+function render() {
+  const list = currentList();
+  renderTabs();
+  $("listTitle").textContent = list.title;
+  $("listHint").textContent = list.hint;
+
+  const container = $("list");
+  container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoutez-en un ci-dessous.</p>';
+  list.relays.forEach((relay, i) => container.appendChild(relayRow(list, relay, i)));
+  renderSuggestions(list);
+}
+
+/* ---------- Actions ---------- */
+function addRelay(input) {
+  const list = currentList();
+  const url = normalizeUrl(input);
+  const msg = $("addMsg");
+  if (!url) { msg.textContent = "Adresse invalide. Exemple : relay.damus.io"; return; }
+  if (list.relays.some(r => r.url === url)) { msg.textContent = "Ce relais est déjà dans cette liste."; return; }
+  list.relays.push({ url, read: true, write: true });
+  list.dirty = true;
+  msg.textContent = "";
+  $("newUrl").value = "";
+  render();
+  testRelay(url);
+}
+
+async function testRelay(url) {
+  latencies[url] = await ping(url);
+  render();
+}
+
+async function testAll() {
+  $("listMsg").textContent = "Test en cours…";
+  await Promise.all(currentList().relays.map(r => testRelay(r.url)));
+  $("listMsg").textContent = "";
+}
+
+async function login() {
+  const msg = $("loginMsg");
+  if (!window.nostr) { msg.textContent = "Aucune extension NIP-07 détectée. Installez Alby ou nos2x, puis rechargez la page."; return; }
+  try { pubkey = await window.nostr.getPublicKey(); }
+  catch { msg.textContent = "Connexion refusée par l’extension."; return; }
+
+  $("login").hidden = true;
+  $("app").hidden = false;
+  $("who").textContent = `Clé publique : ${pubkey.slice(0, 12)}…${pubkey.slice(-8)}`;
+  $("listMsg").textContent = "Chargement de vos listes…";
+
+  const events = (await Promise.all(BOOT_RELAYS.map(fetchEvents))).flat();
+  for (const list of Object.values(LISTS)) {
+    const latest = events.filter(e => e.kind === list.kind).sort((a, b) => b.created_at - a.created_at)[0];
+    list.relays = latest ? relaysFromEvent(latest, list) : [];
+  }
+  $("listMsg").textContent = "";
+  render();
+  testAll();
+}
+
+async function publish() {
+  const list = currentList();
+  if (!list.relays.length) { $("listMsg").textContent = "Ajoutez au moins un relais avant de publier."; return; }
+
+  const button = $("btnPub");
+  const resetButton = () => { button.disabled = false; button.textContent = "Publier cette liste"; };
+  button.disabled = true;
+  button.textContent = "Signature…";
+
+  let event;
+  try {
+    event = await window.nostr.signEvent({ kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" });
+  } catch {
+    resetButton();
+    $("listMsg").textContent = "Signature refusée.";
+    return;
+  }
+
+  button.textContent = "Publication…";
+  const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
+  const targets = [...new Set([
+    ...(list.rw ? writeRelays(list.relays) : []),
+    ...writeRelays(LISTS.pub.relays),
+    ...BOOT_RELAYS,
+  ])];
+  const results = await Promise.all(targets.map(url => publishTo(url, event)));
+  showResults(results);
+  list.dirty = false;
+  resetButton();
+}
+
+function showResults(results) {
+  const box = $("results");
+  box.innerHTML = "";
+  const accepted = results.filter(r => r.ok).length;
+
+  const summary = document.createElement("p");
+  summary.className = "msg";
+  summary.textContent = accepted
+    ? `Liste publiée sur ${accepted} relais sur ${results.length}.`
+    : "Aucun relais n’a accepté la liste. Vérifiez vos relais d’écriture.";
+  box.appendChild(summary);
+
+  for (const r of results) {
+    const line = document.createElement("div");
+    line.className = "res " + (r.ok ? "ok" : "bad");
+    line.textContent = r.url + (r.ok ? "" : " — " + (r.msg || "refusé"));
+    box.appendChild(line);
+  }
+  $("resCard").hidden = false;
+  $("resCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* ---------- Événements ---------- */
+$("btnLogin").onclick = login;
+$("btnAdd").onclick = () => addRelay($("newUrl").value);
+$("newUrl").onkeydown = e => { if (e.key === "Enter") addRelay(e.target.value); };
+$("btnTest").onclick = testAll;
+$("btnPub").onclick = publish;
+window.addEventListener("beforeunload", e => {
+  if (Object.values(LISTS).some(l => l.dirty)) e.preventDefault();
+});
 </script>
 </body>
 </html>
