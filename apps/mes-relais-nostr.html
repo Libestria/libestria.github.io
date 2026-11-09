@@ -32,7 +32,10 @@ input{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px sol
 .acts{display:flex;gap:6px;flex-wrap:wrap;flex:1 0 100%;padding-left:20px}
 .acts button{font-size:.8rem;padding:5px 10px;color:var(--mute)}
 .acts button.on{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:600}
-.acts .x{color:var(--bad);margin-left:auto}
+.relay>.x{color:var(--bad);font-size:.8rem;padding:5px 10px}
+.lat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--mute);flex:none;white-space:nowrap}
+.lat svg{width:16px;height:12px}
+.lat.g svg{color:var(--ok)}.lat.o svg{color:var(--warn)}.lat.r svg{color:var(--bad)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .chips .lbl{flex:1 0 100%;font-size:.82rem;font-weight:600;margin-top:6px}
 .chips .lbl:first-child{margin-top:0}
@@ -175,13 +178,17 @@ function render(){
   const l=$("list"); l.innerHTML="";
   if(!relays.length){l.innerHTML='<p class="empty">Aucun relais pour l’instant. Ajoutez-en un ci-dessous.</p>'}
   relays.forEach((r,i)=>{
-    const s=status[r.url]; const cls=!s?"":s.err?"bad":s.ms>1200?"slow":"ok";
+    const s=status[r.url]; const cls=!s?"":s.err?"bad":"ok";
     const d=document.createElement("div"); d.className="relay";
     const mode=r.read&&r.write?"rw":r.read?"r":"w";
-    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div><div class="acts">'+
-      (cfg.rw?'<button data-m="r">Lecture seule (R)</button><button data-m="w">Écriture seule (W)</button><button data-m="rw">Lecture + Écriture (R+W)</button>':'')+
-      '<button class="x">Supprimer</button></div>';
-    d.querySelector(".url").innerHTML=esc(r.url)+(s?"<small>"+(s.err?esc(s.err):s.ms+" ms")+"</small>":"");
+    let lc="",n=0,txt="…";
+    if(s){ if(s.err){lc="r";n=0;txt="hors ligne"} else {n=s.ms<500?3:s.ms<1200?2:1; lc=["","r","o","g"][n]; txt=s.ms+" ms"} }
+    const bars=[[0,8,4],[6,4,8],[12,0,12]].map((v,j)=>'<rect x="'+v[0]+'" y="'+v[1]+'" width="4" height="'+v[2]+'" rx="1" fill="currentColor"'+(j<n?'':' opacity=".25"')+'/>').join("");
+    d.innerHTML='<span class="dot '+cls+'"></span><div class="url"></div>'+
+      '<span class="lat '+lc+'" title="Temps de réponse"><svg viewBox="0 0 16 12" aria-hidden="true">'+bars+'</svg>'+txt+'</span>'+
+      '<button class="x">Supprimer</button>'+
+      (cfg.rw?'<div class="acts"><button data-m="r">Lecture seule (R)</button><button data-m="w">Écriture seule (W)</button><button data-m="rw">Lecture + Écriture (R+W)</button></div>':'');
+    d.querySelector(".url").textContent=r.url;
     d.querySelectorAll("[data-m]").forEach(b=>{
       b.classList.toggle("on",b.dataset.m===mode);
       b.onclick=()=>{r.read=b.dataset.m.includes("r");r.write=b.dataset.m.includes("w");cfg.dirty=true;render()};
