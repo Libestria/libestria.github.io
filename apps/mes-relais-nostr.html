@@ -263,14 +263,20 @@ input::placeholder { color: var(--muted); }
 .dot.ok { background: var(--ok); box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%); }
 .dot.bad { background: var(--bad); box-shadow: 0 0 7px rgb(239 68 68 / 90%), 0 0 16px rgb(239 68 68 / 55%); }
 .url { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: .92rem var(--mono); letter-spacing: .025em; color: var(--cyan); }
+.relay-connection { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .lat { display: inline-flex; align-items: center; gap: 5px; font: .8rem var(--mono); color: var(--muted); flex: none; white-space: nowrap; }
 .lat svg { width: 16px; height: 12px; }
 .lat.g svg { color: var(--ok); }
 .lat.o svg { color: var(--warn); }
 .lat.r svg { color: var(--bad); }
-.del { min-height: 34px; padding: 4px 10px; font-size: .85rem; color: var(--bad-text); border-color: #7a2f35; }
+.relay-address { display: flex; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
+.relay-address .url { flex: 0 1 auto; }
+.del { display: grid; place-items: center; flex: none; width: 34px; height: 34px; min-height: 34px; padding: 0; border-radius: 50%; background: var(--btn-bg); color: var(--bad); border-color: var(--btn-border); }
+.refresh-relays { width: 34px; height: 34px; min-height: 34px; background: var(--grad-card); color: var(--cyan); }
+.refresh-relays svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.del svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 @media (hover: hover) { .del:not(:disabled):hover { color: #fff; background: #3a1a1f; border-color: var(--bad); } }
-.modes { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .relay-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 0 100%; padding-left: 18px; }
 .modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; }
 .modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 700; }
@@ -297,8 +303,8 @@ input::placeholder { color: var(--muted); }
   .row:has(#newUrl) { flex-wrap: wrap; }
   #newUrl { flex: 1 1 100%; }
   #btnAdd { width: 100%; }
-  .relay .url { flex-basis: calc(100% - 20px); }
-  .relay .lat { margin-left: 16px; }
+  .relay-address .url { flex-basis: auto; }
+  .relay-connection { margin-left: 16px; }
   .relay-controls { padding-left: 0; }
 }
 @media (max-width: 380px) {
@@ -394,10 +400,7 @@ input::placeholder { color: var(--muted); }
       <h2 id="listTitle"></h2>
       <p class="hint" id="listHint"></p>
       <div id="list"></div>
-      <div class="row top">
-        <button id="btnTest">Actualiser les temps de connexion</button>
-        <span class="msg inline" id="listMsg"></span>
-      </div>
+      <p class="msg" id="listMsg" role="status"></p>
     </div>
 
     <div class="card" id="relayAddCard" hidden>
@@ -636,21 +639,20 @@ function relayRow(list, relay, index) {
   const row = document.createElement("div");
   row.className = "relay";
   row.innerHTML =
-    `<span class="dot ${status ? (status.err ? "bad" : "ok") : ""}"></span>` +
-    `<div class="url"></div>` +
-    `<span class="lat ${lat.cls}" title="Temps de connexion au relais">Temps de connexion au relais : ${signalSvg(lat.bars)}${lat.text}</span>` +
+    `<div class="relay-address"><span class="dot ${status ? (status.err ? "bad" : "ok") : ""}" aria-hidden="true"></span><div class="url"></div>` +
+    `<button class="del" type="button" title="Supprimer ce relais" aria-label="Supprimer ce relais"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>` +
+    `<div class="relay-connection"><span class="lat ${lat.cls}" title="Temps de connexion">Temps de connexion : ${signalSvg(lat.bars)}${lat.text}</span>` +
+    `<button class="icon-btn refresh-relays" type="button" title="Actualiser" aria-label="Actualiser les temps de connexion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button></div>` +
     (list.rw
-      ? `<div class="relay-controls">
-           <button class="del">Supprimer</button>
-           <div class="modes">
+      ? `<div class="relay-controls"><div class="modes">
              <button data-mode="r">Lecture seule (R)</button>
              <button data-mode="w">Écriture seule (W)</button>
              <button data-mode="rw">Lecture + Écriture (R+W)</button>
-           </div>
-         </div>`
-      : `<button class="del">Supprimer</button>`);
+           </div></div>`
+      : "");
 
   row.querySelector(".url").textContent = relay.url;
+  row.querySelector(".refresh-relays").addEventListener("click", testAll);
   row.querySelector(".del").onclick = () => { list.relays.splice(index, 1); list.dirty = true; render(); };
   row.querySelectorAll("[data-mode]").forEach(btn => {
     btn.classList.toggle("on", btn.dataset.mode === mode);
@@ -881,10 +883,20 @@ async function testRelay(url) {
   render();
 }
 
+let measuringConnections = false;
 async function testAll() {
-  $("listMsg").textContent = "Test en cours…";
-  await Promise.all(currentList().relays.map(r => testRelay(r.url)));
-  $("listMsg").textContent = "";
+  if (measuringConnections) return;
+  measuringConnections = true;
+  $("listMsg").textContent = "Mesure en cours…";
+  document.querySelectorAll(".refresh-relays").forEach(button => { button.disabled = true; });
+  try {
+    const urls = [...new Set(Object.values(LISTS).flatMap(list => list.relays.map(relay => relay.url)))];
+    await Promise.all(urls.map(async url => { latencies[url] = await ping(url); }));
+  } finally {
+    measuringConnections = false;
+    render();
+    $("listMsg").textContent = "";
+  }
 }
 
 /* 8. Session NIP-07 et chargement ------------------------------------- */
@@ -1099,7 +1111,6 @@ $("btnAdd").addEventListener("click", () => addRelay($("newUrl").value));
 $("newUrl").addEventListener("keydown", e => {
   if (e.key === "Enter") addRelay(e.target.value);
 });
-$("btnTest").addEventListener("click", testAll);
 $("publishNo").addEventListener("click", () => $("publishConfirm").close());
 $("publishConfirm").addEventListener("close", () => { pendingPublishKey = null; });
 $("publishYes").addEventListener("click", () => {
