@@ -410,6 +410,21 @@ input::placeholder { color: var(--muted); }
     </div>
   </dialog>
 
+  <dialog id="relayModeDialog" class="app-dialog" aria-labelledby="relayModeTitle" aria-describedby="relayModeText">
+    <h2 id="relayModeTitle">Connexion du relais</h2>
+    <p id="relayModeText">Choisis le type de connexion pour ce relais :</p>
+    <p class="url" id="relayModeUrl"></p>
+    <div class="modes" id="relayModeChoices" role="group" aria-label="Type de connexion">
+      <button type="button" data-mode="r" aria-pressed="false">Lire (R)</button>
+      <button type="button" data-mode="w" aria-pressed="false">Écrire (W)</button>
+      <button type="button" data-mode="rw" aria-pressed="true" class="on">Lire &amp; Écrire (R+W)</button>
+    </div>
+    <div class="row dialog-actions">
+      <button type="button" id="relayModeCancel">Annuler</button>
+      <button type="button" class="main" id="relayModeAdd">Ajouter</button>
+    </div>
+  </dialog>
+
   <div id="app" hidden>
     <div class="card" aria-labelledby="accountTitle">
       <h2 id="accountTitle">Compte connecté à l’application :</h2>
@@ -981,6 +996,28 @@ messageDialog.addEventListener("cancel", event => {
 messageDialog.addEventListener("close", () => { if (!messageDialog.open) settleMessage(null); });
 
 /* 8. Actions sur les relais ------------------------------------------- */
+let pendingRelay = null;
+let selectedRelayMode = "rw";
+
+function selectRelayMode(mode) {
+  selectedRelayMode = mode;
+  $("relayModeChoices").querySelectorAll("[data-mode]").forEach(button => {
+    const selected = button.dataset.mode === mode;
+    button.classList.toggle("on", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+}
+
+function commitRelay(list, url, mode = "rw") {
+  // Une seconde vérification protège aussi des changements pendant l'ouverture de la fenêtre.
+  if (list.relays.some(relay => relay.url === url)) return;
+  list.relays.push({ url, read: mode.includes("r"), write: mode.includes("w") });
+  list.dirty = true;
+  $("newUrl").value = "";
+  render();
+  void testRelay(url);
+}
+
 function addRelay(input) {
   const list = currentList();
   const url = normalizeUrl(input);
@@ -992,11 +1029,15 @@ function addRelay(input) {
     void showMessage({ tone: "alert", title: "Relais déjà présent", text: "Ce relais est déjà présent dans cette liste.", actions: OK_ACTION });
     return;
   }
-  list.relays.push({ url, read: true, write: true });
-  list.dirty = true;
-  $("newUrl").value = "";
-  render();
-  testRelay(url);
+  if (!list.rw) {
+    commitRelay(list, url);
+    return;
+  }
+  pendingRelay = { list, url };
+  $("relayModeUrl").textContent = url;
+  selectRelayMode("rw");
+  $("relayModeDialog").showModal();
+  $("relayModeAdd").focus();
 }
 
 async function testRelay(url) {
@@ -1218,6 +1259,18 @@ async function publish(key) {
 
 /* 10. Écouteurs d’événements ------------------------------------------- */
 initRelayAccordions();
+$("relayModeChoices").querySelectorAll("[data-mode]").forEach(button => {
+  button.addEventListener("click", () => selectRelayMode(button.dataset.mode));
+});
+$("relayModeCancel").addEventListener("click", () => $("relayModeDialog").close());
+$("relayModeAdd").addEventListener("click", () => {
+  if (!pendingRelay) return;
+  const { list, url } = pendingRelay;
+  const mode = selectedRelayMode;
+  $("relayModeDialog").close();
+  commitRelay(list, url, mode);
+});
+$("relayModeDialog").addEventListener("close", () => { pendingRelay = null; });
 $("btnLogin").addEventListener("click", login);
 $("btnAdd").addEventListener("click", () => addRelay($("newUrl").value));
 $("newUrl").addEventListener("keydown", e => {
