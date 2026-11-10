@@ -265,13 +265,20 @@ input::placeholder { color: var(--muted); }
 .dot.bad { background: var(--bad); box-shadow: 0 0 7px rgb(239 68 68 / 90%), 0 0 16px rgb(239 68 68 / 55%); }
 .url { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: .92rem var(--mono); letter-spacing: .025em; color: var(--cyan); }
 .relay-connection { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.lat { display: inline-flex; align-items: center; gap: 5px; font: .8rem var(--mono); color: var(--muted); flex: none; white-space: nowrap; }
-.lat svg { width: 16px; height: 12px; }
+.lat { display: inline-flex; align-items: baseline; gap: 5px; font: .8rem var(--mono); color: var(--muted); flex: none; white-space: nowrap; }
+/* Le bas du SVG coïncide avec la ligne de base du libellé et de la mesure. */
+.lat svg { width: 16px; height: 12px; flex: none; }
 .lat.g svg { color: var(--ok); }
 .lat.o svg { color: var(--warn); }
 .lat.r svg { color: var(--bad); }
 .relay-address { display: flex; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
 .relay-address .url { flex: 0 1 auto; }
+/* Alignement des diodes sur la ligne de base des adresses, comme dans index-Libestria.html. */
+@supports (top: 1cap) {
+  .relay-address { align-items: baseline; }
+  .relay-address .dot { --s: 8px; position: relative; top: calc(var(--s) / 2 - .5ex + .6px); margin-top: calc(-1 * var(--s)); }
+  .relay-address .del { align-self: center; }
+}
 .del { display: grid; place-items: center; flex: none; width: 28px; height: 28px; min-height: 28px; padding: 0; border-radius: 50%; background: var(--btn-bg); color: var(--bad); border-color: var(--btn-border); }
 .refresh-relays { width: 28px; height: 28px; min-height: 28px; background: var(--grad-card); color: var(--cyan); }
 .refresh-relays svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
