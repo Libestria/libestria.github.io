@@ -477,10 +477,10 @@ const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
 const LATENCY = { fast: 650, slow: 1200 }; // ms : vert <= fast, orange <= slow, rouge au-delà
 const LOGIN_TIMEOUT_MS = 30000;
 const LOGIN_ERRORS = Object.freeze({
-  missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recharge la page.",
-  denied: "Connexion refusée. Autorise l’accès à ta clé publique dans ton signer, puis réessaie.",
-  technical: "Impossible de communiquer avec ton signer Nostr. Vérifie qu’il fonctionne, puis réessaie.",
-  timeout: "Ton signer Nostr ne répond pas. Vérifie ton extension, puis réessaie."
+  missing: "Aucun signer NIP-07 détecté. Tu dois installer ou activer une extension compatible, puis recommencer.",
+  denied: "Connexion refusée. Tu dois autoriser l’accès à ta clé publique dans ton signer, puis réessayer.",
+  technical: "Impossible de communiquer avec ton signer. Tu dois vérifier qu’il fonctionne, puis réessayer.",
+  timeout: "Ton signer ne répond pas. Tu dois vérifier ton extension, puis réessayer."
 });
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -667,7 +667,7 @@ function signalSvg(lit) {
   return `<svg viewBox="0 0 16 12" aria-hidden="true">${bars}</svg>`;
 }
 
-function relayRow(list, relay, index) {
+function relayRow(list, relay) {
   const status = latencies[relay.url];
   const lat = latencyView(status);
   const mode = relay.read && relay.write ? "rw" : relay.read ? "r" : "w";
@@ -689,7 +689,20 @@ function relayRow(list, relay, index) {
 
   row.querySelector(".url").textContent = relay.url;
   row.querySelector(".refresh-relays").addEventListener("click", testAll);
-  row.querySelector(".del").onclick = () => { list.relays.splice(index, 1); list.dirty = true; render(); };
+  row.querySelector(".del").onclick = async () => {
+    const choice = await showMessage({
+      tone: "alert",
+      title: "Suppression du relais",
+      text: `Souhaites-tu vraiment supprimer le relais ${relay.url} de cette liste ?`,
+      actions: [{ id: "no", label: "Non", defaultFocus: true }, { id: "yes", label: "Oui", primary: true }]
+    });
+    if (choice !== "yes") return;
+    const position = list.relays.indexOf(relay);
+    if (position === -1) return;
+    list.relays.splice(position, 1);
+    list.dirty = true;
+    render();
+  };
   row.querySelectorAll("[data-mode]").forEach(btn => {
     btn.classList.toggle("on", btn.dataset.mode === mode);
     btn.onclick = () => {
@@ -828,7 +841,7 @@ function render() {
 
   const container = $("list");
   container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoute-en un ci-dessous.</p>';
-  list.relays.forEach((relay, i) => container.appendChild(relayRow(list, relay, i)));
+  list.relays.forEach(relay => container.appendChild(relayRow(list, relay)));
   renderSuggestions(list);
 }
 
@@ -941,6 +954,7 @@ function showMessage({ tone = "alert", title, text = "", details = [], actions =
     button.type = "button";
     button.textContent = action.label;
     if (action.primary) button.className = "main";
+    if (action.defaultFocus) button.dataset.defaultFocus = "true";
     button.addEventListener("click", () => {
       settleMessage(action.id);
       messageDialog.close();
@@ -950,7 +964,7 @@ function showMessage({ tone = "alert", title, text = "", details = [], actions =
 
   const done = new Promise(resolve => { messageResolve = resolve; });
   if (!messageDialog.open) messageDialog.showModal();
-  (actionsEl.querySelector(".main") || actionsEl.querySelector("button"))?.focus();
+  (actionsEl.querySelector("[data-default-focus]") || actionsEl.querySelector(".main") || actionsEl.querySelector("button"))?.focus();
   return done;
 }
 
@@ -970,11 +984,11 @@ function addRelay(input) {
   const list = currentList();
   const url = normalizeUrl(input);
   if (!url) {
-    void showMessage({ tone: "alert", title: "Adresse invalide", text: "Exemple : relay.damus.io", actions: OK_ACTION });
+    void showMessage({ tone: "alert", title: "Adresse invalide", text: "Exemples de saisie : relay.damus.io ou wss://relay.damus.io", actions: OK_ACTION });
     return;
   }
   if (list.relays.some(r => r.url === url)) {
-    void showMessage({ tone: "alert", title: "Relais déjà présent", text: "Ce relais est déjà dans cette liste.", actions: OK_ACTION });
+    void showMessage({ tone: "alert", title: "Relais déjà présent", text: "Ce relais est déjà présent dans cette liste.", actions: OK_ACTION });
     return;
   }
   list.relays.push({ url, read: true, write: true });
@@ -1044,7 +1058,7 @@ async function login() {
 
   button.disabled = true;
   try {
-    showMessage({ tone: "busy", title: "Connexion au compte Nostr…", text: "Autorise la connexion dans ton signer si nécessaire." });
+    showMessage({ tone: "busy", title: "Connexion à ton compte Nostr…", text: "Tu dois autoriser la connexion dans ton signer si nécessaire." });
     const key = await getPublicKeyWithTimeout(signer);
     if (typeof key !== "string" || !/^[0-9a-f]{64}$/i.test(key)) {
       throw new Error("INVALID_PUBLIC_KEY");
@@ -1066,7 +1080,7 @@ async function login() {
 // Charge le profil et les listes ; en cas d'échec, propose de réessayer ou de revenir à l'écran de connexion.
 async function loadAccountWithRetry() {
   for (;;) {
-    showMessage({ tone: "busy", title: "Chargement de ton compte…", text: "Chargement de ton profil et de tes listes de relais…" });
+    showMessage({ tone: "busy", title: "Chargement de ton compte…", text: "Chargement de ton profil Nostr et récupération de tes listes publiques de relais." });
     try {
       await loadAccount();
       hideMessage();
@@ -1076,7 +1090,7 @@ async function loadAccountWithRetry() {
       const choice = await showMessage({
         tone: "alert",
         title: "Chargement impossible",
-        text: "Impossible de charger ton profil et tes listes Nostr. Vérifie ta connexion et réessaie.",
+        text: "Impossible de charger ton profil Nostr et tes listes publiques de relais. Tu dois vérifier ta connexion et réessayer.",
         actions: [{ id: "close", label: "Fermer" }, { id: "retry", label: "Réessayer", primary: true }]
       });
       if (choice !== "retry") return false;
@@ -1126,11 +1140,11 @@ function relayResultDetails(results) {
 function requestPublish(key) {
   if (publishing || !LISTS[key]) return;
   if (!LISTS[key].relays.length) {
-    void showMessage({ tone: "alert", title: "Publication impossible", text: "Ajoute au moins un relais avant de publier.", actions: OK_ACTION });
+    void showMessage({ tone: "alert", title: "Publication impossible", text: "Tu dois ajouter au moins un relais à cette liste avant de la publier.", actions: OK_ACTION });
     return;
   }
   pendingPublishKey = key;
-  $("publishConfirmText").textContent = `Souhaites-tu mettre à jour ta liste publique de relais NIP-${LISTS[key].nip} ?`;
+  $("publishConfirmText").textContent = `Souhaites-tu vraiment mettre à jour ta liste publique de relais NIP-${LISTS[key].nip} ?`;
   $("publishConfirm").showModal();
   $("publishNo").focus();
 }
@@ -1142,13 +1156,13 @@ async function publish(key) {
   const buttons = [...document.querySelectorAll("[data-publish-category]")];
   buttons.forEach(button => { button.disabled = true; });
   const title = `Publication de la liste NIP-${list.nip}`;
-  showMessage({ tone: "busy", title, text: "Signature de la liste…" });
+  showMessage({ tone: "busy", title, text: "Signature de la liste en cours…" });
   try {
     const event = await window.nostr.signEvent({
       kind: list.kind, created_at: Math.floor(Date.now() / 1000),
       tags: tagsFromList(list), content: ""
     });
-    showMessage({ tone: "busy", title, text: "Publication en cours…" });
+    showMessage({ tone: "busy", title, text: "Publication de la liste en cours…" });
     const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
     const targets = [...new Set([
       ...(list.rw ? writeRelays(list.relays) : []),
@@ -1160,7 +1174,7 @@ async function publish(key) {
     if (!accepted) {
       await showMessage({
         tone: "alert", title: "Publication impossible",
-        text: "Aucun relais n’a confirmé la publication. Vérifie tes relais d’écriture.",
+        text: "Aucun relais n’a confirmé la publication. Tu dois vérifier tes relais d’écriture (W).",
         details, actions: OK_ACTION
       });
       return;
@@ -1169,7 +1183,7 @@ async function publish(key) {
     render();
     await showMessage({
       tone: "success", title: "Liste publiée",
-      text: `Liste publiée avec succès sur ${accepted} relais sur ${results.length}.`,
+      text: `Ta liste a été publiée avec succès sur ${accepted} relais sur ${results.length}.`,
       details, actions: OK_ACTION
     });
   } catch (error) {
