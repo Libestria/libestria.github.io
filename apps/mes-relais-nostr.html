@@ -126,6 +126,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .relay-summary p { margin: 0 0 10px; }
 .relay-summary p:last-child { margin-bottom: 0; }
 .relay-summary strong { color: var(--cyan); }
+.relay-load-error p { margin: 0 0 12px; color: var(--text-2); }
 .empty { color: var(--muted); padding: 8px 0; margin: 0; }
 
 /* Transition de connexion : indicateur sans dépendance externe. */
@@ -279,6 +280,9 @@ input::placeholder { color: var(--muted); }
 .del { display: grid; place-items: center; flex: none; width: 28px; height: 28px; min-height: 28px; padding: 0; border-radius: 50%; background: var(--btn-bg); color: var(--bad); border-color: var(--btn-border); }
 .refresh-relays { width: 28px; height: 28px; min-height: 28px; background: var(--grad-card); color: var(--cyan); }
 .refresh-relays svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.refresh-relays.is-measuring svg { display: none; }
+.refresh-relays.is-measuring::after { content: ""; box-sizing: border-box; width: 15px; height: 15px; border: 2px solid rgb(57 200 255 / 25%); border-top-color: currentColor; border-radius: 50%; animation: loading-spin .75s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .refresh-relays.is-measuring::after { animation: none; border-color: currentColor; border-right-color: transparent; } }
 .del svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 @media (hover: hover) { .del:not(:disabled):hover { color: #fff; background: #3a1a1f; border-color: var(--bad); } }
 .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -391,12 +395,18 @@ input::placeholder { color: var(--muted); }
         </div>
       </div>
       <div class="profile-divider" aria-hidden="true"></div>
+      <div id="relaySummary" >
       <h2 id="relaySummaryTitle">Relais actuellement configurés :</h2>
       <div class="relay-summary">
         <p>• <strong><span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
         <p>• <strong><span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
         <p>• <strong><span id="searchRelayCount">0</span> relais NIP-51 de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
         <p>• <strong><span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
+      </div>
+      </div>
+      <div class="relay-load-error" id="relayLoadError" role="alert" hidden>
+        <p>Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.</p>
+        <button id="btnRetryLoad" type="button">Réessayer</button>
       </div>
     </div>
     <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais"></div>
@@ -405,7 +415,6 @@ input::placeholder { color: var(--muted); }
       <h2 id="listTitle"></h2>
       <p class="hint" id="listHint"></p>
       <div id="list"></div>
-      <p class="msg" id="listMsg" role="status"></p>
     </div>
 
     <div class="card" id="relayAddCard" hidden>
@@ -531,7 +540,7 @@ async function fetchEvents(url, kinds) {
       };
       ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }]));
     });
-  } catch { return []; }
+  } catch { return null; }
 }
 
 async function publishTo(url, event) {
@@ -647,7 +656,7 @@ function relayRow(list, relay, index) {
     `<div class="relay-address"><span class="dot ${status ? (status.err ? "bad" : "ok") : ""}" aria-hidden="true"></span><div class="url"></div>` +
     `<button class="del" type="button" title="Supprimer ce relais" aria-label="Supprimer ce relais"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>` +
     `<div class="relay-connection"><span class="lat ${lat.cls}" title="Temps de connexion">Temps de connexion : ${signalSvg(lat.bars)}${lat.text}</span>` +
-    `<button class="icon-btn refresh-relays" type="button" title="Actualiser" aria-label="Actualiser les temps de connexion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button></div>` +
+    `<button class="icon-btn refresh-relays${measuringConnections ? " is-measuring" : ""}" type="button" ${measuringConnections ? "disabled aria-busy=\"true\"" : ""} title="Actualiser" aria-label="Actualiser les temps de connexion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button></div>` +
     (list.rw
       ? `<div class="relay-controls"><div class="modes">
              <button data-mode="r">Lire (R)</button>
@@ -892,15 +901,17 @@ let measuringConnections = false;
 async function testAll() {
   if (measuringConnections) return;
   measuringConnections = true;
-  $("listMsg").textContent = "Mesure en cours…";
-  document.querySelectorAll(".refresh-relays").forEach(button => { button.disabled = true; });
+  document.querySelectorAll(".refresh-relays").forEach(button => {
+    button.disabled = true;
+    button.classList.add("is-measuring");
+    button.setAttribute("aria-busy", "true");
+  });
   try {
     const urls = [...new Set(Object.values(LISTS).flatMap(list => list.relays.map(relay => relay.url)))];
     await Promise.all(urls.map(async url => { latencies[url] = await ping(url); }));
   } finally {
     measuringConnections = false;
     render();
-    $("listMsg").textContent = "";
   }
 }
 
@@ -962,11 +973,7 @@ async function login() {
     pubkey = key;
     $("loadingMessage").textContent = "Chargement de ton profil et de tes listes de relais…";
     showProfile();
-    try {
-      await loadAccount();
-    } catch {
-      $("listMsg").textContent = "Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.";
-    }
+    await loadAccountWithFeedback();
     $("loginLoading").hidden = true;
     $("app").hidden = false;
   } catch (error) {
@@ -978,19 +985,49 @@ async function login() {
   }
 }
 
+function showRelayLoadError(failed) {
+  $("relaySummary").hidden = failed;
+  $("relayLoadError").hidden = !failed;
+}
+
+async function loadAccountWithFeedback() {
+  try {
+    await loadAccount();
+    showRelayLoadError(false);
+  } catch {
+    showRelayLoadError(true);
+  }
+}
+
+async function retryLoadAccount() {
+  const button = $("btnRetryLoad");
+  if (button.disabled) return;
+  button.disabled = true;
+  button.textContent = "Chargement…";
+  try {
+    await loadAccountWithFeedback();
+  } finally {
+    button.disabled = false;
+    button.textContent = "Réessayer";
+  }
+}
+
 // Interroge plusieurs relais par groupes pour limiter les connexions simultanées.
 async function fetchFromRelays(urls, kinds) {
   const events = [];
+  let successfulResponses = 0;
   for (let i = 0; i < urls.length; i += FETCH_CONCURRENCY) {
     const batch = await Promise.all(urls.slice(i, i + FETCH_CONCURRENCY)
       .map(url => fetchEvents(url, kinds)));
-    events.push(...batch.flat());
+    const successful = batch.filter(result => result !== null);
+    successfulResponses += successful.length;
+    events.push(...successful.flat());
   }
+  if (!successfulResponses) throw new Error("RELAY_LOAD_FAILED");
   return events;
 }
 
 async function loadAccount() {
-  $("listMsg").textContent = "Chargement de tes listes…";
 
   // Découverte NIP-65 depuis les relais initiaux.
   const discoveryEvents = await fetchFromRelays(BOOT_RELAYS, [10002]);
@@ -1007,7 +1044,6 @@ async function loadAccount() {
     const latest = latestEvent(events, list.kind);
     list.relays = latest ? relaysFromEvent(latest, list) : [];
   }
-  $("listMsg").textContent = "";
   render();
   void testAll();
 }
@@ -1112,6 +1148,7 @@ function showResults(results) {
 /* 9. Écouteurs d’événements ------------------------------------------- */
 initRelayAccordions();
 $("btnLogin").addEventListener("click", login);
+$("btnRetryLoad").addEventListener("click", retryLoadAccount);
 $("btnAdd").addEventListener("click", () => addRelay($("newUrl").value));
 $("newUrl").addEventListener("keydown", e => {
   if (e.key === "Enter") addRelay(e.target.value);
