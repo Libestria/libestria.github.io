@@ -1047,7 +1047,7 @@ async function getPublicKeyWithTimeout(signer) {
   }
 }
 
-// Garantit un temps de lecture minimal pour les deux étapes de connexion.
+// Garantit un temps de lecture minimal pour chaque fenêtre de progression automatique.
 function waitForMinimumDisplay(startedAt) {
   const remaining = MIN_PROGRESS_DISPLAY_MS - (performance.now() - startedAt);
   return remaining > 0 ? new Promise(resolve => setTimeout(resolve, remaining)) : Promise.resolve();
@@ -1170,12 +1170,15 @@ async function publish(key) {
   const buttons = [...document.querySelectorAll("[data-publish-category]")];
   buttons.forEach(button => { button.disabled = true; });
   const title = `Publication de la liste NIP-${list.nip}`;
+  let progressStartedAt = performance.now();
   showMessage({ tone: "busy", title, text: "Signature de la liste en cours…" });
   try {
     const event = await window.nostr.signEvent({
       kind: list.kind, created_at: Math.floor(Date.now() / 1000),
       tags: tagsFromList(list), content: ""
     });
+    await waitForMinimumDisplay(progressStartedAt);
+    progressStartedAt = performance.now();
     showMessage({ tone: "busy", title, text: "Publication de la liste en cours…" });
     const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
     const targets = [...new Set([
@@ -1183,6 +1186,7 @@ async function publish(key) {
       ...writeRelays(LISTS.pub.relays), ...BOOT_RELAYS,
     ])];
     const results = await Promise.all(targets.map(url => publishTo(url, event)));
+    await waitForMinimumDisplay(progressStartedAt);
     const accepted = results.filter(result => result.ok).length;
     const details = relayResultDetails(results);
     if (!accepted) {
@@ -1201,6 +1205,7 @@ async function publish(key) {
       details, actions: OK_ACTION
     });
   } catch (error) {
+    await waitForMinimumDisplay(progressStartedAt);
     await showMessage({
       tone: "alert", title: "Publication impossible",
       text: error?.message || "Signature refusée ou publication impossible.", actions: OK_ACTION
