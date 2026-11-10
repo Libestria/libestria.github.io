@@ -239,6 +239,7 @@ input::placeholder { color: var(--muted); }
 
 /* 7. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
 .relay-accordions { display: grid; gap: 0; }
+.relay-accordions[hidden] { display: none; }
 .relay-accordion { min-width: 0; border: 0 solid; border-top-width: var(--divider-width); border-image: var(--divider) 1; padding: 24px 0; }
 .relay-accordion-heading { margin: 0; color: #fff; font-size: 18px; font-weight: 600; line-height: 1.4; }
 .relay-accordion-heading .i { flex: none; width: 24px; height: 24px; margin-top: calc((1.4em - 24px) / 2 + 1px); color: var(--cyan); }
@@ -405,11 +406,11 @@ input::placeholder { color: var(--muted); }
       </div>
       </div>
       <div class="relay-load-error" id="relayLoadError" role="alert" hidden>
-        <p>Impossible de charger tes listes Nostr. Vérifie ta connexion et réessaie.</p>
+        <p>⚠️ Impossible de charger ton profil et tes listes Nostr. Vérifie ta connexion et réessaie.</p>
         <button id="btnRetryLoad" type="button">Réessayer</button>
       </div>
     </div>
-    <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais"></div>
+    <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais" hidden></div>
 
     <div id="relayListCard" hidden>
       <h2 id="listTitle"></h2>
@@ -988,6 +989,7 @@ async function login() {
 function showRelayLoadError(failed) {
   $("relaySummary").hidden = failed;
   $("relayLoadError").hidden = !failed;
+  $("relayAccordions").hidden = failed;
 }
 
 async function loadAccountWithFeedback() {
