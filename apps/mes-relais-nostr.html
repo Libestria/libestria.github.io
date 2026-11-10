@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#000000">
-<title>Mes relais Nostr</title>
+<title>Gestion des relais Nostr</title>
 <style>
 /* Polices Libestria : chemins relatifs au dossier /apps/. */
 @font-face { font-family: "Exo 2"; font-weight: 400; font-display: swap; src: local("Exo 2"), url(../fonts/exo-2-v26-latin-regular.woff2) format("woff2"); }
@@ -25,6 +25,7 @@
   --grad-card: linear-gradient(160deg, var(--stops));
   --grad-title: linear-gradient(105deg, #d9a4ff 0%, #b45cff 25%, #f26adf 52%, #8e7bff 75%, #39c8ff 100%);
   --r-sm: 6px; --r-lg: 13px; --r-xl: 18px; --divider-width: 2px; --grad-side: linear-gradient(180deg, var(--stops));
+  --font-win-title: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans);
   --sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -64,6 +65,7 @@ main {
   overflow: hidden;
 }
 
+/* 3. Fenêtre Libestria ------------------------------------------------ */
 /* Cadre de fenêtre Libestria : bordure latérale dégradée et titre fixe. */
 .window {
   flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
@@ -79,11 +81,11 @@ main {
 }
 .win-icon { display: inline-flex; flex: none; color: var(--cyan); }
 .win-icon .i { width: 25px; height: 25px; }
-.win-title { margin: 0; font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); color: #fff; }
+.win-title { margin: 0; font: var(--font-win-title); color: #fff; }
 /* Alignement optique de l’icône et du titre : mêmes règles que Libestria. */
 @supports (top: 1cap) {
   .win-bar { align-items: baseline; }
-  .win-icon { font: 600 clamp(1.4rem, 2.4vw, 1.65rem) / 1.4 var(--sans); --s: 25px; }
+  .win-icon { font: var(--font-win-title); --s: 25px; }
   .win-icon {
     position: relative;
     top: calc(var(--s) / 2 - .5cap - .3px);
@@ -93,8 +95,10 @@ main {
 .proto-logos { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 7vw, 64px); width: 100%; }
 .proto-logos img { display: block; width: auto; height: clamp(38px, 8vw, 54px); max-width: 42%; object-fit: contain; }
 /* Zone défilante sous le bandeau de fenêtre */
-.page { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; padding: 0; -webkit-overflow-scrolling: touch; }
+.page { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #7854b4 #10101a; }
 .content { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 720px; margin: 0 auto; padding: 34px clamp(22px, 3vw, 48px); }
+
+/* 4. Textes, cartes et messages --------------------------------------- */
 h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
 .sub { margin: 0 0 1rem; color: var(--text-2); letter-spacing: .02em; }
 .sub p { margin: 0; }
@@ -110,32 +114,42 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .row { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .row.top { margin-top: 14px; }
 .msg { font-size: .9rem; color: var(--muted); margin: 8px 0 0; }
-.msg.inline { margin: 0; }
+.hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
+.empty { color: var(--muted); padding: 8px 0; margin: 0; }
+
+/* 5. Connexion ------------------------------------------------------- */
 .alert { color: var(--bad-text); }
 .alert:empty { display: none; }
 #loginMsg:not(:empty) { margin-top: 16px; }
 .login-title { display: flex; align-items: center; gap: 10px; }
-.login-icon { width: 25px; height: 25px; flex: none; color: var(--cyan); }
+.login-icon { width: 25px; height: 25px; flex: none; color: var(--cyan); fill: none; stroke: currentColor; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
 .help { margin-top: 14px; font-size: .9rem; color: var(--muted); }
 .help p { margin: 0 0 8px; }
 .help a { color: var(--cyan); text-decoration: none; }
 .help a:hover, .help a:focus-visible { text-decoration: underline; }
 .help strong { color: var(--text-2); }
-.hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
-.relay-summary { color: var(--muted); font-size: .95rem; line-height: 1.6; }
-.relay-summary p { margin: 0 0 10px; }
-.relay-summary p:last-child { margin-bottom: 0; }
-.relay-summary strong { color: var(--cyan); }
-.relay-load-error p { margin: 0 0 12px; color: var(--text-2); }
-.empty { color: var(--muted); padding: 8px 0; margin: 0; }
+
+/* Bouton de connexion : présentation des boutons Copier de Libestria. */
+#login .help + .btn-connect { margin-top: 16px; }
+button.btn-connect {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  max-width: 100%; min-width: 144px; min-height: 44px; padding: 9px 14px;
+  background: var(--btn-bg); border-color: var(--btn-border); color: var(--icon);
+  font-size: 1rem; font-weight: 400; letter-spacing: normal; line-height: 1.4; white-space: nowrap;
+}
+button.btn-connect .i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@supports (top: 1cap) {
+  button.btn-connect { align-items: baseline; padding-block: calc((44px - 2px - 1.4em) / 2); }
+  button.btn-connect .i { --s: 20px; position: relative; top: calc(var(--s) / 2 - .5cap - .3px); margin-top: calc(-1 * var(--s)); }
+}
 
 /* Transition de connexion : indicateur sans dépendance externe. */
 .loading-card:not([hidden]) { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 190px; text-align: center; }
 .loading-spinner { width: 48px; height: 48px; border: 4px solid rgb(168 85 247 / 20%); border-top-color: var(--violet-light); border-radius: 50%; animation: loading-spin .9s linear infinite; }
 .loading-card p { color: var(--text-2); }
 @keyframes loading-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; border-top-color: var(--cyan); } }
 
+/* 6. En-tête ---------------------------------------------------------- */
 /* 3. En-tête ---------------------------------------------------------- */
 .banner { flex: none; display: flex; align-items: center; gap: clamp(9px, 1.8vw, 22px); padding: 3px 0; }
 .banner > a.banner { flex: 0 1 auto; min-width: 0; padding: 0; text-decoration: none; }
@@ -171,9 +185,6 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 @media (prefers-reduced-motion: no-preference) {
   .actions .icon-btn[href$="#soutien"] .i { animation: support-heartbeat 5s ease-in-out infinite; transform-origin: center; }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
-}
 
 @media (max-width: 699px) {
   main { width: 96%; padding: 8px 0; gap: 9px; }
@@ -192,14 +203,14 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 @media (max-width: 340px) { .wordmark { white-space: normal; overflow-wrap: anywhere; } }
 @media (max-height: 620px) { main { gap: 6px; padding: 5px 0; } }
 
-/* 4. Pied de page ----------------------------------------------------- */
+/* 7. Pied de page ----------------------------------------------------- */
 .site-footer {
   width: 90%; max-width: 1600px; margin: 0 auto; padding: 8px 0 max(12px, env(safe-area-inset-bottom));
   min-height: 34px;
   color: var(--text-2); font: 400 clamp(.7rem, 1.9vw, .8rem) var(--mono); text-align: center; text-wrap: balance;
 }
 
-/* 5. Formulaires et boutons ------------------------------------------- */
+/* 8. Formulaires et boutons ------------------------------------------- */
 button {
   font: inherit; color: var(--icon); cursor: pointer; min-height: 40px; padding: 8px 14px;
   border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg);
@@ -209,11 +220,6 @@ button:disabled { opacity: .5; cursor: default; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) { button:not(:disabled):hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
 button.main { color: #fff; border-color: var(--btn-hover-border); background: var(--btn-hover-bg); font-weight: 600; }
-/* Bouton de connexion : présentation des boutons Copier de Libestria. */
-#login .help + .btn-connect { margin-top: 16px; }
-button.btn-connect { display: inline-flex; align-items: center; justify-content: center; gap: 8px; max-width: 100%; min-width: 144px; min-height: 44px; padding: 9px 14px; background: var(--btn-bg); border-color: var(--btn-border); color: var(--icon); font-size: 1rem; font-weight: 400; letter-spacing: normal; line-height: 1.4; white-space: nowrap; }
-button.btn-connect .i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-@supports (top: 1cap) { button.btn-connect { align-items: baseline; padding-block: calc((44px - 2px - 1.4em) / 2); } button.btn-connect .i { --s: 20px; position: relative; top: calc(var(--s) / 2 - .5cap - .3px); margin-top: calc(-1 * var(--s)); } }
 input {
   font: inherit; width: 100%; min-width: 0; padding: 9px 12px; color: var(--text);
   border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg);
@@ -221,6 +227,7 @@ input {
 input:focus { border-color: var(--btn-hover-border); }
 input::placeholder { color: var(--muted); }
 
+/* 9. Compte Nostr ----------------------------------------------------- */
 /* 6. Profil Nostr ----------------------------------------------------- */
 .profile { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; }
 /* Même filet dégradé que les séparateurs de l’index Libestria. */
@@ -237,7 +244,14 @@ input::placeholder { color: var(--muted); }
 .profile-nip05 .verified-mark { font-weight: 700; margin-left: 5px; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
-/* 7. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
+/* Résumé des relais et erreur de chargement. */
+.relay-summary { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+.relay-summary p { margin: 0 0 10px; }
+.relay-summary p:last-child { margin-bottom: 0; }
+.relay-summary strong { color: var(--cyan); }
+.relay-load-error p { margin: 0 0 12px; color: var(--text-2); }
+
+/* 10. Accordéons : mêmes principes et chevrons que « Ressources Nostr ». */
 .relay-accordions { display: grid; gap: 0; }
 .relay-accordions[hidden] { display: none; }
 .relay-accordion { min-width: 0; border: 0 solid; border-top-width: var(--divider-width); border-image: var(--divider) 1; padding: 24px 0; }
@@ -253,13 +267,12 @@ input::placeholder { color: var(--muted); }
 #relayListCard { min-width: 0; }
 .relay-accordion-content > .card + .card { margin-top: 16px; }
 @media (hover: hover) { .theme-toggle:hover { background: none; border-color: transparent; color: #fff; } }
-@media (prefers-reduced-motion: reduce) { .theme-toggle::after { transition: none; } }
 @supports (top: 1cap) {
   .relay-accordion-heading .theme-toggle { align-items: baseline; }
   .relay-accordion-heading .i { position: relative; top: calc(12px - .5cap - .3px); margin-top: 0; }
 }
 
-/* 8. Relais et indicateurs -------------------------------------------- */
+/* 11. Relais et indicateurs ------------------------------------------- */
 .relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; background: var(--grad-card); border-radius: var(--r-lg); box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%); }
 #list { display: grid; gap: 12px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
@@ -283,7 +296,6 @@ input::placeholder { color: var(--muted); }
 .refresh-relays svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .refresh-relays.is-measuring svg { display: none; }
 .refresh-relays.is-measuring::after { content: ""; box-sizing: border-box; width: 15px; height: 15px; border: 2px solid rgb(57 200 255 / 25%); border-top-color: currentColor; border-radius: 50%; animation: loading-spin .75s linear infinite; }
-@media (prefers-reduced-motion: reduce) { .refresh-relays.is-measuring::after { animation: none; border-color: currentColor; border-right-color: transparent; } }
 .del svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 @media (hover: hover) { .del:not(:disabled):hover { color: #fff; background: #3a1a1f; border-color: var(--bad); } }
 .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -291,13 +303,13 @@ input::placeholder { color: var(--muted); }
 .modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; }
 .modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 700; }
 
-/* 9. Suggestions de relais -------------------------------------------- */
+/* 12. Suggestions de relais ------------------------------------------- */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .chips .lbl { flex: 1 0 100%; font-size: .9rem; font-weight: 600; color: #fff; margin-top: 8px; }
 .chips .lbl:first-child { margin-top: 0; }
 .chips button { min-height: 32px; font: .82rem var(--mono); padding: 3px 10px; border-radius: 99px; }
 
-/* 10. Responsive de l’application ----------------------------------------
+/* 13. Responsive de l’application ------------------------------------
    Les seuils et dimensions de l’en-tête restent ceux de Libestria. */
 @media (max-width: 699px) {
   .content { padding-bottom: 18px; }
@@ -308,9 +320,7 @@ input::placeholder { color: var(--muted); }
   .relay-controls { padding-left: 16px; }
 }
 @media (max-width: 600px) {
-  .row.top { align-items: stretch; flex-direction: column; }
-  .row.top button { align-self: flex-start; }
-  .row:has(#newUrl) { flex-wrap: wrap; }
+  .add-row { flex-wrap: wrap; }
   #newUrl { flex: 1 1 100%; }
   #btnAdd { width: 100%; }
   .relay-address .url { flex-basis: auto; }
@@ -323,7 +333,7 @@ input::placeholder { color: var(--muted); }
   .modes button { padding-inline: 8px; }
 }
 
-/* 11. Publication et résultats ---------------------------------------- */
+/* 14. Publication et résultats ---------------------------------------- */
 .publish-actions { margin-top: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
 .publish-actions > button { min-height: 48px; }
 .publish-feedback { display: flex; align-items: center; gap: 10px; min-height: 26px; color: var(--text-2); }
@@ -338,10 +348,17 @@ input::placeholder { color: var(--muted); }
 .res { font: .88rem var(--mono); margin: 4px 0; color: var(--text-2); overflow-wrap: anywhere; }
 .res.ok::before { content: "✓ "; color: var(--ok); }
 .res.bad::before { content: "✕ "; color: var(--bad); }
+
+/* 15. Mouvement réduit ------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+  .loading-spinner { animation: none; border-top-color: var(--cyan); }
+  .refresh-relays.is-measuring::after { animation: none; border-color: currentColor; border-right-color: transparent; }
+}
 </style>
 </head>
 <body>
-<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol><symbol id="i-radio" viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></symbol></svg>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol><symbol id="i-radio" viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></symbol><symbol id="i-account" viewBox="0 0 64 64"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></symbol></svg>
 <main>
 <header class="banner">
 <a class="banner" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Libestria.fr — À propos de Libestria">
@@ -368,13 +385,13 @@ input::placeholder { color: var(--muted); }
   </div>
 
   <div class="card" id="login">
-    <h2 class="login-title"><svg class="login-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecte ton compte Nostr</span></h2>
+    <h2 class="login-title"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Connecte ton compte Nostr</span></h2>
     <div class="help">
       <p>• Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby Extension, Nostr Map Signer, Nostash…).</p>
       <p>• Ta clé privée (NSEC) ne quitte jamais l’extension de ton navigateur.</p>
       <p>• Tu peux rechercher et installer un signer compatible en consultant la rubrique <a href="https://libestria.fr/#ressources-nostr" target="_blank" rel="noopener noreferrer">Ressources Nostr &gt; Signers (signataires) Nostr</a> de Libestria.</p>
     </div>
-    <button class="btn-connect" id="btnLogin" type="button"><svg class="i" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></svg><span>Connecter</span></button>
+    <button class="btn-connect" id="btnLogin" type="button"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Connecter</span></button>
     <p class="msg alert" id="loginMsg" role="alert"></p>
   </div>
 
@@ -396,14 +413,14 @@ input::placeholder { color: var(--muted); }
         </div>
       </div>
       <div class="profile-divider" aria-hidden="true"></div>
-      <div id="relaySummary" >
-      <h2 id="relaySummaryTitle">Relais actuellement configurés :</h2>
-      <div class="relay-summary">
-        <p>• <strong><span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
-        <p>• <strong><span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
-        <p>• <strong><span id="searchRelayCount">0</span> relais NIP-51 de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
-        <p>• <strong><span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
-      </div>
+      <div id="relaySummary">
+        <h2>Relais actuellement configurés :</h2>
+        <div class="relay-summary">
+          <p>• <strong><span id="nip65ReadCount">0</span> relais NIP-65 en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
+          <p>• <strong><span id="nip65WriteCount">0</span> relais NIP-65 en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
+          <p>• <strong><span id="searchRelayCount">0</span> relais NIP-51 de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
+          <p>• <strong><span id="dmRelayCount">0</span> relais NIP-17 pour les messages privés (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
+        </div>
       </div>
       <div class="relay-load-error" id="relayLoadError" role="alert" hidden>
         <p>⚠️ Impossible de charger ton profil et tes listes Nostr. Vérifie ta connexion et réessaie.</p>
@@ -420,9 +437,9 @@ input::placeholder { color: var(--muted); }
 
     <div class="card" id="relayAddCard" hidden>
       <h2>Ajouter un relais</h2>
-      <div class="row">
+      <div class="row add-row">
         <input id="newUrl" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
-        <button id="btnAdd">Ajouter</button>
+        <button id="btnAdd" type="button">Ajouter</button>
       </div>
       <div class="chips" id="chips"></div>
       <p class="msg" id="addMsg"></p>
@@ -468,11 +485,19 @@ const FETCH_CONCURRENCY = 5;
 const PROFILE_KIND = 0;
 const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
 const LATENCY = { fast: 650, slow: 1200 }; // ms : vert <= fast, orange <= slow, rouge au-delà
+const LOGIN_TIMEOUT_MS = 30000;
+const LOGIN_ERRORS = Object.freeze({
+  missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recharge la page.",
+  denied: "Connexion refusée. Autorise l’accès à ta clé publique dans ton signer, puis réessaie.",
+  technical: "Impossible de communiquer avec ton signer Nostr. Vérifie qu’il fonctionne, puis réessaie.",
+  timeout: "Ton signer Nostr ne répond pas. Vérifie ton extension, puis réessaie."
+});
+const SVG_NS = "http://www.w3.org/2000/svg";
 
-// L'ordre des clés = l'ordre des onglets.
+// L'ordre des clés = l'ordre des accordéons.
 const LISTS = {
   pub: {
-    kind: 10002, rw: true, tag: "r",
+    kind: 10002, nip: 65, rw: true, tag: "r",
     tab: "Relais NIP-65 de lecture (R) et d’écriture (W)", title: "Relais publics (NIP-65)",
     hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
     suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
@@ -480,13 +505,13 @@ const LISTS = {
     longform: ["wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
   },
   search: {
-    kind: 10007, rw: false, tag: "relay",
+    kind: 10007, nip: 51, rw: false, tag: "relay",
     tab: "Relais NIP-51 de recherche (S)", title: "Relais de recherche (NIP-51)",
     hint: "Les relais interrogés quand tu cherches des profils ou des notes.",
     suggestions: ["wss://relay.nostr.band", "wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine"],
   },
   dm: {
-    kind: 10050, rw: false, tag: "relay",
+    kind: 10050, nip: 17, rw: false, tag: "relay",
     tab: "Relais NIP-17 de messages privés (DM)", title: "Relais de messages privés (NIP-17)",
     hint: "Les relais où l’on t’envoie tes messages privés. Choisis-en 1 à 3 fiables, idéalement avec authentification.",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://inbox.nostr.wine", "wss://relay.damus.io"],
@@ -497,6 +522,11 @@ for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false;
 /* 2. État et références DOM ------------------------------------------- */
 let pubkey = null;
 let current = "pub";
+let accordionOpen = false;
+let measuringConnections = false;
+let nip05VerificationSequence = 0;
+let publishing = false;
+let pendingPublishKey = null;
 const latencies = {}; // url -> { ms } | { err }
 
 const $ = id => document.getElementById(id);
@@ -539,9 +569,10 @@ async function fetchEvents(url, kinds) {
         if (type === "EVENT" && event) events.push(event);
         if (type === "EOSE" || type === "CLOSED") done();
       };
+      ws.onclose = done;
       ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }]));
     });
-  } catch { return null; }
+  } catch { return null; } // null = relais injoignable (≠ [] : relais joint mais sans événement)
 }
 
 async function publishTo(url, event) {
@@ -660,9 +691,9 @@ function relayRow(list, relay, index) {
     `<button class="icon-btn refresh-relays${measuringConnections ? " is-measuring" : ""}" type="button" ${measuringConnections ? "disabled aria-busy=\"true\"" : ""} title="Actualiser" aria-label="Actualiser les temps de connexion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg></button></div>` +
     (list.rw
       ? `<div class="relay-controls"><div class="modes">
-             <button data-mode="r">Lire (R)</button>
-             <button data-mode="w">Écrire (W)</button>
-             <button data-mode="rw">Lire &amp; Écrire (R+W)</button>
+             <button type="button" data-mode="r">Lire (R)</button>
+             <button type="button" data-mode="w">Écrire (W)</button>
+             <button type="button" data-mode="rw">Lire &amp; Écrire (R+W)</button>
            </div></div>`
       : "");
 
@@ -681,7 +712,15 @@ function relayRow(list, relay, index) {
   return row;
 }
 
-let accordionOpen = false;
+function createIcon(symbolId) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("class", "i");
+  svg.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS(SVG_NS, "use");
+  use.setAttribute("href", "#" + symbolId);
+  svg.appendChild(use);
+  return svg;
+}
 
 // Les en-têtes restent dans le DOM : les mises à jour ne détruisent ni le focus
 // clavier ni les éléments de la carte contenant la liste de relais.
@@ -698,13 +737,7 @@ function initRelayAccordions() {
     button.setAttribute("aria-controls", `relay-panel-${key}`);
     button.setAttribute("aria-expanded", "false");
     button.dataset.relayCategory = key;
-    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    icon.setAttribute("class", "i");
-    icon.setAttribute("aria-hidden", "true");
-    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-    use.setAttribute("href", "#i-radio");
-    icon.appendChild(use);
-    button.appendChild(icon);
+    button.appendChild(createIcon("i-radio"));
     const label = document.createElement("strong");
     label.textContent = list.tab;
     button.appendChild(label);
@@ -764,7 +797,6 @@ function updateRelayAccordions() {
     const key = button.dataset.relayCategory;
     const expanded = key === activeKey;
     button.setAttribute("aria-expanded", String(expanded));
-    button.querySelector("strong").textContent = LISTS[key].tab;
     const panel = $("relay-panel-" + key);
     if (expanded) {
       const actions = panel.querySelector(".publish-actions");
@@ -793,6 +825,7 @@ function renderSuggestions(list) {
     chips.appendChild(title);
     for (const url of available) {
       const btn = document.createElement("button");
+      btn.type = "button";
       btn.textContent = "+ " + url;
       btn.onclick = () => addRelay(url);
       chips.appendChild(btn);
@@ -816,8 +849,6 @@ function render() {
   list.relays.forEach((relay, i) => container.appendChild(relayRow(list, relay, i)));
   renderSuggestions(list);
 }
-
-let nip05VerificationSequence = 0;
 
 // Le NIP-05 annoncé dans kind 0 n'est pas une preuve : vérifier nostr.json.
 async function verifyNip05(identifier, expectedPubkey, signal) {
@@ -898,7 +929,6 @@ async function testRelay(url) {
   render();
 }
 
-let measuringConnections = false;
 async function testAll() {
   if (measuringConnections) return;
   measuringConnections = true;
@@ -917,14 +947,6 @@ async function testAll() {
 }
 
 /* 8. Session NIP-07 et chargement ------------------------------------- */
-const LOGIN_TIMEOUT_MS = 30000;
-const LOGIN_ERRORS = Object.freeze({
-  missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recharge la page.",
-  denied: "Connexion refusée. Autorise l’accès à ta clé publique dans ton signer, puis réessaie.",
-  technical: "Impossible de communiquer avec ton signer Nostr. Vérifie qu’il fonctionne, puis réessaie.",
-  timeout: "Ton signer Nostr ne répond pas. Vérifie ton extension, puis réessaie."
-});
-
 function showLoginError(message) {
   $("loginMsg").textContent = `⚠️ ${message}`;
 }
@@ -1030,7 +1052,6 @@ async function fetchFromRelays(urls, kinds) {
 }
 
 async function loadAccount() {
-
   // Découverte NIP-65 depuis les relais initiaux.
   const discoveryEvents = await fetchFromRelays(BOOT_RELAYS, [10002]);
   const nip65 = latestEvent(discoveryEvents, LISTS.pub.kind);
@@ -1049,9 +1070,6 @@ async function loadAccount() {
   render();
   void testAll();
 }
-
-let publishing = false;
-let pendingPublishKey = null;
 
 function setPublishFeedback(key, state, message) {
   const feedback = $("publish-feedback-" + key);
@@ -1082,7 +1100,7 @@ function requestPublish(key) {
     return;
   }
   pendingPublishKey = key;
-  $("publishConfirmText").textContent = `Souhaites-tu mettre à jour ta liste publique de relais NIP-${LISTS[key].kind === 10002 ? "65" : LISTS[key].kind === 10007 ? "51" : "17"} ?`;
+  $("publishConfirmText").textContent = `Souhaites-tu mettre à jour ta liste publique de relais NIP-${LISTS[key].nip} ?`;
   $("publishConfirm").showModal();
   $("publishNo").focus();
 }
