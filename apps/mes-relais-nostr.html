@@ -248,6 +248,7 @@ input::placeholder { color: var(--muted); }
 .theme-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
 .relay-accordion-content { margin-top: 14px; }
 .relay-accordion-content > .card { margin: 0; }
+#relayListCard { min-width: 0; }
 .relay-accordion-content > .card + .card { margin-top: 16px; }
 @media (hover: hover) { .theme-toggle:hover { background: none; border-color: transparent; color: #fff; } }
 @media (prefers-reduced-motion: reduce) { .theme-toggle::after { transition: none; } }
@@ -258,7 +259,7 @@ input::placeholder { color: var(--muted); }
 
 /* 8. Relais et indicateurs -------------------------------------------- */
 .relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; background: var(--grad-card); border-radius: var(--r-lg); box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%); }
-#relayList { display: grid; gap: 12px; }
+#list { display: grid; gap: 12px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
 .dot.ok { background: var(--ok); box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%); }
 .dot.bad { background: var(--bad); box-shadow: 0 0 7px rgb(239 68 68 / 90%), 0 0 16px rgb(239 68 68 / 55%); }
@@ -396,7 +397,7 @@ input::placeholder { color: var(--muted); }
     </div>
     <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais"></div>
 
-    <div class="card" id="relayListCard" hidden>
+    <div id="relayListCard" hidden>
       <h2 id="listTitle"></h2>
       <p class="hint" id="listHint"></p>
       <div id="list"></div>
