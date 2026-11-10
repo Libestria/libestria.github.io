@@ -273,12 +273,9 @@ input::placeholder { color: var(--muted); }
 .lat.r svg { color: var(--bad); }
 .relay-address { display: flex; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
 .relay-address .url { flex: 0 1 auto; }
-/* Alignement des diodes sur la ligne de base des adresses, comme dans index-Libestria.html. */
-@supports (top: 1cap) {
-  .relay-address { align-items: baseline; }
-  .relay-address .dot { --s: 8px; position: relative; top: calc(var(--s) / 2 - .5ex + .6px); margin-top: calc(-1 * var(--s)); }
-  .relay-address .del { align-self: center; }
-}
+/* Adresse et bouton de suppression centrés dans la même ligne flex.
+   La diode reçoit uniquement un léger ajustement optique indépendant. */
+.relay-address .dot { position: relative; top: .6px; }
 .del { display: grid; place-items: center; flex: none; width: 28px; height: 28px; min-height: 28px; padding: 0; border-radius: 50%; background: var(--btn-bg); color: var(--bad); border-color: var(--btn-border); }
 .refresh-relays { width: 28px; height: 28px; min-height: 28px; background: var(--grad-card); color: var(--cyan); }
 .refresh-relays svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
