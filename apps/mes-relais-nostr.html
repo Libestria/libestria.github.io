@@ -476,6 +476,7 @@ const PROFILE_KIND = 0;
 const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
 const LATENCY = { fast: 650, slow: 1200 }; // ms : vert <= fast, orange <= slow, rouge au-delà
 const LOGIN_TIMEOUT_MS = 30000;
+const MIN_PROGRESS_DISPLAY_MS = 2000;
 const LOGIN_ERRORS = Object.freeze({
   missing: "Aucun signer NIP-07 détecté. Tu dois installer ou activer une extension compatible, puis recommencer.",
   denied: "Connexion refusée. Tu dois autoriser l’accès à ta clé publique dans ton signer, puis réessayer.",
@@ -1046,6 +1047,12 @@ async function getPublicKeyWithTimeout(signer) {
   }
 }
 
+// Garantit un temps de lecture minimal pour les deux étapes de connexion.
+function waitForMinimumDisplay(startedAt) {
+  const remaining = MIN_PROGRESS_DISPLAY_MS - (performance.now() - startedAt);
+  return remaining > 0 ? new Promise(resolve => setTimeout(resolve, remaining)) : Promise.resolve();
+}
+
 async function login() {
   const button = $("btnLogin");
   if (button.disabled) return;
@@ -1057,13 +1064,16 @@ async function login() {
   }
 
   button.disabled = true;
+  let loginStartedAt;
   try {
+    loginStartedAt = performance.now();
     showMessage({ tone: "busy", title: "Connexion à ton compte Nostr…", text: "Tu dois autoriser la connexion dans ton signer si nécessaire." });
     const key = await getPublicKeyWithTimeout(signer);
     if (typeof key !== "string" || !/^[0-9a-f]{64}$/i.test(key)) {
       throw new Error("INVALID_PUBLIC_KEY");
     }
 
+    await waitForMinimumDisplay(loginStartedAt);
     pubkey = key;
     showProfile();
     if (await loadAccountWithRetry()) {
@@ -1071,6 +1081,7 @@ async function login() {
       $("app").hidden = false;
     }
   } catch (error) {
+    if (loginStartedAt !== undefined) await waitForMinimumDisplay(loginStartedAt);
     await showLoginError(error?.message === "NIP07_TIMEOUT" ? LOGIN_ERRORS.timeout : loginError(error));
   } finally {
     button.disabled = false;
@@ -1080,13 +1091,16 @@ async function login() {
 // Charge le profil et les listes ; en cas d'échec, propose de réessayer ou de revenir à l'écran de connexion.
 async function loadAccountWithRetry() {
   for (;;) {
+    const loadingStartedAt = performance.now();
     showMessage({ tone: "busy", title: "Chargement de ton compte…", text: "Chargement de ton profil Nostr et récupération de tes listes publiques de relais." });
     try {
       await loadAccount();
+      await waitForMinimumDisplay(loadingStartedAt);
       hideMessage();
       $("relayAccordions").hidden = false;
       return true;
     } catch {
+      await waitForMinimumDisplay(loadingStartedAt);
       const choice = await showMessage({
         tone: "alert",
         title: "Chargement impossible",
