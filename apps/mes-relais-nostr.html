@@ -115,7 +115,7 @@ h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter
 .row.top { margin-top: 14px; }
 .msg { font-size: .9rem; color: var(--muted); margin: 8px 0 0; }
 .hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
-.empty { color: var(--muted); padding: 8px 0; margin: 0; }
+.empty { color: var(--bad-text); padding: 8px 0; margin: 0; }
 
 /* 5. Connexion ------------------------------------------------------- */
 .login-title { display: flex; align-items: center; gap: 10px; }
@@ -458,8 +458,8 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
     <div class="relay-accordions" id="relayAccordions" aria-label="Catégories de relais" hidden></div>
 
     <div id="relayListCard" hidden>
-      <h2 id="listTitle"></h2>
       <p class="hint" id="listHint"></p>
+      <h2 id="listTitle"></h2>
       <div id="list"></div>
     </div>
 
@@ -512,8 +512,8 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const LISTS = {
   pub: {
     kind: 10002, nip: 65, rw: true, tag: "r",
-    tab: "Relais NIP-65 de lecture (R) et d’écriture (W)", title: "Relais publics (NIP-65)",
-    hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
+    tab: "Relais NIP-65 de lecture (R) et d’écriture (W)", title: "Liste de relais NIP-65",
+    hint: "Les relais NIP-65 te permettent de récupérer les événements Nostr en lecture (R) et de publier tes événements en écriture (W). Chaque relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).",
     suggestions: ["wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://nostr.mom", "wss://nostr.bitcoiner.social", "wss://purplepag.es", "wss://relay.nos.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
     longform: ["wss://relay.primal.net", "wss://relay.damus.io", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
@@ -521,14 +521,14 @@ const LISTS = {
   },
   search: {
     kind: 10007, nip: 51, rw: false, tag: "relay",
-    tab: "Relais NIP-51 de recherche (S)", title: "Relais de recherche (NIP-51)",
-    hint: "Les relais interrogés quand tu cherches des profils ou des notes.",
+    tab: "Relais NIP-51 de recherche (S)", title: "Liste de relais NIP-51",
+    hint: "Les relais NIP-51 te permettent de rechercher (S) des événements et des profils Nostr.",
     suggestions: ["wss://relay.nostr.band", "wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine"],
   },
   dm: {
     kind: 10050, nip: 17, rw: false, tag: "relay",
-    tab: "Relais NIP-17 de messages privés (DM)", title: "Relais de messages privés (NIP-17)",
-    hint: "Les relais où l’on t’envoie tes messages privés. Choisis-en 1 à 3 fiables, idéalement avec authentification.",
+    tab: "Relais NIP-17 de messages privés (DM)", title: "Liste de relais NIP-17",
+    hint: "Les relais NIP-17 te permettent de recevoir tes messages privés chiffrés (DM).",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://inbox.nostr.wine", "wss://relay.damus.io"],
   },
 };
@@ -867,7 +867,7 @@ function render() {
   $("listHint").textContent = list.hint;
 
   const container = $("list");
-  container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoute-en un ci-dessous.</p>';
+  container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoutes-en un ci-dessous.</p>';
   list.relays.forEach(relay => container.appendChild(relayRow(list, relay)));
   renderSuggestions(list);
 }
