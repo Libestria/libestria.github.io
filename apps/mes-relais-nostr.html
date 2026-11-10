@@ -213,7 +213,6 @@ button {
 button:disabled { opacity: .5; cursor: default; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) { button:not(:disabled):hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
-button.main { color: #fff; border-color: var(--btn-hover-border); background: var(--btn-hover-bg); font-weight: 600; }
 input {
   font: inherit; width: 100%; min-width: 0; padding: 9px 12px; color: var(--text);
   border: 1px solid var(--btn-border); border-radius: var(--r-lg); background: var(--btn-bg);
@@ -292,14 +291,20 @@ input::placeholder { color: var(--muted); }
 @media (hover: hover) { .del:not(:disabled):hover { color: #fff; background: #3a1a1f; border-color: var(--bad); } }
 .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .relay-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 0 100%; padding-left: 18px; }
-.modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; }
+.modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; display: inline-grid; align-items: center; justify-items: center; }
+/* Réserver la largeur du libellé en gras, quel que soit le mode sélectionné. */
+.modes button::after { content: ""; grid-area: 1 / 1; font-weight: 700; visibility: hidden; height: 0; overflow: hidden; }
+.modes button[data-mode="r"]::after { content: "Lire (R)"; }
+.modes button[data-mode="w"]::after { content: "Écrire (W)"; }
+.modes button[data-mode="rw"]::after { content: "Lire & Écrire (R+W)"; }
 .modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 700; }
 
 /* 12. Suggestions de relais ------------------------------------------- */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .chips .lbl { flex: 1 0 100%; font-size: .9rem; font-weight: 600; color: #fff; margin-top: 8px; }
 .chips .lbl:first-child { margin-top: 0; }
-.chips button { min-height: 32px; font: .82rem var(--mono); padding: 3px 10px; border-radius: 99px; }
+.chips button { min-height: 32px; font: .82rem var(--mono); padding: 3px 10px; border-radius: 99px; color: var(--cyan); }
+@media (hover: hover) { .chips button:not(:disabled):hover { color: var(--cyan); } }
 
 /* 13. Responsive de l’application ------------------------------------
    Les seuils et dimensions de l’en-tête restent ceux de Libestria. */
@@ -328,6 +333,10 @@ input::placeholder { color: var(--muted); }
 /* 14. Popups : confirmation, avancement, alertes et résultats ---------- */
 .publish-actions { display: flex; flex-direction: column; align-items: stretch; }
 .publish-actions > button { min-height: 48px; }
+/* Action de publication uniquement : couleur dédiée, sans affecter les autres boutons. */
+button[data-publish-category] { background: #7C3AED; border-color: #7C3AED; color: #fff; }
+@media (hover: hover) { button[data-publish-category]:not(:disabled):hover { background: #6D28D9; border-color: #6D28D9; color: #fff; } }
+button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outline-offset: 3px; }
 .app-dialog { position: fixed; inset: 0; margin: auto; width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; color: var(--text-2); background: #171320; border: 1px solid var(--btn-border); border-radius: var(--r-lg); box-shadow: 0 16px 50px #000b; }
 .app-dialog::backdrop { background: rgb(0 0 0 / 72%); }
 .app-dialog p { margin: 0 0 14px; line-height: 1.5; }
@@ -340,7 +349,6 @@ input::placeholder { color: var(--muted); }
 .dialog-details { max-height: min(40vh, 260px); overflow-y: auto; margin: 0 0 14px; padding-top: 10px; border-top: 1px solid var(--btn-border); }
 .dialog-details[hidden], .dialog-actions:empty { display: none; }
 .dialog-actions { justify-content: flex-end; margin-top: 18px; }
-.dialog-actions button { min-width: 86px; }
 .res { font: .88rem var(--mono); margin: 4px 0; color: var(--text-2); overflow-wrap: anywhere; }
 .res.ok::before { content: "✓ "; color: var(--ok); }
 .res.bad::before { content: "✕ "; color: var(--bad); }
@@ -506,9 +514,10 @@ const LISTS = {
     kind: 10002, nip: 65, rw: true, tag: "r",
     tab: "Relais NIP-65 de lecture (R) et d’écriture (W)", title: "Relais publics (NIP-65)",
     hint: "Les relais où tu publies (écriture) et où les autres te répondent (lecture).",
-    suggestions: ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.nostr.band", "wss://purplepag.es", "wss://nostr.wine"],
+    suggestions: ["wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://nostr.mom", "wss://nostr.bitcoiner.social", "wss://purplepag.es", "wss://relay.nos.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
-    longform: ["wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
+    longform: ["wss://relay.primal.net", "wss://relay.damus.io", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
+    paid: ["wss://nostr.wine", "wss://eden.nostr.land", "wss://relay.azzamo.net"],
   },
   search: {
     kind: 10007, nip: 51, rw: false, tag: "relay",
@@ -823,11 +832,13 @@ function updateRelayAccordions() {
 function renderSuggestions(list) {
   const chips = $("chips");
   chips.innerHTML = "";
-  for (const [label, urls] of [
-    ["Suggestions", list.suggestions],
-    ["Relais francophones :", list.french],
-    ["Relais gérants les articles long-form :", list.longform],
-  ]) {
+  const groups = list === LISTS.pub ? [
+    ["Relais publics populaires", list.suggestions],
+    ["Relais publics francophones", list.french],
+    ["Relais pour les articles (NIP-23)", list.longform],
+    ["Relais payants populaires", list.paid],
+  ] : [["Suggestions", list.suggestions]];
+  for (const [label, urls] of groups) {
     const available = (urls || []).filter(u => !list.relays.some(r => r.url === u));
     if (!available.length) continue;
     const title = document.createElement("div");
@@ -1133,7 +1144,7 @@ async function login() {
 async function loadAccountWithRetry() {
   for (;;) {
     const loadingStartedAt = performance.now();
-    showMessage({ tone: "busy", title: "Chargement de ton compte…", text: "Chargement de ton profil Nostr et récupération de tes listes publiques de relais." });
+    showMessage({ tone: "busy", title: "Chargement des informations…", text: "Chargement de ton profil Nostr et récupération de tes listes publiques de relais." });
     try {
       await loadAccount();
       await waitForMinimumDisplay(loadingStartedAt);
