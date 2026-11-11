@@ -576,6 +576,7 @@ const PROFILE_KIND = 0;
 const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
 const LATENCY = { fast: 650, slow: 1200 }; // ms : vert <= fast, orange <= slow, rouge au-delà
 const LOGIN_TIMEOUT_MS = 30000;
+const SIGN_TIMEOUT_MS = 30000;
 const MIN_PROGRESS_DISPLAY_MS = 3000;
 const LOGIN_ERRORS = Object.freeze({
   missing: "Aucun signer NIP-07 détecté. Tu dois installer ou activer une extension compatible, puis recommencer.",
@@ -1292,6 +1293,7 @@ messageDialog.addEventListener("close", () => { if (!messageDialog.open) settleM
 /* 8. Actions sur les relais ------------------------------------------- */
 let pendingRelay = null;
 let selectedRelayMode = "rw";
+let checkingRelayAddition = false;
 
 function selectRelayMode(mode) {
   selectedRelayMode = mode;
@@ -1313,6 +1315,43 @@ function commitRelay(list, url, mode = "rw") {
   void scanAllRelayNips([url]);
 }
 
+function openRelayModeSelection(list, url) {
+  pendingRelay = { list, url };
+  $("relayModeUrl").textContent = url;
+  selectRelayMode("rw");
+  $("relayModeDialog").showModal();
+  $("relayModeAdd").focus();
+}
+
+async function checkRelayBeforeAddition(list, url) {
+  if (checkingRelayAddition) return;
+  checkingRelayAddition = true;
+  try {
+    void showMessage({ tone: "busy", title: "Vérification du relais", text: "Tentative de connexion au relais…" });
+    const status = await ping(url);
+    latencies[url] = status;
+    hideMessage();
+    if (status.err) {
+      const choice = await showMessage({
+        tone: "alert",
+        title: "Connexion au relais impossible",
+        text: "Impossible d’établir une connexion avec ce relais. Il peut être inexistant, temporairement hors ligne, payant ou nécessiter une autorisation d’accès. Vérifie son adresse et réessaie ultérieurement.",
+        actions: [
+          { id: "cancel", label: "Annuler", defaultFocus: true },
+          { id: "add", label: "Ajouter quand même", primary: true }
+        ]
+      });
+      if (choice !== "add") return;
+    }
+    // Le test est terminé avant toute sélection de droits ou confirmation d'ajout.
+    if (list.relays.some(relay => relay.url === url)) return;
+    if (list.rw) openRelayModeSelection(list, url);
+    else commitRelay(list, url);
+  } finally {
+    checkingRelayAddition = false;
+  }
+}
+
 function addRelay(input) {
   const list = currentList();
   const url = normalizeUrl(input);
@@ -1324,15 +1363,7 @@ function addRelay(input) {
     void showMessage({ tone: "alert", title: "Relais déjà présent", text: "Ce relais est déjà présent dans cette liste.", actions: OK_ACTION });
     return;
   }
-  if (!list.rw) {
-    commitRelay(list, url);
-    return;
-  }
-  pendingRelay = { list, url };
-  $("relayModeUrl").textContent = url;
-  selectRelayMode("rw");
-  $("relayModeDialog").showModal();
-  $("relayModeAdd").focus();
+  void checkRelayBeforeAddition(list, url);
 }
 
 async function testRelay(url) {
@@ -1504,6 +1535,22 @@ function requestPublish(key) {
   $("publishNo").focus();
 }
 
+// Une réponse tardive du signer ne doit jamais déclencher une publication.
+async function signEventWithTimeout(signer, unsignedEvent) {
+  if (typeof signer?.signEvent !== "function") throw new Error("NIP07_SIGNER_UNAVAILABLE");
+  let timer;
+  try {
+    return await Promise.race([
+      Promise.resolve().then(() => signer.signEvent(unsignedEvent)),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("NIP07_SIGN_TIMEOUT")), SIGN_TIMEOUT_MS);
+      })
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function publish(key) {
   const list = LISTS[key];
   if (!list || publishing || !list.relays.length) return;
@@ -1512,15 +1559,20 @@ async function publish(key) {
   buttons.forEach(button => { button.disabled = true; });
   const title = `Publication : ${list.title}`;
   let progressStartedAt = performance.now();
+  let awaitingSignature = true;
   showMessage({ tone: "busy", title, text: "Signature de la liste en cours…" });
   try {
-    const event = await window.nostr.signEvent({
+    const event = await signEventWithTimeout(window.nostr, {
       kind: list.kind, created_at: Math.floor(Date.now() / 1000),
       tags: tagsFromList(list), content: ""
     });
-    if (!event?.id || !event.sig || event.kind !== list.kind || (event.pubkey && event.pubkey.toLowerCase() !== pubkey)) {
+    // Certains signers retournent une réponse vide ou non signée après un refus,
+    // sans lever d'erreur NIP-07 explicite. Ne pas l'assimiler à un autre compte.
+    if (!event?.sig) throw new Error("NIP07_SIGNATURE_MISSING");
+    if (!event.id || event.kind !== list.kind || (event.pubkey && event.pubkey.toLowerCase() !== pubkey)) {
       throw new Error("Le signer a renvoyé un événement invalide ou signé par un autre compte.");
     }
+    awaitingSignature = false;
     await waitForMinimumDisplay(progressStartedAt);
     progressStartedAt = performance.now();
     showMessage({ tone: "busy", title, text: "Publication de la liste en cours…" });
@@ -1550,9 +1602,24 @@ async function publish(key) {
     });
   } catch (error) {
     await waitForMinimumDisplay(progressStartedAt);
+    const signatureDenied = awaitingSignature && (
+      error?.code === 4001 || error?.code === "4001" || error?.name === "NotAllowedError"
+    );
+    const signerUnavailable = awaitingSignature && (
+      error?.message === "NIP07_SIGN_TIMEOUT" || error?.message === "NIP07_SIGNER_UNAVAILABLE"
+    );
+    const signatureMissing = awaitingSignature && error?.message === "NIP07_SIGNATURE_MISSING";
     await showMessage({
-      tone: "alert", title: "Publication impossible",
-      text: error?.message || "Signature refusée ou publication impossible.", actions: OK_ACTION
+      tone: "alert",
+      title: signatureDenied ? "Signature refusée" : signerUnavailable ? "Signer indisponible" : signatureMissing ? "Signature non obtenue" : "Publication impossible",
+      text: signatureDenied
+        ? "Tu as refusé de signer cette liste. Aucune publication n’a été effectuée."
+        : signerUnavailable
+          ? "Impossible d’obtenir la signature de ton signer Nostr. Il peut être déconnecté, verrouillé, désactivé ou ne pas répondre. Vérifie qu’il est actif et connecté, puis réessaie."
+          : signatureMissing
+            ? "Le signer n’a renvoyé aucune signature. La demande a peut-être été refusée ou interrompue. Aucune publication n’a été effectuée. Tu peux vérifier ton signer, puis réessayer."
+            : (error?.message || "Signature impossible ou publication impossible."),
+      actions: OK_ACTION
     });
   } finally {
     publishing = false;
