@@ -127,6 +127,23 @@ h2, .section-title { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 
 #relayAddCard .add-help { margin: 0 0 16px; color: var(--muted); font-size: .95rem; line-height: 1.5; }
 .empty { color: var(--bad-text); padding: 8px 0; margin: 0; }
 
+/* Apparition des cartes : même fondu et glissement que sur Libestria. */
+@media (prefers-reduced-motion: no-preference) {
+  .card.reveal-ready, .relay.reveal-ready {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity .85s cubic-bezier(.22, 1, .36, 1),
+                transform .85s cubic-bezier(.22, 1, .36, 1);
+  }
+  .card.reveal-ready.is-entering, .relay.reveal-ready.is-entering {
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .card.reveal-ready.is-visible, .relay.reveal-ready.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* 5. Connexion ------------------------------------------------------- */
 .login-title { display: flex; align-items: center; gap: 10px; }
 .login-icon { width: 25px; height: 25px; flex: none; color: var(--cyan); fill: none; stroke: currentColor; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -180,6 +197,25 @@ button.btn-connect .i { width: 20px; height: 20px; flex: none; stroke: currentCo
 .icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; }
 @media (hover: hover) { .icon-btn:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
 .icon-btn:active { background: var(--btn-hover-bg); }
+/* Menu informatif : même bouton que sur Libestria, sans action. */
+.actions .icon-btn.menu-unavailable {
+  position: relative; opacity: .58; cursor: not-allowed;
+}
+.actions .icon-btn.menu-unavailable:is(:hover, :focus-visible, :active) {
+  background: var(--grad-card); border-color: var(--btn-border); color: #fff;
+}
+.actions .icon-btn.menu-unavailable::after {
+  content: attr(data-tooltip); position: absolute; top: calc(100% + 10px); right: 0;
+  width: max-content; max-width: min(260px, calc(100vw - 24px));
+  padding: 9px 12px; border: 1px solid var(--btn-border); border-radius: 8px;
+  background: var(--btn-hover-bg); color: #fff; font: 400 13px/1.4 system-ui, sans-serif;
+  text-align: center; white-space: normal; box-shadow: 0 6px 18px rgb(0 0 0 / 25%);
+  opacity: 0; visibility: hidden; pointer-events: none; z-index: 5;
+}
+.actions .icon-btn.menu-unavailable:is(:hover, :focus-visible)::after {
+  opacity: 1; visibility: visible;
+}
+
 
 @keyframes support-heartbeat {
   0%, 8%, 18%, 28%, 100% { transform: scale(1); }
@@ -384,7 +420,7 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
 </style>
 </head>
 <body>
-<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol><symbol id="i-radio" viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></symbol><symbol id="i-account" viewBox="0 0 64 64"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></symbol></svg>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></symbol><symbol id="i-relays" viewBox="0 0 24 24"><path d="M12 2.5a1 1 0 0 1 1 .85l.32 1.9a7.4 7.4 0 0 1 1.64.68l1.58-1.12a1 1 0 0 1 1.3.1l1.25 1.25a1 1 0 0 1 .1 1.3l-1.12 1.58c.3.52.53 1.07.68 1.64l1.9.32a1 1 0 0 1 .85 1v1.77a1 1 0 0 1-.85 1l-1.9.32a7.4 7.4 0 0 1-.68 1.64l1.12 1.58a1 1 0 0 1-.1 1.3l-1.25 1.25a1 1 0 0 1-1.3.1l-1.58-1.12a7.4 7.4 0 0 1-1.64.68l-.32 1.9a1 1 0 0 1-1 .85h-1.77a1 1 0 0 1-1-.85l-.32-1.9a7.4 7.4 0 0 1-1.64-.68l-1.58 1.12a1 1 0 0 1-1.3-.1l-1.25-1.25a1 1 0 0 1-.1-1.3l1.12-1.58a7.4 7.4 0 0 1-.68-1.64l-1.9-.32a1 1 0 0 1-.85-1v-1.77a1 1 0 0 1 .85-1l1.9-.32a7.4 7.4 0 0 1 .68-1.64L3.81 7.46a1 1 0 0 1 .1-1.3l1.25-1.25a1 1 0 0 1 1.3-.1l1.58 1.12a7.4 7.4 0 0 1 1.64-.68l.32-1.9a1 1 0 0 1 1-.85z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0a2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0a2 2 0 0 1 0-2.828l2.823-2.762"></path></symbol><symbol id="i-radio" viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path><circle cx="12" cy="9" r="2"></circle><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path><path d="M9.5 18h5"></path><path d="m8 22 4-11 4 11"></path></symbol><symbol id="i-account" viewBox="0 0 64 64"><circle cx="25" cy="20" r="9"/><path d="M8 47v-5c0-8 7.6-14 17-14 5.8 0 10.8 2.2 13.8 6"/><rect x="34" y="39" width="23" height="18" rx="3"/><path d="M39 39v-5a6.5 6.5 0 0 1 13 0v5"/><circle cx="45.5" cy="47" r="1.5" fill="currentColor" stroke="none"/><path d="M45.5 49v3"/></symbol></svg>
 <main>
 <header class="banner">
 <a class="banner" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Libestria.fr — À propos de Libestria">
@@ -392,8 +428,9 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
 <h1 class="wordmark" translate="no">Libestria.fr</h1>
 </a>
 <div class="actions">
-<a class="icon-btn" href="https://libestria.fr/#accueil" target="_blank" rel="noopener noreferrer" aria-label="Accueil — À propos de Libestria" title="À propos de Libestria"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></a>
-<a class="icon-btn" href="https://libestria.fr/#soutien" target="_blank" rel="noopener noreferrer" aria-label="Soutenir Libestria" title="Soutenir Libestria"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg></a>
+<a class="icon-btn" href="https://libestria.fr/#accueil" aria-label="Accueil — À propos de Libestria" title="À propos de Libestria"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></a>
+<a class="icon-btn" href="https://libestria.fr/#soutien" aria-label="Soutenir Libestria" title="Soutenir Libestria"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg></a>
+<button class="icon-btn menu-unavailable" type="button" aria-disabled="true" aria-label="Menu indisponible. Le menu est accessible depuis la page principale." data-tooltip="Le menu est accessible depuis la page principale."><svg class="i" aria-hidden="true"><use href="#i-menu"/></svg></button>
 </div>
 </header>
 <section class="window" aria-labelledby="win-title">
@@ -1102,6 +1139,7 @@ function render() {
   container.innerHTML = list.relays.length ? "" : '<p class="empty">Aucun relais pour l’instant. Ajoutes-en un ci-dessous.</p>';
   list.relays.forEach(relay => container.appendChild(relayRow(list, relay)));
   renderSuggestions(list);
+  syncRelayReveal();
 }
 
 // Le NIP-05 annoncé dans kind 0 n'est pas une preuve : vérifier nostr.json.
@@ -1536,6 +1574,74 @@ $("publishYes").addEventListener("click", () => {
   $("publishConfirm").close();
   if (key) void publish(key);
 });
+// Révélation au défilement, y compris pour les cartes affichées après connexion
+// ou déplacées dans un accordéon. Les éléments masqués restent hors animation.
+const revealMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const revealCards = [...document.querySelectorAll(".card")];
+const revealPage = document.querySelector(".page");
+let revealEnterObserver;
+let revealLeaveObserver;
+
+function resetCardReveal(card) {
+  card.classList.remove("is-entering", "is-visible");
+  card.style.removeProperty("--reveal-delay");
+}
+
+function configureCardReveal() {
+  revealEnterObserver?.disconnect();
+  revealLeaveObserver?.disconnect();
+  revealCards.forEach(card => {
+    resetCardReveal(card);
+    card.classList.remove("reveal-ready");
+  });
+  if (revealMotion.matches || !("IntersectionObserver" in window)) return;
+
+  revealCards.forEach(card => card.classList.add("reveal-ready"));
+  revealEnterObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      const card = entry.target;
+      if (!entry.isIntersecting || card.classList.contains("is-visible")) continue;
+      // Les cartes ne sont pas disposées en grille dans cette application.
+      card.style.setProperty("--reveal-delay", "0ms");
+      card.classList.add("is-entering", "is-visible");
+    }
+  }, {
+    root: revealPage,
+    threshold: 0,
+    rootMargin: "-136px 0px -64px 0px"
+  });
+  revealLeaveObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) resetCardReveal(entry.target);
+    }
+  }, { root: revealPage, threshold: 0 });
+  revealCards.forEach(card => {
+    revealEnterObserver.observe(card);
+    revealLeaveObserver.observe(card);
+  });
+  syncRelayReveal();
+}
+
+// Les relais sont reconstruits par render() : observer chaque nouvelle ligne.
+function syncRelayReveal() {
+  if (!revealEnterObserver || !revealLeaveObserver || revealMotion.matches) return;
+  document.querySelectorAll("#list .relay").forEach(relay => {
+    if (relay.classList.contains("reveal-ready")) return;
+    relay.classList.add("reveal-ready");
+    revealEnterObserver.observe(relay);
+    revealLeaveObserver.observe(relay);
+  });
+}
+
+revealPage.addEventListener("focusin", event => {
+  const card = event.target.closest(".card.reveal-ready, .relay.reveal-ready");
+  if (!card) return;
+  resetCardReveal(card);
+  card.classList.add("is-visible");
+});
+revealMotion.addEventListener("change", configureCardReveal);
+configureCardReveal();
+
 window.addEventListener("beforeunload", e => {
   if (Object.values(LISTS).some(l => l.dirty)) e.preventDefault();
 });
