@@ -111,7 +111,7 @@ main {
 .content { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 720px; margin: 0 auto; padding: 34px clamp(22px, 3vw, 48px); }
 
 /* 4. Textes, cartes et messages --------------------------------------- */
-h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
+h2, .section-title { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 0 0 10px; letter-spacing: .03em; }
 .sub { margin: 0 0 1rem; color: var(--text-2); letter-spacing: .02em; }
 .sub > * + * { margin-top: 1rem; }
 .sub ul { margin: 1rem 0 0; padding-left: 22px; }
@@ -263,6 +263,8 @@ input::placeholder { color: var(--muted); }
 .theme-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
 .relay-accordion-content { margin-top: 14px; display: flex; flex-direction: column; gap: 16px; }
 .relay-accordion-content[hidden] { display: none; }
+/* Titres secondaires des cartes d'un accordéon : plus petits que le titre de l'accordéon (18 px) pour marquer la hiérarchie. */
+.relay-accordion-content .section-title { font-size: 1rem; }
 #relayListCard { min-width: 0; }
 @media (hover: hover) { .theme-toggle:not(:disabled):hover { background: none; border-color: transparent; color: #fff; } }
 @supports (top: 1cap) {
@@ -271,11 +273,15 @@ input::placeholder { color: var(--muted); }
 }
 
 /* 11. Relais et indicateurs ------------------------------------------- */
-.relay { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; background: var(--grad-card); border-radius: var(--r-lg); box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%); }
+.relay { --relay-gap: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--relay-gap); padding: 14px; background: var(--grad-card); border-radius: var(--r-lg); box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%); }
 #list { display: grid; gap: 12px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
-.dot.ok { background: var(--ok); box-shadow: 0 0 7px rgb(34 197 94 / 95%), 0 0 16px rgb(34 197 94 / 62%); }
-.dot.bad { background: var(--bad); box-shadow: 0 0 7px rgb(239 68 68 / 90%), 0 0 16px rgb(239 68 68 / 55%); }
+/* Le conteneur .dot reprend la police de .url : sa ligne a la même hauteur et la même ligne de base que l'adresse.
+   La pastille (::before) est alignée par vertical-align: middle, c'est-à-dire sur le milieu de la hauteur
+   d'x de la police : le centrage reste correct quelle que soit la police réellement chargée. */
+.dot { width: 7px; flex: none; font: .92rem var(--mono); }
+.dot::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); vertical-align: middle; }
+.dot.ok::before { background: var(--ok); box-shadow: 0 0 5px rgb(34 197 94 / 65%), 0 0 11px rgb(34 197 94 / 30%); }
+.dot.bad::before { background: var(--bad); box-shadow: 0 0 5px rgb(239 68 68 / 60%), 0 0 11px rgb(239 68 68 / 27%); }
 .url { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: .92rem var(--mono); letter-spacing: .025em; color: var(--cyan); }
 .relay-connection { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .lat { display: inline-flex; align-items: baseline; gap: 5px; font: .8rem var(--mono); color: var(--muted); flex: none; white-space: nowrap; }
@@ -286,9 +292,7 @@ input::placeholder { color: var(--muted); }
 .lat.r svg { color: var(--bad); }
 .relay-address { display: flex; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
 .relay-address .url { flex: 0 1 auto; }
-/* Adresse et bouton de suppression centrés dans la même ligne flex.
-   La diode reçoit uniquement un léger ajustement optique indépendant. */
-.relay-address .dot { position: relative; top: .6px; }
+/* Diode, adresse et bouton de suppression centrés dans la même ligne flex ; l'alignement fin de la diode est géré par .dot. */
 .del { display: grid; place-items: center; flex: none; width: 28px; height: 28px; min-height: 28px; padding: 0; border-radius: 50%; background: var(--btn-bg); color: var(--bad); border-color: var(--btn-border); }
 .refresh-relays { width: 28px; height: 28px; min-height: 28px; background: var(--grad-card); color: var(--cyan); }
 .refresh-relays svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -299,20 +303,21 @@ input::placeholder { color: var(--muted); }
 .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .relay-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 0 100%; padding-left: 18px; }
 .modes button { min-height: 34px; font-size: .85rem; padding: 4px 10px; display: inline-flex; align-items: center; justify-content: center; text-align: center; white-space: nowrap; }
-.modes button.on { background: var(--ok); color: var(--okink); border-color: var(--ok); font-weight: 700; }
+.modes button.on { background: #14532d; color: #86efac; border-color: var(--ok); font-weight: 700; }
 
 /* Indicateurs NIP : déclarations et présence d'événements distinctes. */
 .relay-nips { flex: 1 1 100%; min-width: 0; display: grid; gap: 7px; padding-left: 18px; }
+/* Sous les boutons R, W et R+W, les NIP sont séparés par 14 px (= le padding de la carte), quel que soit l'espacement courant de .relay. */
+.relay-controls + .relay-nips { margin-top: calc(14px - var(--relay-gap)); }
 .nip-line, .nip-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
 .nip-pill { font: .76rem var(--mono); border: 1px solid #5c6470; background: #374151; color: #d1d5db; padding: 2px 6px; border-radius: 5px; }
 .nip-pill.announced { border-color: #3b82f6; background: #1e3a5f; color: #93c5fd; }
 .nip-pill.observed { border-color: #32664a; background: #14532d; color: #86efac; }
 .nip-legend { gap: 12px; font-size: .72rem; color: var(--text-2); }
 .nip-legend-item { display: inline-flex; align-items: center; gap: 5px; }
-.nip-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; flex: none; }
+.nip-legend-dot { width: 5px; height: 5px; border-radius: 50%; background: #9ca3af; flex: none; }
 .nip-legend-dot.announced { background: #3b82f6; }
 .nip-legend-dot.observed { background: #22c55e; }
-.nip-note { font-size: .75rem; color: var(--muted); }
 @media (max-width: 600px) { .relay-nips { padding-left: 0; } }
 
 /* 12. Suggestions de relais ------------------------------------------- */
@@ -329,7 +334,7 @@ input::placeholder { color: var(--muted); }
   .card { padding: 18px 12px; }
 
   .profile { gap: 10px; }
-  .relay { gap: 8px; }
+  .relay { --relay-gap: 8px; }
   .relay-controls { padding-left: 16px; }
 }
 @media (max-width: 600px) {
@@ -341,7 +346,7 @@ input::placeholder { color: var(--muted); }
 }
 @media (max-width: 380px) {
   .card { padding: 16px 10px; }
-  .relay .url { font-size: .85rem; }
+  .relay .url, .relay .dot { font-size: .85rem; }
   .modes button { padding-inline: 8px; }
 }
 
@@ -349,6 +354,8 @@ input::placeholder { color: var(--muted); }
 .publish-actions { display: flex; flex-direction: column; align-items: stretch; }
 .publish-actions > button { min-height: 48px; }
 /* Action de publication uniquement : couleur dédiée, sans affecter les autres boutons. */
+/* Fixé en bas du panneau uniquement s'il y a des modifications à publier ; il disparaît avec l'accordéon. */
+.relay-accordion-content.has-changes .publish-actions { position: sticky; bottom: 0; z-index: 5; padding: 10px 0; background: #000; border-top: 1px solid var(--btn-border); }
 button[data-publish-category] { background: #7C3AED; border-color: #7C3AED; color: #fff; }
 @media (hover: hover) { button[data-publish-category]:not(:disabled):hover { background: #6D28D9; border-color: #6D28D9; color: #fff; } }
 button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outline-offset: 3px; }
@@ -404,7 +411,7 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
   </div>
 
   <div class="card" id="login">
-    <h2 class="login-title"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Connecte ton compte Nostr</span></h2>
+    <h3 class="login-title section-title"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Connecte ton compte Nostr</span></h3>
     <div class="help">
       <p>• Nécessite un signer (signataire) de type « extension de navigateur » compatible NIP-07 (Alby Extension, Nostr Map Signer, Nostash…).</p>
       <p>• Ta clé privée (nsec) reste gérée par ton extension. L’application n’y accède pas et lui délègue les signatures.</p>
@@ -450,7 +457,7 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
 
   <div id="app" hidden>
     <div class="card" role="region" aria-labelledby="accountTitle">
-      <h2 id="accountTitle">Compte connecté à l’application</h2>
+      <h3 class="section-title" id="accountTitle">Compte connecté à l’application</h3>
       <div class="profile">
         <div class="avatar" id="avatar" aria-hidden="true"></div>
         <div>
@@ -461,7 +468,7 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
       </div>
     </div>
     <div class="card" id="relaySummary" role="region" aria-labelledby="relaySummaryTitle">
-        <h2 id="relaySummaryTitle">Relais actuellement configurés</h2>
+        <h3 class="section-title" id="relaySummaryTitle">Relais actuellement configurés</h3>
         <div class="relay-summary">
           <p>• <strong><span id="nip65ReadCount">0</span> relais en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
           <p>• <strong><span id="nip65WriteCount">0</span> relais en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
@@ -473,12 +480,12 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
 
     <div id="relayListCard" hidden>
       <p class="hint" id="listHint"></p>
-      <h2 id="listTitle"></h2>
+      <h4 class="section-title" id="listTitle"></h4>
       <div id="list"></div>
     </div>
 
     <div class="card" id="relayAddCard" hidden>
-      <h2>Ajouter un relais</h2>
+      <h4 class="section-title">Ajouter un relais</h4>
       <p class="add-help">Pour ajouter un relais, tu peux saisir directement son adresse ou bien en choisir un parmi les suggestions.</p>
       <div class="row add-row">
         <input id="newUrl" aria-label="Adresse du relais" inputmode="url" placeholder="relay.example.com" autocapitalize="off" autocomplete="off" spellcheck="false">
@@ -1003,14 +1010,33 @@ function initRelayAccordions() {
     if (!button || !container.contains(button)) return;
     const key = button.dataset.relayCategory;
     if (key === current && accordionOpen) {
-      accordionOpen = false;
-      updateRelayAccordions();
+      keepInView(button, () => {
+        accordionOpen = false;
+        updateRelayAccordions();
+      });
       return;
     }
-    current = key;
-    accordionOpen = true;
-    render();
+    keepInView(button, () => {
+      current = key;
+      accordionOpen = true;
+      render();
+    });
   });
+}
+
+// Un seul accordéon reste ouvert : en ouvrir un autre referme le précédent, ce qui
+// peut décaler fortement le contenu. L'en-tête cliqué est donc maintenu à la même
+// position à l'écran. L'ancrage natif du navigateur est suspendu le temps du
+// changement, pour éviter une double correction.
+function keepInView(anchor, change) {
+  const page = anchor.closest(".page");
+  if (!page) { change(); return; }
+  const before = anchor.getBoundingClientRect().top;
+  page.style.overflowAnchor = "none";
+  change();
+  const shift = anchor.getBoundingClientRect().top - before;
+  if (shift) page.scrollTop += shift;
+  requestAnimationFrame(() => { page.style.overflowAnchor = ""; });
 }
 
 function updateRelayAccordions() {
@@ -1024,10 +1050,11 @@ function updateRelayAccordions() {
     button.setAttribute("aria-expanded", String(expanded));
     const panel = $("relay-panel-" + key);
     if (expanded) {
-      const actions = panel.querySelector(".publish-actions");
-      panel.insertBefore(listCard, actions);
-      panel.append(addCard);
+      // Ordre du DOM = ordre visuel : liste, ajout, puis publication (le bouton clôt le panneau).
+      panel.append(listCard, addCard, panel.querySelector(".publish-actions"));
     }
+    // Modifications non publiées : le bouton reste fixé en bas de la zone visible tant que l'accordéon est à l'écran.
+    panel.classList.toggle("has-changes", expanded && LISTS[key].dirty);
     panel.hidden = !expanded;
   }
   listCard.hidden = !activeKey;
