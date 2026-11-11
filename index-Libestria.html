@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Libestria.fr — Nostr, SimpleX et liberté numérique</title>
 <meta name="description" content="Libestria : tutoriels et ressources francophones sur Nostr et SimpleX, relais et serveurs recommandés, communautés et identité NIP-05 personnalisée.">
 <meta name="theme-color" content="#000000">
@@ -188,6 +188,11 @@ main {
 .win-content::-webkit-scrollbar-track, .drawer::-webkit-scrollbar-track { background: #10101a; }
 .win-content::-webkit-scrollbar-thumb, .drawer::-webkit-scrollbar-thumb { background: #7854b4; border-radius: 4px; }
 .win-content::-webkit-scrollbar-thumb:hover, .drawer::-webkit-scrollbar-thumb:hover { background: #8b63d8; }
+
+/* Application externe de test : la fenêtre Libestria reste le conteneur. */
+.win-content.is-app-view { padding: 0; overflow: hidden; }
+.panel--app { height: 100%; min-height: 0; padding: 0; gap: 0; }
+.app-frame { display: block; width: 100%; height: 100%; flex: 1 1 auto; min-height: 0; border: 0; background: #000; }
 
 /* 5. Contenu des rubriques ----------------------------------------------- */
 .panel { display: flex; flex-direction: column; gap: 20px; width: 100%; padding: 34px clamp(22px, 3vw, 48px); }
@@ -520,6 +525,9 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
 <section class="window" aria-labelledby="win-title">
 <div class="win-bar"><span class="win-icon" id="win-icon" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-home"/></svg></span><h2 class="win-title" id="win-title" tabindex="-1">À propos de Libestria</h2></div>
 <div class="win-content" id="win-content" tabindex="0">
+<div class="panel panel--app" id="config-relais-test-integration" data-title="Gestion des relais Nostr" hidden>
+<iframe class="app-frame" src="/apps/config-relais-test-integration.html" title="Gestion des relais Nostr — application de test" loading="lazy"></iframe>
+</div>
 <div class="panel" id="accueil" data-title="À propos de Libestria"><div class="intro"><p>Libestria est un portail francophone consacré à Nostr et SimpleX, deux écosystèmes de communication décentralisés qui favorisent la liberté numérique, l’autonomie et le respect de la vie privée.</p><div class="proto-logos"><img src="IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"><img src="IMG/Logo_SimpleX.png" width="400" height="108" alt="Logo SimpleX" decoding="async" loading="lazy"></div><p>Son ambition est de réunir en un même espace des ressources, des services et des initiatives communautaires pour faciliter la découverte et l’utilisation de ces technologies.</p><p>Libestria propose une sélection de relais Nostr et de serveurs SimpleX publics francophones, ainsi que des groupes de discussion pour échanger, s’entraider et partager des expériences au sein de la communauté.</p><p>Le site met également en valeur des projets indépendants, des outils et des services développés ou maintenus par des membres de la communauté francophone, contribuant ainsi à leur visibilité et à leur découverte.</p><p>Des guides pratiques et des ressources dédiés à Nostr et SimpleX viendront progressivement enrichir le portail, afin d’accompagner les utilisateurs dans leur prise en main et leur utilisation au quotidien.</p><p>Libestria propose aussi un service d’identité NIP-05 personnalisée sous le domaine libestria.fr, permettant d’associer un profil Nostr à une adresse simple à reconnaître et à partager.</p><p>Indépendant, accessible et convivial, Libestria souhaite encourager le partage de connaissances, l’entraide et les initiatives francophones, tout en contribuant à un écosystème numérique plus libre, ouvert et décentralisé.</p></div></div>
 <div class="panel" id="nostr-cest-quoi" data-title="Nostr, c’est quoi ?" hidden><div class="intro"><div class="proto-logos"><img src="IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div><p>Nostr est un protocole ouvert et décentralisé qui permet de communiquer, publier et partager des contenus sur Internet, sans dépendre d’une plateforme comme Facebook, X ou Instagram.</p><p>Contrairement aux réseaux sociaux traditionnels, Nostr n’appartient à aucune entreprise. Il fonctionne grâce à des serveurs indépendants, appelés relais, qui transmettent les messages entre différentes applications.</p><p>Sa particularité ? Ton identité numérique t’appartient ! Grâce à un système de clés cryptographiques, tu peux changer d’application sans perdre ton identité ni tes contacts. Tu conserves ainsi davantage de liberté et de contrôle sur ton expérience.</p><p>Avec Nostr, tu peux publier des messages, partager des articles, des photos ou des vidéos, échanger avec d’autres utilisateurs et même soutenir des créateurs grâce à des micropaiements en bitcoin, appelés Zaps. Et pas besoin de posséder du bitcoin pour profiter du réseau !</p><p>Nostr propose ainsi une autre vision des réseaux sociaux : plus ouverte, plus libre et moins dépendante des grandes plateformes. Tu choisis tes applications, tes communautés et ta façon de communiquer.</p><p>Envie de découvrir Nostr et de faire tes premiers pas ? Libestria t’accompagne dans cette découverte avec des guides et des ressources pour comprendre le réseau, choisir tes applications et commencer à l’utiliser à ton rythme.</p></div></div>
 <div class="panel" id="nip05" data-title="NIP-05 @libestria.fr" hidden><div class="intro"><div class="proto-logos"><img src="IMG/Logo_Nostr.png" width="400" height="166" alt="Logo Nostr" decoding="async" loading="lazy"></div><p>Sur Nostr, ton identité repose sur une clé publique, appelée npub. Cette longue suite de caractères permet aux autres utilisateurs de retrouver ton profil, mais elle n’est pas toujours facile à mémoriser ou à partager.</p><p>Le NIP-05 permet d’associer cette clé publique à un identifiant plus simple, qui ressemble à une adresse e-mail. Cet identifiant facilite la reconnaissance de ton profil et permet aux applications Nostr compatibles de vérifier son association avec un nom de domaine.</p><p>Avec Libestria, tu peux obtenir ton propre identifiant NIP-05 personnalisé, au format <span class="nip05-example">pseudo@libestria.fr</span>.</p><p>Attention, un identifiant NIP-05 n’est pas une adresse e-mail : il ne permet pas d’envoyer ou de recevoir des courriels. Il ne remplace pas non plus ta clé publique Nostr, mais constitue un moyen plus pratique de présenter ton identité sur le réseau.</p><p>Comment obtenir ton identifiant ?</p><p>Il te suffit de contacter Libestria en précisant :</p><ul><li>Le pseudo que tu souhaites utiliser ;</li><li>Ta clé publique Nostr (npub ou hex).</li></ul><p>Ton pseudo doit contenir uniquement des lettres minuscules (a-z), des chiffres (0-9), des tirets (-), des traits de soulignement (_) et des points (.).</p><p><a class="btn btn-text" href="#contact"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg><span>Contacter Libestria</span></a></p></div></div>
@@ -691,9 +699,19 @@ a.guide-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3p
     const link = links.find(l => l.hash === '#' + panel.id);
     panels.forEach(p => { p.hidden = p !== panel; });
     links.forEach(l => (l === link ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current')));
-    const label = $('.drawer-label', link).textContent.trim();
+    const label = link ? $('.drawer-label', link).textContent.trim() : panel.dataset.title;
     winTitle.textContent = label;
-    winIcon.replaceChildren($('svg', link).cloneNode(true));
+    if (link) winIcon.replaceChildren($('svg', link).cloneNode(true));
+    else {
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('class', 'i');
+      icon.setAttribute('aria-hidden', 'true');
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#i-radio');
+      icon.append(use);
+      winIcon.replaceChildren(icon);
+    }
+    scroller.classList.toggle('is-app-view', panel.classList.contains('panel--app'));
     document.title = panel.id === 'accueil' ? baseTitle : `${label} — Libestria.fr`;
     scroller.scrollTop = 0;
     if (panel.id === 'ressources-nostr') setNostrTheme();
