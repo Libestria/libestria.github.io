@@ -256,6 +256,7 @@ button {
   transition: background .2s, border-color .2s, color .2s; -webkit-tap-highlight-color: transparent;
 }
 button:disabled { opacity: .5; cursor: default; }
+button:focus:not(:focus-visible), .icon-btn:focus:not(:focus-visible) { outline: none; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (hover: hover) { button:not(:disabled):hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); color: #fff; } }
 input {
@@ -396,6 +397,9 @@ button[data-publish-category] { background: #7C3AED; border-color: #7C3AED; colo
 @media (hover: hover) { button[data-publish-category]:not(:disabled):hover { background: #6D28D9; border-color: #6D28D9; color: #fff; } }
 button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outline-offset: 3px; }
 .app-dialog { position: fixed; inset: 0; margin: auto; width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; color: var(--text-2); background: #171320; border: 1px solid var(--btn-border); border-radius: var(--r-lg); box-shadow: 0 16px 50px #000b; }
+.app-dialog:focus { outline: none; } /* Le focus automatique ne modifie pas la bordure du dialogue ; les commandes gardent leur focus clavier via :focus-visible. */
+/* Safari peut appliquer :focus-visible au focus programmatique des boutons des dialogues. */
+body:not(.keyboard-navigation) .app-dialog button:focus-visible { outline: none; }
 .app-dialog::backdrop { background: rgb(0 0 0 / 72%); }
 .app-dialog p { margin: 0 0 14px; line-height: 1.5; }
 .app-dialog[data-tone="busy"] p { margin-bottom: 0; }
@@ -540,6 +544,14 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
 <script>
 (() => {
 'use strict';
+
+/* Le focus programmatique des dialogues ne doit pas simuler une navigation au clavier. */
+document.addEventListener('keydown', event => {
+  if (event.key === 'Tab') document.body.classList.add('keyboard-navigation');
+}, { capture: true });
+document.addEventListener('pointerdown', () => {
+  document.body.classList.remove('keyboard-navigation');
+}, { capture: true });
 
 /* 1. Configuration ------------------------------------------------------- */
 const BOOT_RELAYS = [
