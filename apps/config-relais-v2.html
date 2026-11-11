@@ -1314,7 +1314,15 @@ function commitRelay(list, url, mode = "rw") {
   void scanAllRelayNips([url]);
 }
 
-async function confirmRelayAddition(list, url, mode = "rw") {
+function openRelayModeSelection(list, url) {
+  pendingRelay = { list, url };
+  $("relayModeUrl").textContent = url;
+  selectRelayMode("rw");
+  $("relayModeDialog").showModal();
+  $("relayModeAdd").focus();
+}
+
+async function checkRelayBeforeAddition(list, url) {
   if (checkingRelayAddition) return;
   checkingRelayAddition = true;
   try {
@@ -1334,7 +1342,10 @@ async function confirmRelayAddition(list, url, mode = "rw") {
       });
       if (choice !== "add") return;
     }
-    commitRelay(list, url, mode);
+    // Le test est terminé avant toute sélection de droits ou confirmation d'ajout.
+    if (list.relays.some(relay => relay.url === url)) return;
+    if (list.rw) openRelayModeSelection(list, url);
+    else commitRelay(list, url);
   } finally {
     checkingRelayAddition = false;
   }
@@ -1351,16 +1362,7 @@ function addRelay(input) {
     void showMessage({ tone: "alert", title: "Relais déjà présent", text: "Ce relais est déjà présent dans cette liste.", actions: OK_ACTION });
     return;
   }
-  if (checkingRelayAddition) return;
-  if (!list.rw) {
-    void confirmRelayAddition(list, url);
-    return;
-  }
-  pendingRelay = { list, url };
-  $("relayModeUrl").textContent = url;
-  selectRelayMode("rw");
-  $("relayModeDialog").showModal();
-  $("relayModeAdd").focus();
+  void checkRelayBeforeAddition(list, url);
 }
 
 async function testRelay(url) {
@@ -1599,7 +1601,7 @@ $("relayModeAdd").addEventListener("click", () => {
   const { list, url } = pendingRelay;
   const mode = selectedRelayMode;
   $("relayModeDialog").close();
-  void confirmRelayAddition(list, url, mode);
+  commitRelay(list, url, mode);
 });
 $("relayModeDialog").addEventListener("close", () => { pendingRelay = null; });
 $("btnLogin").addEventListener("click", login);
