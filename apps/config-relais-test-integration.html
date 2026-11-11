@@ -291,6 +291,21 @@ button[data-publish-category]:focus-visible { outline: 2px solid #C4B5FD; outlin
   .loading-spinner { animation: none; border-top-color: var(--cyan); }
   .refresh-relays.is-measuring::after { animation: none; border-color: currentColor; border-right-color: transparent; }
 }
+
+/* Apparition des cartes : mêmes paramètres que la page principale Libestria. */
+@media (prefers-reduced-motion: no-preference) {
+  .card.reveal-ready {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity .85s cubic-bezier(.22, 1, .36, 1),
+                transform .85s cubic-bezier(.22, 1, .36, 1),
+                translate .25s ease, box-shadow .25s ease;
+  }
+  .card.reveal-ready.is-entering {
+    transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms, 0ms;
+  }
+  .card.reveal-ready.is-visible { opacity: 1; transform: none; }
+}
 </style>
 </head>
 <body>
@@ -1434,6 +1449,85 @@ $("publishYes").addEventListener("click", () => {
 window.addEventListener("beforeunload", e => {
   if (Object.values(LISTS).some(l => l.dirty)) e.preventDefault();
 });
+})();
+</script>
+
+<script>
+/* Apparition au défilement interne : réinitialisation après sortie complète. */
+(() => {
+  'use strict';
+  const page = document.querySelector('.page');
+  if (!page) return;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const cards = new Set();
+  let enterObserver;
+  let leaveObserver;
+
+  function reset(card, removeReady = false) {
+    card.classList.remove('is-entering', 'is-visible');
+    card.style.removeProperty('--reveal-delay');
+    if (removeReady) card.classList.remove('reveal-ready');
+  }
+
+  function setup() {
+    enterObserver?.disconnect();
+    leaveObserver?.disconnect();
+    for (const card of cards) reset(card, true);
+    cards.clear();
+    if (motion.matches || !('IntersectionObserver' in window)) return;
+
+    enterObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        const card = entry.target;
+        if (!entry.isIntersecting || card.classList.contains('is-visible')) continue;
+        const siblings = [...card.parentElement.children].filter(item =>
+          item.classList.contains('card') && item.offsetTop === card.offsetTop);
+        const position = Math.max(0, siblings.indexOf(card));
+        card.style.setProperty('--reveal-delay', `${position * 80}ms`);
+        card.classList.add('is-entering', 'is-visible');
+      }
+    }, { root: page, threshold: 0, rootMargin: '-136px 0px -64px 0px' });
+
+    leaveObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) reset(entry.target);
+      }
+    }, { root: page, threshold: 0 });
+    refresh();
+  }
+
+  function refresh() {
+    if (!enterObserver) return;
+    const current = new Set(page.querySelectorAll('.card'));
+    for (const card of cards) {
+      if (current.has(card) && card.getClientRects().length) continue;
+      enterObserver.unobserve(card);
+      leaveObserver.unobserve(card);
+      reset(card, true);
+      cards.delete(card);
+    }
+    for (const card of current) {
+      if (cards.has(card) || !card.getClientRects().length) continue;
+      card.classList.add('reveal-ready');
+      cards.add(card);
+      enterObserver.observe(card);
+      leaveObserver.observe(card);
+    }
+  }
+
+  let pending = false;
+  const mutations = new MutationObserver(() => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => { pending = false; refresh(); });
+  });
+  mutations.observe(page, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+  page.addEventListener('focusin', event => {
+    const card = event.target.closest('.card.reveal-ready');
+    if (card) { reset(card); card.classList.add('is-visible'); }
+  });
+  motion.addEventListener('change', setup);
+  setup();
 })();
 </script>
 </body>
