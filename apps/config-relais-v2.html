@@ -1566,7 +1566,10 @@ async function publish(key) {
       kind: list.kind, created_at: Math.floor(Date.now() / 1000),
       tags: tagsFromList(list), content: ""
     });
-    if (!event?.id || !event.sig || event.kind !== list.kind || (event.pubkey && event.pubkey.toLowerCase() !== pubkey)) {
+    // Certains signers retournent une réponse vide ou non signée après un refus,
+    // sans lever d'erreur NIP-07 explicite. Ne pas l'assimiler à un autre compte.
+    if (!event?.sig) throw new Error("NIP07_SIGNATURE_MISSING");
+    if (!event.id || event.kind !== list.kind || (event.pubkey && event.pubkey.toLowerCase() !== pubkey)) {
       throw new Error("Le signer a renvoyé un événement invalide ou signé par un autre compte.");
     }
     awaitingSignature = false;
@@ -1605,14 +1608,17 @@ async function publish(key) {
     const signerUnavailable = awaitingSignature && (
       error?.message === "NIP07_SIGN_TIMEOUT" || error?.message === "NIP07_SIGNER_UNAVAILABLE"
     );
+    const signatureMissing = awaitingSignature && error?.message === "NIP07_SIGNATURE_MISSING";
     await showMessage({
       tone: "alert",
-      title: signatureDenied ? "Signature refusée" : signerUnavailable ? "Signer indisponible" : "Publication impossible",
+      title: signatureDenied ? "Signature refusée" : signerUnavailable ? "Signer indisponible" : signatureMissing ? "Signature non obtenue" : "Publication impossible",
       text: signatureDenied
         ? "Tu as refusé de signer cette liste. Aucune publication n’a été effectuée."
         : signerUnavailable
           ? "Impossible d’obtenir la signature de ton signer Nostr. Il peut être déconnecté, verrouillé, désactivé ou ne pas répondre. Vérifie qu’il est actif et connecté, puis réessaie."
-          : (error?.message || "Signature impossible ou publication impossible."),
+          : signatureMissing
+            ? "Le signer n’a renvoyé aucune signature. La demande a peut-être été refusée ou interrompue. Aucune publication n’a été effectuée. Tu peux vérifier ton signer, puis réessayer."
+            : (error?.message || "Signature impossible ou publication impossible."),
       actions: OK_ACTION
     });
   } finally {
