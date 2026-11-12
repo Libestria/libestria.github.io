@@ -1232,10 +1232,14 @@ function settleMessage(value) {
 }
 
 // Affiche (ou met à jour) la popup. La promesse renvoie l'id du bouton choisi, ou null si elle est fermée autrement.
-function showMessage({ tone = "alert", title, text = "", details = [], actions = [], modal = true }) {
+function showMessage({ tone = "alert", title, text = "", details = [], actions = [], modal = tone !== "busy" }) {
   settleMessage(null);
   messageDialog.dataset.tone = tone;
   messageDialog.classList.toggle("nonmodal", !modal);
+  // Attente sans action possible dans le signer : la page est verrouillée pendant l’opération.
+  const lockPage = tone === "busy" && !actions.length;
+  $("login").inert = lockPage;
+  $("app").inert = lockPage;
   messageDialog.setAttribute("role", tone === "alert" ? "alertdialog" : "dialog");
 
   const icon = $("messageIcon");
@@ -1296,7 +1300,9 @@ function hideMessage() {
 messageDialog.addEventListener("cancel", event => {
   if (messageDialog.dataset.tone === "busy") event.preventDefault();
 });
-messageDialog.addEventListener("close", () => { if (!messageDialog.open) settleMessage(null); });
+messageDialog.addEventListener("close", () => {
+  if (!messageDialog.open) { settleMessage(null); $("login").inert = false; $("app").inert = false; }
+});
 
 /* 8. Actions sur les relais ------------------------------------------- */
 let pendingRelay = null;
@@ -1612,14 +1618,13 @@ async function publishOnce(key, signedEvent = null) {
   publishing = true;
   const buttons = [...document.querySelectorAll("[data-publish-category]")];
   buttons.forEach(button => { button.disabled = true; });
-  const title = `Publication : ${list.title}`;
   let progressStartedAt = performance.now();
   let awaitingSignature = !signedEvent;
   try {
     let event = signedEvent;
     if (!event) {
       // Statut non modal : la pop-up du signer reste visible et cliquable.
-      const wait = showMessage({ tone: "busy", modal: false, title, text: "Signature de la liste en cours…", actions: [{ id: "cancel", label: "Annuler" }] });
+      const wait = showMessage({ tone: "busy", modal: false, title: "Signature de la liste en cours…", text: "Autorise la signature dans ton signer si nécessaire.", actions: [{ id: "cancel", label: "Annuler" }] });
       const cancelled = wait.then(choice => choice === "cancel" ? Promise.reject(new Error("USER_CANCELLED")) : new Promise(() => {}));
       cancelled.catch(() => {});
       const unsigned = { kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" };
@@ -1636,7 +1641,7 @@ async function publishOnce(key, signedEvent = null) {
     awaitingSignature = false;
     await waitForMinimumDisplay(progressStartedAt);
     progressStartedAt = performance.now();
-    showMessage({ tone: "busy", title, text: "Publication de la liste en cours…" });
+    showMessage({ tone: "busy", title: "Publication de la liste en cours…", text: `${list.title} : envoi aux relais en cours.` });
     const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
     // Relais de l’utilisateur + relais de diffusion (relais de démarrage de l’outil, toujours sollicités).
     const own = [...new Set([...(list.rw ? writeRelays(list.relays) : []), ...writeRelays(LISTS.pub.relays)])];
@@ -1689,7 +1694,7 @@ async function publishOnce(key, signedEvent = null) {
         return null;
       } else if (isRefusal(error)) {
         alertTitle = "Signature refusée";
-        alertText = "Tu as refusé de signer cette liste. Aucune publication n’a été effectuée.";
+        alertText = "Aucune publication n’a été effectuée. Relance la publication et autorise la signature dans ton signer.";
       } else if (msg === "NIP07_SIGN_TIMEOUT" || msg === "NIP07_SIGNER_UNAVAILABLE") {
         alertTitle = "Signer indisponible";
         alertText = "Impossible d’obtenir la signature de ton signer Nostr. Il peut être déconnecté, verrouillé, désactivé ou ne pas répondre. Aucune publication n’a été effectuée. Vérifie qu’il est actif et connecté, puis réessaie.";
@@ -1722,10 +1727,13 @@ async function logout() {
   for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false; }
   Object.keys(latencies).forEach(url => delete latencies[url]);
   nipResults.clear(); nipScanVersions.clear();
-  showProfile();
+  // showProfile() est évité ici : il encode la clé publique, désormais vide.
+  $("profileName").textContent = "";
+  $("profileKey").textContent = "";
   $("app").hidden = true;
   $("relayAccordions").hidden = true;
   $("login").hidden = false;
+  window.scrollTo(0, 0);
   render();
 }
 
