@@ -124,6 +124,7 @@ h2, .section-title { font-size: 1.15rem; font-weight: 600; color: #fff; margin: 
 }
 .row { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .hint { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
+#listHint, #messageText, #publishConfirmText, .app-dialog .res { white-space: pre-line; } /* respecte les retours à la ligne (\n) des indications */
 #relayAddCard .add-help { margin: 0 0 16px; color: var(--muted); font-size: .95rem; line-height: 1.5; }
 .empty { color: var(--bad-text); padding: 8px 0; margin: 0; }
 
@@ -504,7 +505,7 @@ body:not(.keyboard-navigation) .app-dialog button:focus-visible { outline: none;
 
   <div id="app" hidden>
     <div class="card" role="region" aria-labelledby="accountTitle">
-      <h3 class="login-title section-title" id="accountTitle"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Compte connecté à l’application</span></h3>
+      <h3 class="login-title section-title" id="accountTitle"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-account"/></svg><span>Compte connecté à l’app</span></h3>
       <div class="profile">
         <div class="avatar" id="avatar" aria-hidden="true"></div>
         <div>
@@ -589,10 +590,10 @@ const LOGIN_TIMEOUT_MS = 30000;
 const SIGN_TIMEOUT_MS = 30000;
 const MIN_PROGRESS_DISPLAY_MS = 2000;
 const LOGIN_ERRORS = Object.freeze({
-  missing: "Aucun signer NIP-07 détecté. Installe ou active une extension compatible, puis recommence.",
-  denied: "Connexion refusée. Autorise l’accès à ta clé publique dans ton signer, puis réessaie.",
-  technical: "Impossible de communiquer avec ton signer. Vérifie qu’il fonctionne, puis réessaie.",
-  timeout: "Ton signer ne répond pas. Vérifie ton extension, puis réessaie."
+  missing: "Aucun signer NIP-07 détecté.\nInstalle ou active une extension compatible, puis recommence.",
+  denied: "Connexion refusée.\nAutorise l’accès à ta clé publique dans ton signer, puis réessaie.",
+  technical: "Impossible de communiquer avec ton signer.\nVérifie qu’il fonctionne, puis réessaie.",
+  timeout: "Ton signer ne répond pas.\nVérifie ton extension, puis réessaie."
 });
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -601,7 +602,7 @@ const LISTS = {
   pub: {
     kind: 10002, rw: true, tag: "r",
     tab: "Configuration des relais de lecture (R) et d’écriture (W)", title: "Liste des relais de lecture et d’écriture",
-    hint: "Ces relais te permettent de récupérer les événements Nostr en lecture (R) et de publier tes événements en écriture (W). Chaque relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).",
+    hint: "Ces relais te permettent de récupérer les événements Nostr en lecture (R) et de publier tes événements en écriture (W).\nChaque relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).",
     suggestions: ["wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://nostr.mom", "wss://nostr.bitcoiner.social", "wss://purplepag.es", "wss://relay.nos.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
     longform: ["wss://relay.primal.net", "wss://relay.damus.io", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
@@ -637,10 +638,10 @@ const NIP_PROBES = [
   { nip: 23, kind: 30023 }, { nip: 59, kind: 1059 }, { nip: 65, kind: 10002 }
 ];
 const NIP_INFO = {
-  17: { name: "Messages privés", desc: "Permet de recevoir des messages privés chiffrés. Pour que d’autres puissent t’écrire, un relais de ce type doit figurer dans ta liste de messagerie privée." },
+  17: { name: "Messages privés", desc: "Permet de recevoir des messages privés chiffrés.\nPour que d’autres puissent t’écrire, un relais de ce type doit figurer dans ta liste de messagerie privée." },
   23: { name: "Articles longs", desc: "Permet de publier et de lire des articles longs (blogs, tutoriels) en plus des messages courts." },
   50: { name: "Recherche", desc: "Permet de rechercher des messages et des profils par mots-clés directement sur le relais." },
-  59: { name: "Enveloppes de messages", desc: "Technique qui cache l’expéditeur et le contenu d’un message privé dans une enveloppe. Elle est utilisée par les messages privés (NIP-17)." },
+  59: { name: "Enveloppes de messages", desc: "Technique qui cache l’expéditeur et le contenu d’un message privé dans une enveloppe.\nElle est utilisée par les messages privés (NIP-17)." },
   65: { name: "Listes de relais", desc: "Permet à ton compte de publier la liste des relais qu’il utilise, pour que les autres sachent où te lire et où t’écrire." }
 };
 const NIP_STATE_LABELS = { observed: "Détecté", announced: "Annoncé", none: "Indéterminé", loading: "Vérification en cours" };
@@ -648,15 +649,15 @@ const NIP_HAS_PROBE = new Set(NIP_PROBES.map(probe => probe.nip));
 
 function nipStatusText(nip, state) {
   if (state === "loading") return "Vérification en cours…";
-  if (state === "observed") return "Des événements associés ont été observés sur ce relais. La compatibilité complète n’est toutefois pas garantie.";
+  if (state === "observed") return "Des événements associés ont été observés sur ce relais.\nLa compatibilité complète n’est toutefois pas garantie.";
   if (!NIP_HAS_PROBE.has(nip)) {
     return state === "announced"
-      ? "Annoncé par le relais. Aucun test d’observation n’existe pour ce NIP : son bon fonctionnement n’est pas vérifié."
-      : "Le relais ne l’annonce pas. Aucun test d’observation n’existe pour ce NIP : son état reste indéterminé.";
+      ? "Annoncé par le relais.\nAucun test d’observation n’existe pour ce NIP : son bon fonctionnement n’est pas vérifié."
+      : "Le relais ne l’annonce pas.\nAucun test d’observation n’existe pour ce NIP : son état reste indéterminé.";
   }
   return state === "announced"
     ? "Annoncé par le relais, mais non confirmé par l’observation d’événements présents sur ce relais."
-    : "Le relais ne l’annonce pas et l’observation de ses événements n’a pas permis de le confirmer. Cela ne prouve pas qu’il ne le prend pas en charge.";
+    : "Le relais ne l’annonce pas et l’observation de ses événements n’a pas permis de le confirmer.\nCela ne prouve pas qu’il ne le prend pas en charge.";
 }
 
 function showNipInfo(nip, state) {
@@ -1395,7 +1396,7 @@ async function checkRelayBeforeAddition(list, url) {
       const choice = await showMessage({
         tone: "alert",
         title: "Connexion au relais impossible",
-        text: "Impossible d’établir une connexion avec ce relais. Il peut être inexistant, temporairement hors ligne, payant ou nécessiter une autorisation d’accès. Vérifie son adresse et réessaie ultérieurement.",
+        text: "Impossible d’établir une connexion avec ce relais. Il peut être inexistant, temporairement hors ligne, payant ou nécessiter une autorisation d’accès.\nVérifie son adresse et réessaie ultérieurement.",
         actions: [
           { id: "cancel", label: "Annuler", defaultFocus: true },
           { id: "add", label: "Ajouter quand même", primary: true }
@@ -1416,7 +1417,7 @@ async function offerSecureRelay(url) {
   const secure = "wss://" + url.slice(5);
   const choice = await showMessage({
     tone: "alert", title: "Relais non sécurisé (ws://)",
-    text: `Ton navigateur interdit les connexions ws:// depuis cette page HTTPS : ce relais ne pourrait jamais être utilisé ici. Essaie l’adresse sécurisée ${secure}.`,
+    text: `Ton navigateur interdit les connexions ws:// depuis cette page HTTPS : ce relais ne pourrait jamais être utilisé ici.\nEssaie l’adresse sécurisée ${secure}.`,
     actions: [{ id: "cancel", label: "Annuler", defaultFocus: true }, { id: "wss", label: "Essayer en wss://", primary: true }]
   });
   if (choice === "wss") addRelay(secure);
@@ -1556,7 +1557,7 @@ async function loadAccountWithRetry() {
       const choice = await showMessage({
         tone: "alert",
         title: "Chargement impossible",
-        text: "Impossible de charger ton profil Nostr et tes listes publiques de relais. Vérifie ta connexion, puis réessaie.",
+        text: "Impossible de charger ton profil Nostr et tes listes publiques de relais.\nVérifie ta connexion, puis réessaie.",
         actions: [{ id: "close", label: "Fermer" }, { id: "retry", label: "Réessayer", primary: true }]
       });
       if (choice !== "retry") return false;
@@ -1624,7 +1625,7 @@ function requestPublish(key) {
   pendingPublishKey = key;
   const unreachable = LISTS[key].relays.filter(r => latencies[r.url]?.err).map(r => r.url);
   let confirmText = `Souhaites-tu vraiment publier : ${LISTS[key].title} ?`;
-  if (!LISTS[key].dirty) confirmText = `${LISTS[key].title} : cette liste n’a pas été modifiée depuis son chargement ou sa dernière publication. La republier quand même ?`;
+  if (!LISTS[key].dirty) confirmText = `${LISTS[key].title} : cette liste n’a pas été modifiée depuis son chargement ou sa dernière publication.\nLa republier quand même ?`;
   if (unreachable.length) confirmText += ` ⚠️ ${unreachable.length} relais de cette liste semble(nt) injoignable(s) : ${unreachable.join(", ")}.`;
   $("publishConfirmText").textContent = confirmText;
   $("publishConfirm").showModal();
@@ -1660,7 +1661,7 @@ async function publishOnce(key, signedEvent = null) {
   dbg("publishOnce", { key, retry: !!signedEvent, publishing });
   if (!list || publishing || !list.relays.length) return null;
   if (!signedEvent && navigator.onLine === false) {
-    await showMessage({ tone: "alert", title: "Connexion internet indisponible", text: "Ton appareil semble hors ligne. Rétablis ta connexion, puis réessaie : rien n’a été signé ni publié.", actions: OK_ACTION });
+    await showMessage({ tone: "alert", title: "Connexion internet indisponible", text: "Ton appareil semble hors ligne.\nRétablis ta connexion, puis réessaie : rien n’a été signé ni publié.", actions: OK_ACTION });
     return null;
   }
   publishing = true;
@@ -1683,7 +1684,7 @@ async function publishOnce(key, signedEvent = null) {
         throw new Error("Le signer a renvoyé un événement invalide ou signé par un autre compte.");
       }
       if (JSON.stringify(event.tags) !== JSON.stringify(unsigned.tags) || (event.content ?? "") !== "") {
-        throw new Error("Le signer a modifié le contenu de l’événement. Publication annulée par sécurité.");
+        throw new Error("Le signer a modifié le contenu de l’événement.\nPublication annulée par sécurité.");
       }
     }
     awaitingSignature = false;
@@ -1707,7 +1708,7 @@ async function publishOnce(key, signedEvent = null) {
     if (!accepted) {
       const choice = await showMessage({
         tone: "alert", title: "Publication impossible",
-        text: "Aucun relais n’a confirmé la publication. Réessaie l’envoi sans re-signer, ou vérifie tes relais d’écriture (W).",
+        text: "Aucun relais n’a confirmé la publication.\nRéessaie l’envoi sans re-signer, ou vérifie tes relais d’écriture (W).",
         details, actions: [{ id: "close", label: "Fermer" }, { id: "retry", label: "Réessayer l’envoi", primary: true }]
       });
       return choice === "retry" ? event : null;
@@ -1720,7 +1721,7 @@ async function publishOnce(key, signedEvent = null) {
       title: ownWarning ? "Publication partielle" : "Liste publiée",
       text: `Ta liste a été publiée sur ${accepted} relais parmi les ${results.length} sollicités` +
         (ownResults.length ? ` : ${ownOk} de tes ${ownResults.length} relais d’écriture et ${broadcastOk} des ${broadcastResults.length} relais de diffusion.` : ".") +
-        " Les relais de diffusion (relais de démarrage de l’outil) reçoivent toujours ta liste pour faciliter sa propagation, même s’ils ne figurent pas dans tes listes." +
+        "\nLes relais de diffusion (relais de démarrage de l’outil) reçoivent toujours ta liste pour faciliter sa propagation, même s’ils ne figurent pas dans tes listes." +
         (ownWarning ? " Attention : aucun de tes relais d’écriture n’a confirmé la publication." : ""),
       details, actions: OK_ACTION
     });
@@ -1735,23 +1736,23 @@ async function publishOnce(key, signedEvent = null) {
       if (/context invalidated/i.test(msg)) {
         const choice = await showMessage({
           tone: "alert", title: "Extension indisponible",
-          text: "Ton extension de signature a changé ou a été rechargée depuis ta connexion. Recharge la page et reconnecte-toi. Les modifications non publiées seront perdues.",
+          text: "Ton extension de signature a changé ou a été rechargée depuis ta connexion.\nRecharge la page et reconnecte-toi.\nLes modifications non publiées seront perdues.",
           actions: [{ id: "close", label: "Fermer" }, { id: "reload", label: "Recharger la page", primary: true }]
         });
         if (choice === "reload") { Object.values(LISTS).forEach(l => { l.dirty = false; }); location.reload(); }
         return null;
       } else if (isRefusal(error)) {
         alertTitle = "Signature refusée";
-        alertText = "Aucune publication n’a été effectuée. Relance la publication et autorise la signature dans ton signer.";
+        alertText = "Aucune publication n’a été effectuée.\nRelance la publication et autorise la signature dans ton signer.";
       } else if (msg === "NIP07_SIGN_TIMEOUT" || msg === "NIP07_SIGNER_UNAVAILABLE") {
         alertTitle = "Signer indisponible";
-        alertText = "Impossible d’obtenir la signature de ton signer Nostr. Il peut être déconnecté, verrouillé, désactivé ou ne pas répondre. Aucune publication n’a été effectuée. Vérifie qu’il est actif et connecté, puis réessaie.";
+        alertText = "Impossible d’obtenir la signature de ton signer Nostr. Il peut être déconnecté, verrouillé, désactivé ou ne pas répondre.\nAucune publication n’a été effectuée. Vérifie qu’il est actif et connecté, puis réessaie.";
       } else if (msg === "NIP07_SIGNATURE_MISSING") {
         alertTitle = "Signature non obtenue";
-        alertText = "Le signer n’a renvoyé aucune signature. La demande a peut-être été refusée ou interrompue. Aucune publication n’a été effectuée. Vérifie ton signer, puis réessaie.";
+        alertText = "Le signer n’a renvoyé aucune signature. La demande a peut-être été refusée ou interrompue.\nAucune publication n’a été effectuée.\nVérifie ton signer, puis réessaie.";
       } else if (/lock|verrouill/i.test(msg)) {
         alertTitle = "Signer verrouillé";
-        alertText = "Ton signer est verrouillé. Déverrouille-le, puis réessaie. Aucune publication n’a été effectuée.";
+        alertText = "Ton signer est verrouillé.\nDéverrouille-le, puis réessaie.\nAucune publication n’a été effectuée.";
       }
     }
     await showMessage({ tone: "alert", title: alertTitle, text: alertText, actions: OK_ACTION });
