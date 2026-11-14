@@ -283,6 +283,11 @@ input::placeholder { color: var(--muted); }
 .profile-nip05 .verified-mark { font-weight: 700; margin-left: 5px; }
 .profile-key { font: .85rem var(--mono); color: var(--cyan); letter-spacing: .025em; word-break: break-all; }
 
+/* Avertissement : liste existante introuvable. */
+.list-warning { margin: 14px 0 0; padding: 10px 12px; border-left: 3px solid var(--warn); border-radius: 0 var(--r-lg) var(--r-lg) 0; background: rgb(245 158 11 / 10%); color: #fcd34d; font-size: .9rem; line-height: 1.5; white-space: pre-line; }
+.list-warning[hidden] { display: none; }
+#relayListCard .list-warning { margin: 0 0 12px; }
+
 /* Résumé des relais et erreur de chargement. */
 #relaySummary { margin-top: 16px; }
 .relay-summary { color: var(--muted); font-size: .95rem; line-height: 1.6; }
@@ -524,10 +529,12 @@ body:not(.keyboard-navigation) .app-dialog button:focus-visible { outline: none;
           <p>• <strong><span id="searchRelayCount">0</span> relais de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
           <p>• <strong><span id="dmRelayCount">0</span> relais de messagerie privée (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
         </div>
+        <div class="list-warning" id="summaryWarning" role="status" hidden></div>
     </div>
     <div class="relay-accordions" id="relayAccordions" role="group" aria-label="Catégories de relais" hidden></div>
 
     <div id="relayListCard" hidden>
+      <div class="list-warning" id="listWarning" role="alert" hidden></div>
       <p class="hint" id="listHint"></p>
       <h4 class="section-title" id="listTitle"></h4>
       <div id="list"></div>
@@ -621,7 +628,7 @@ const LISTS = {
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://relay.decentralia.fr", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io"],
   },
 };
-for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false; }
+for (const list of Object.values(LISTS)) { list.relays = []; list.dirty = false; list.found = false; list.lookup = { responded: 0, total: 0 }; list.extraTags = []; list.content = ""; }
 
 /* 2. État et références DOM ------------------------------------------- */
 let pubkey = null;
@@ -966,18 +973,28 @@ function relaysFromEvent(event, list) {
     if (!url) continue;
     const read = tag[2] !== "write", write = tag[2] !== "read";
     const known = relays.find(r => r.url === url);
-    if (known) { known.read = known.read || read; known.write = known.write || write; } // même relais déclaré deux fois (NIP-65)
-    else relays.push({ url, read, write });
+    if (known) { known.read = known.read || read; known.write = known.write || write; known.rawTag = null; } // même relais déclaré deux fois (NIP-65) : fusion, le tag est reconstruit
+    else relays.push({ url, read, write, rawTag: [...tag], rawUrl: tag[1] }); // tag d'origine conservé tel quel tant que le mode n'est pas modifié
   }
   return relays;
 }
 
+// Tags de l'événement d'origine que l'application ne gère pas : ils sont recopiés à la publication.
+function extraTagsFromEvent(event, list) {
+  return (Array.isArray(event.tags) ? event.tags : [])
+    .filter(tag => Array.isArray(tag) && tag[0] !== list.tag)
+    .map(tag => [...tag]);
+}
+
 function tagsFromList(list) {
-  return list.relays.map(r => {
-    if (!list.rw) return ["relay", r.url];
-    if (r.read && r.write) return ["r", r.url];
-    return ["r", r.url, r.read ? "read" : "write"];
+  const relayTags = list.relays.map(r => {
+    if (r.rawTag) return [...r.rawTag];
+    const address = r.rawUrl || r.url; // adresse d'origine conservée (ex. paramètre ?token=) même si le mode change
+    if (!list.rw) return ["relay", address];
+    if (r.read && r.write) return ["r", address];
+    return ["r", address, r.read ? "read" : "write"];
   });
+  return [...relayTags, ...list.extraTags.map(tag => [...tag])];
 }
 
 /* 6. Affichage et composants ------------------------------------------ */
@@ -1046,6 +1063,7 @@ function relayRow(list, relay) {
       const index = list.relays.indexOf(relay);
       relay.read = btn.dataset.mode.includes("r");
       relay.write = btn.dataset.mode.includes("w");
+      relay.rawTag = null; // choix volontaire : le tag est réécrit
       list.dirty = true;
       render();
       $("list").children[index]?.querySelector(`[data-mode="${btn.dataset.mode}"]`)?.focus(); // conserve le focus clavier
@@ -1187,6 +1205,11 @@ function renderSuggestions(list) {
   }
 }
 
+// Évite de réécrire un texte identique : un lecteur d'écran ne ré-annonce pas une alerte inchangée.
+function setTextIfChanged(element, text) {
+  if (element.textContent !== text) element.textContent = text;
+}
+
 function render() {
   const nip65Relays = LISTS.pub.relays;
   $("nip65ReadCount").textContent = nip65Relays.filter(relay => relay.read).length;
@@ -1195,6 +1218,15 @@ function render() {
   $("dmRelayCount").textContent = LISTS.dm.relays.length;
   const list = currentList();
   updateRelayAccordions();
+  // Résumé : seule la liste de lecture et d'écriture (10002) est signalée ; l'absence d'une liste de recherche ou de messagerie est courante.
+  const summaryWarning = $("summaryWarning");
+  summaryWarning.hidden = LISTS.pub.found;
+  setTextIfChanged(summaryWarning, LISTS.pub.found ? "" :
+    "⚠️ Aucune liste de relais de lecture et d’écriture existante n’a été trouvée.\nSi tu en possèdes une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.");
+  const listWarning = $("listWarning");
+  listWarning.hidden = list.found;
+  setTextIfChanged(listWarning, list.found ? "" :
+    `⚠️ Aucune liste existante n’a été trouvée (${list.lookup.responded} relais sur ${list.lookup.total} ont répondu).\nSi tu en as déjà une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.`);
   $("listTitle").textContent = list.title;
   $("listHint").textContent = list.hint;
 
@@ -1579,22 +1611,33 @@ async function fetchFromRelays(urls, kinds, concurrency = FETCH_CONCURRENCY) {
   };
   await Promise.all(Array.from({ length: Math.min(concurrency, urls.length) }, worker));
   if (!successfulResponses) throw new Error("RELAY_LOAD_FAILED");
-  return events;
+  return { events, responded: successfulResponses, total: urls.length };
 }
 
 async function loadAccount() {
   // Découverte NIP-65 depuis les relais initiaux.
   // Une seule requête (profil + listes) par relais initial, puis seulement les relais NIP-65 non encore interrogés.
   const kinds = [PROFILE_KIND, ...Object.values(LISTS).map(l => l.kind)];
-  const events = await fetchFromRelays(BOOT_RELAYS, kinds, BOOT_FETCH_CONCURRENCY);
+  const boot = await fetchFromRelays(BOOT_RELAYS, kinds, BOOT_FETCH_CONCURRENCY);
+  const events = [...boot.events];
+  let responded = boot.responded, total = boot.total;
   const nip65 = latestEvent(events, LISTS.pub.kind);
   const extra = (nip65 ? relaysFromEvent(nip65, LISTS.pub) : []).map(r => r.url).filter(url => !BOOT_RELAYS.includes(url));
-  if (extra.length) events.push(...await fetchFromRelays(extra, kinds).catch(() => []));
+  if (extra.length) {
+    const more = await fetchFromRelays(extra, kinds).catch(() => null);
+    total += extra.length;
+    if (more) { events.push(...more.events); responded += more.responded; }
+  }
 
   showProfile(profileFromEvents(events));
   for (const list of Object.values(LISTS)) {
     const latest = latestEvent(events, list.kind);
     list.relays = latest ? relaysFromEvent(latest, list) : [];
+    list.extraTags = latest ? extraTagsFromEvent(latest, list) : [];
+    list.content = latest && typeof latest.content === "string" ? latest.content : "";
+    // found = un événement existant a été lu ; sinon « introuvable » (≠ « n'existe pas » : les relais interrogés ont pu l'ignorer).
+    list.found = Boolean(latest);
+    list.lookup = { responded, total };
   }
   render();
   void testAll();
@@ -1625,7 +1668,8 @@ function requestPublish(key) {
   pendingPublishKey = key;
   const unreachable = LISTS[key].relays.filter(r => latencies[r.url]?.err).map(r => r.url);
   let confirmText = `Souhaites-tu vraiment publier : ${LISTS[key].title} ?`;
-  if (!LISTS[key].dirty) confirmText = `${LISTS[key].title} : cette liste n’a pas été modifiée depuis son chargement ou sa dernière publication.\nLa republier quand même ?`;
+  if (!LISTS[key].found) confirmText = `⚠️ Aucune liste existante n’a été trouvée pour : ${LISTS[key].title} (${LISTS[key].lookup.responded} relais sur ${LISTS[key].lookup.total} ont répondu).\nSi tu en as déjà une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.\nPublier quand même ?`;
+  else if (!LISTS[key].dirty) confirmText = `${LISTS[key].title} : cette liste n’a pas été modifiée depuis son chargement ou sa dernière publication.\nLa republier quand même ?`;
   if (unreachable.length) confirmText += ` ⚠️ ${unreachable.length} relais de cette liste semble(nt) injoignable(s) : ${unreachable.join(", ")}.`;
   $("publishConfirmText").textContent = confirmText;
   $("publishConfirm").showModal();
@@ -1676,14 +1720,14 @@ async function publishOnce(key, signedEvent = null) {
       const wait = showMessage({ tone: "busy", modal: false, title: "Signature de la liste en cours…", text: "Autorise la signature dans ton signer si nécessaire.", actions: [{ id: "cancel", label: "Annuler" }] });
       const cancelled = wait.then(choice => choice === "cancel" ? Promise.reject(new Error("USER_CANCELLED")) : new Promise(() => {}));
       cancelled.catch(() => {});
-      const unsigned = { kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: "" };
+      const unsigned = { kind: list.kind, created_at: Math.floor(Date.now() / 1000), tags: tagsFromList(list), content: list.content };
       event = await signEventWithTimeout(window.nostr, unsigned, cancelled);
       // Certains signers retournent une réponse vide ou non signée après un refus.
       if (!event?.sig) throw new Error("NIP07_SIGNATURE_MISSING");
       if (!event.id || event.kind !== list.kind || (event.pubkey && event.pubkey.toLowerCase() !== pubkey)) {
         throw new Error("Le signer a renvoyé un événement invalide ou signé par un autre compte.");
       }
-      if (JSON.stringify(event.tags) !== JSON.stringify(unsigned.tags) || (event.content ?? "") !== "") {
+      if (JSON.stringify(event.tags) !== JSON.stringify(unsigned.tags) || (event.content ?? "") !== unsigned.content) {
         throw new Error("Le signer a modifié le contenu de l’événement.\nPublication annulée par sécurité.");
       }
     }
@@ -1714,6 +1758,7 @@ async function publishOnce(key, signedEvent = null) {
       return choice === "retry" ? event : null;
     }
     list.dirty = false;
+    list.found = true;
     render();
     const ownWarning = ownResults.length > 0 && ownOk === 0;
     await showMessage({
