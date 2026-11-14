@@ -1222,11 +1222,11 @@ function render() {
   const summaryWarning = $("summaryWarning");
   summaryWarning.hidden = LISTS.pub.found;
   setTextIfChanged(summaryWarning, LISTS.pub.found ? "" :
-    "⚠️ Aucune liste de relais de lecture et d’écriture existante n’a été retrouvée.\nSi tu en possèdes une, elle n’a peut-être pas pu être lue : la publier la remplacerait.");
+    "⚠️ Aucune liste de relais de lecture et d’écriture existante n’a été trouvée.\nSi tu en possèdes une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.");
   const listWarning = $("listWarning");
   listWarning.hidden = list.found;
   setTextIfChanged(listWarning, list.found ? "" :
-    `⚠️ Aucune liste existante retrouvée (${list.lookup.responded} relais sur ${list.lookup.total} ont répondu).\nSi tu en as déjà une, elle n’a peut-être pas pu être lue : la publier la remplacerait.`);
+    `⚠️ Aucune liste existante n’a été trouvée (${list.lookup.responded} relais sur ${list.lookup.total} ont répondu).\nSi tu en as déjà une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.`);
   $("listTitle").textContent = list.title;
   $("listHint").textContent = list.hint;
 
@@ -1668,7 +1668,7 @@ function requestPublish(key) {
   pendingPublishKey = key;
   const unreachable = LISTS[key].relays.filter(r => latencies[r.url]?.err).map(r => r.url);
   let confirmText = `Souhaites-tu vraiment publier : ${LISTS[key].title} ?`;
-  if (!LISTS[key].found) confirmText = `⚠️ Aucune liste existante n’a été retrouvée pour : ${LISTS[key].title} (${LISTS[key].lookup.responded} relais sur ${LISTS[key].lookup.total} ont répondu).\nPublier créera une nouvelle liste et pourra remplacer celle que tu possèdes peut-être ailleurs.\nSi tu débutes sur Nostr, tu peux continuer sans risque. Publier quand même ?`;
+  if (!LISTS[key].found) confirmText = `⚠️ Aucune liste existante n’a été trouvée pour : ${LISTS[key].title} (${LISTS[key].lookup.responded} relais sur ${LISTS[key].lookup.total} ont répondu).\nSi tu en as déjà une, elle n’a peut-être pas pu être lue : publier une nouvelle liste remplacerait ta liste existante.\nPublier quand même ?`;
   else if (!LISTS[key].dirty) confirmText = `${LISTS[key].title} : cette liste n’a pas été modifiée depuis son chargement ou sa dernière publication.\nLa republier quand même ?`;
   if (unreachable.length) confirmText += ` ⚠️ ${unreachable.length} relais de cette liste semble(nt) injoignable(s) : ${unreachable.join(", ")}.`;
   $("publishConfirmText").textContent = confirmText;
