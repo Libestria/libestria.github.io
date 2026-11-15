@@ -494,10 +494,10 @@ body:not(.keyboard-navigation) .app-dialog button:focus-visible { outline: none;
   </dialog>
 
   <dialog id="relayModeDialog" class="app-dialog" aria-labelledby="relayModeTitle" aria-describedby="relayModeText">
-    <h2 id="relayModeTitle">Connexion du relais</h2>
-    <p id="relayModeText">Choisis le type de connexion pour ce relais :</p>
+    <h2 id="relayModeTitle">Utilisation du relais</h2>
+    <p id="relayModeText">Choisis comment utiliser ce relais dans ta liste NIP-65 :</p>
     <p class="url" id="relayModeUrl"></p>
-    <div class="modes" id="relayModeChoices" role="group" aria-label="Type de connexion">
+    <div class="modes" id="relayModeChoices" role="group" aria-label="Mode d’utilisation du relais">
       <button type="button" data-mode="r" aria-pressed="false">Lire (R)</button>
       <button type="button" data-mode="w" aria-pressed="false">Écrire (W)</button>
       <button type="button" data-mode="rw" aria-pressed="true" class="on">Lire &amp; Écrire (R+W)</button>
@@ -524,10 +524,10 @@ body:not(.keyboard-navigation) .app-dialog button:focus-visible { outline: none;
     <div class="card" id="relaySummary" role="region" aria-labelledby="relaySummaryTitle">
         <h3 class="login-title section-title" id="relaySummaryTitle"><svg class="login-icon" aria-hidden="true" focusable="false"><use href="#i-radio"/></svg><span>Relais actuellement configurés</span></h3>
         <div class="relay-summary">
-          <p>• <strong><span id="nip65ReadCount">0</span> relais en lecture (R)</strong>. Ce sont les relais sur lesquels tu récupères les événements Nostr.</p>
-          <p>• <strong><span id="nip65WriteCount">0</span> relais en écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr.</p>
-          <p>• <strong><span id="searchRelayCount">0</span> relais de recherche (S)</strong>. Ce sont les relais utilisés pour rechercher des événements et des profils Nostr.</p>
-          <p>• <strong><span id="dmRelayCount">0</span> relais de messagerie privée (DM)</strong>. Ce sont les relais sur lesquels tu reçois les messages privés Nostr qui te sont destinés.</p>
+          <p>• <strong><span id="nip65ReadCount">0</span> relais de lecture (R)</strong>. Ce sont les relais sur lesquels les autres peuvent publier les événements qui te mentionnent, notamment les réponses et notifications.</p>
+          <p>• <strong><span id="nip65WriteCount">0</span> relais d’écriture (W)</strong>. Ce sont les relais sur lesquels tu publies tes événements Nostr et où les autres peuvent retrouver tes publications.</p>
+          <p>• <strong><span id="searchRelayCount">0</span> relais de recherche (S)</strong>. Ce sont les relais que tu désignes pour effectuer des recherches dans Nostr, à condition qu’ils prennent en charge la NIP-50.</p>
+          <p>• <strong><span id="dmRelayCount">0</span> relais de messagerie privée (DM)</strong>. Ce sont les relais destinés à recevoir tes messages privés chiffrés (NIP-17).</p>
         </div>
         <div class="list-warning" id="summaryWarning" role="status" hidden></div>
     </div>
@@ -570,31 +570,41 @@ document.addEventListener('pointerdown', () => {
 
 /* 1. Configuration ------------------------------------------------------- */
 const BOOT_RELAYS = [
-  "wss://nos.lol",
   "wss://relay.primal.net",
+  "wss://nos.lol",
   "wss://relay.damus.io",
   "wss://relay.ditto.pub",
   "wss://nostr.mom",
+  "wss://relay.snort.social",
+  "wss://relay.nostr.net",
   "wss://nostr.bitcoiner.social",
+  "wss://offchain.pub",
   "wss://purplepag.es",
   "wss://relay.nos.social",
-  "wss://offchain.pub",
   "wss://nostr-01.yakihonne.com",
+  "wss://nostr-02.yakihonne.com",
   "wss://relay.nostrmap.net",
   "wss://relay.decentralia.fr",
-  "wss://relay.noeudlibre.fr",
-  "wss://nostr-02.yakihonne.com",
-  "wss://relay.decentnewsroom.com"
+  "wss://relay.noeudlibre.fr"
 ];
 const FETCH_CONCURRENCY = 5;
 // Diagnostic : ouvrir la page avec ?debug dans l’adresse pour tracer les appels dans la console.
 const dbg = (...args) => { if (/[?&]debug\b/.test(location.search)) console.log("[relais]", new Date().toISOString(), ...args); };
 const BOOT_FETCH_CONCURRENCY = 8; // chargement initial : 2 vagues au lieu de 3
 const PROFILE_KIND = 0;
-const TIMEOUT = { connect: 5000, fetch: 4000, publish: 6000 };
+// Délais réseau centralisés (ms). Les sondes NIP et NIP-05 gardent leurs délais propres.
+const TIMEOUT = Object.freeze({
+  connect: 6000,
+  fetchConnect: 6000,
+  fetchEvents: 6000,
+  publishConnect: 6000,
+  publishAck: 6000,
+  nip11: 4000,
+  nipProbe: 4000,
+  nip05: 5000
+});
 const LATENCY = { fast: 650, slow: 1200 }; // ms : vert <= fast, orange <= slow, rouge au-delà
-const LOGIN_TIMEOUT_MS = 30000;
-const SIGN_TIMEOUT_MS = 30000;
+const SIGNER_TIMEOUT = Object.freeze({ login: 30000, sign: 30000 });
 const MIN_PROGRESS_DISPLAY_MS = 2000;
 const LOGIN_ERRORS = Object.freeze({
   missing: "Aucun signer NIP-07 détecté.\nInstalle ou active une extension compatible, puis recommence.",
@@ -609,22 +619,22 @@ const LISTS = {
   pub: {
     kind: 10002, rw: true, tag: "r",
     tab: "Configuration des relais de lecture (R) et d’écriture (W)", title: "Liste des relais de lecture et d’écriture",
-    hint: "Ces relais te permettent de récupérer les événements Nostr en lecture (R) et de publier tes événements en écriture (W).\nChaque relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).",
-    suggestions: ["wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://nostr.mom", "wss://nostr.bitcoiner.social", "wss://purplepag.es", "wss://relay.nos.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com", "wss://relay.snort.social"],
+    hint: "Lecture (R) : relais sur lesquels les autres peuvent publier les événements qui te mentionnent, notamment les réponses et notifications.\n\nÉcriture (W) : relais sur lesquels tu publies tes événements et où les autres peuvent retrouver tes publications.\n\nUn même relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).\n\nPréconisation de la NIP-65 : 2 à 4 relais de lecture et 2 à 4 relais d’écriture.",
+    suggestions: ["wss://relay.primal.net", "wss://nos.lol", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://purplepag.es", "wss://nostr.mom", "wss://relay.snort.social", "wss://relay.nostr.net", "wss://nostr.bitcoiner.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.nos.social", "wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
     french: ["wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
-    longform: ["wss://relay.primal.net", "wss://relay.damus.io", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
-    paid: ["wss://nostr.wine", "wss://eden.nostr.land", "wss://relay.azzamo.net"],
+    longform: ["wss://relay.primal.net", "wss://nos.lol", "wss://relay.damus.io", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.decentnewsroom.com", "wss://relay.decentralia.fr"],
+    paid: ["wss://nostr.wine"],
   },
   search: {
     kind: 10007, rw: false, tag: "relay",
     tab: "Configuration des relais de recherche (S)", title: "Liste des relais de recherche",
-    hint: "Les relais compatibles NIP-50 te permettent de rechercher (S) des événements et des profils Nostr.",
-    suggestions: ["wss://relay.ditto.pub", "wss://search.nos.today", "wss://profiles.nostrver.se", "wss://relay.noswhere.com"],
+    hint: "Les relais prenant en charge la NIP-50 permettent de rechercher des événements Nostr, notamment par mots-clés.\n\nIls peuvent également proposer d’autres fonctionnalités, comme la publication et la consultation d’événements.\n\nLa NIP-50 ne fixe aucun nombre précis de relais.\n\nConseil pratique : 2 à 3 relais compatibles.",
+    suggestions: ["wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine", "wss://relay.ditto.pub", "wss://profiles.nostrver.se"],
   },
   dm: {
     kind: 10050, rw: false, tag: "relay",
     tab: "Configuration des relais de messagerie privée (DM)", title: "Liste des relais de messagerie privée",
-    hint: "Ces relais servent à recevoir tes messages privés chiffrés (DM) selon le protocole NIP-17.",
+    hint: "Ces relais sont destinés à recevoir tes messages privés chiffrés (NIP-17), transmis sous forme d’enveloppes chiffrées (gift wraps, NIP-59).\n\nIls peuvent être distincts de tes relais publics pour mieux protéger tes métadonnées.\n\nPréconisation de la NIP-17 : 1 à 3 relais de réception des messages privés.\n\nPrivilégie des relais fiables, idéalement avec authentification et contrôle d’accès.",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://relay.decentralia.fr", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io"],
   },
 };
@@ -645,11 +655,11 @@ const NIP_PROBES = [
   { nip: 23, kind: 30023 }, { nip: 59, kind: 1059 }, { nip: 65, kind: 10002 }
 ];
 const NIP_INFO = {
-  17: { name: "Messages privés", desc: "Permet de recevoir des messages privés chiffrés.\nPour que d’autres puissent t’écrire, un relais de ce type doit figurer dans ta liste de messagerie privée." },
+  17: { name: "Messages privés", desc: "Définit un système de messages privés chiffrés. Les relais destinés à leur réception sont annoncés dans une liste spécifique (kind:10050)." },
   23: { name: "Articles longs", desc: "Permet de publier et de lire des articles longs (blogs, tutoriels) en plus des messages courts." },
-  50: { name: "Recherche", desc: "Permet de rechercher des messages et des profils par mots-clés directement sur le relais." },
-  59: { name: "Enveloppes de messages", desc: "Technique qui cache l’expéditeur et le contenu d’un message privé dans une enveloppe.\nElle est utilisée par les messages privés (NIP-17)." },
-  65: { name: "Listes de relais", desc: "Permet à ton compte de publier la liste des relais qu’il utilise, pour que les autres sachent où te lire et où t’écrire." }
+  50: { name: "Recherche", desc: "Définit une capacité de recherche textuelle dans les événements Nostr. Un relais compatible peut également proposer d’autres fonctionnalités." },
+  59: { name: "Enveloppes de messages", desc: "Définit les enveloppes chiffrées (gift wraps) utilisées notamment par la NIP-17 pour masquer l’expéditeur interne et le contenu aux relais." },
+  65: { name: "Listes de relais", desc: "Permet d’annoncer tes relais de lecture et d’écriture afin que les autres utilisateurs sachent où publier les événements qui te mentionnent et où retrouver tes publications." }
 };
 const NIP_STATE_LABELS = { observed: "Détecté", announced: "Annoncé", none: "Indéterminé", loading: "Vérification en cours" };
 const NIP_HAS_PROBE = new Set(NIP_PROBES.map(probe => probe.nip));
@@ -696,6 +706,13 @@ function normalizeUrl(input) {
   } catch { return null; }
 }
 
+// Ferme sans propager les exceptions de fermeture des navigateurs / relais.
+function closeSocket(ws) {
+  if (!ws) return;
+  try { if (ws.readyState !== WebSocket.CLOSED) ws.close(); }
+  catch { /* fermeture best effort */ }
+}
+
 function openSocket(url, timeout = TIMEOUT.connect) {
   return new Promise((resolve, reject) => {
     let ws;
@@ -705,8 +722,15 @@ function openSocket(url, timeout = TIMEOUT.connect) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      if (error) { ws.close(); reject(error); }
-      else resolve(ws);
+      if (error) {
+        ws.onopen = ws.onerror = ws.onclose = null;
+        closeSocket(ws);
+        reject(error);
+      } else {
+        // Les gestionnaires de connexion ne doivent pas interférer avec les opérations suivantes.
+        ws.onopen = ws.onerror = ws.onclose = null;
+        resolve(ws);
+      }
     };
     const timer = setTimeout(() => finish(new Error("délai dépassé")), timeout);
     ws.onopen = () => finish(null);
@@ -721,35 +745,46 @@ function parseMessage(raw) {
 
 async function fetchEvents(url, kinds) {
   try {
-    const ws = await openSocket(url, TIMEOUT.fetch);
+    const ws = await openSocket(url, TIMEOUT.fetchConnect);
     return await new Promise(resolve => {
       const events = [];
-      const done = () => { clearTimeout(timer); ws.close(); resolve(events); };
-      const timer = setTimeout(done, TIMEOUT.fetch);
+      let finished = false;
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        ws.onmessage = ws.onclose = ws.onerror = null;
+        closeSocket(ws);
+        resolve(events);
+      };
+      const timer = setTimeout(done, TIMEOUT.fetchEvents);
       ws.onmessage = ({ data }) => {
         const [type, , event] = parseMessage(data);
         if (type === "EVENT" && event?.pubkey === pubkey && kinds.includes(event.kind)) events.push(event);
         if (type === "EOSE" || type === "CLOSED") done();
       };
       ws.onclose = done;
-      ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }]));
+      ws.onerror = done;
+      try { ws.send(JSON.stringify(["REQ", "lists", { kinds, authors: [pubkey] }])); }
+      catch { done(); }
     });
   } catch { return null; } // null = relais injoignable (≠ [] : relais joint mais sans événement)
 }
 
 async function publishTo(url, event) {
   try {
-    const ws = await openSocket(url);
+    const ws = await openSocket(url, TIMEOUT.publishConnect);
     return await new Promise(resolve => {
       let settled = false;
       const finish = (ok, msg) => {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
-        ws.close();
+        ws.onmessage = ws.onclose = ws.onerror = null;
+        closeSocket(ws);
         resolve({ url, ok, msg });
       };
-      const timer = setTimeout(() => finish(false, "pas de réponse"), TIMEOUT.publish);
+      const timer = setTimeout(() => finish(false, "pas de réponse"), TIMEOUT.publishAck);
       ws.onmessage = ({ data }) => {
         const [type, id, ok, msg] = parseMessage(data);
         if (type === "OK" && id === event.id) finish(ok, msg || "");
@@ -767,7 +802,7 @@ async function ping(url) {
   try {
     const ws = await openSocket(url);
     const ms = Math.round(performance.now() - start);
-    ws.close();
+    closeSocket(ws);
     return { ms };
   } catch (e) { return { err: e.message }; }
 }
@@ -782,7 +817,7 @@ function relayInfoUrl(url) {
 
 async function fetchRelayNips(url) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 4000);
+  const timer = setTimeout(() => controller.abort(), TIMEOUT.nip11);
   try {
     const response = await fetch(relayInfoUrl(url), {
       headers: { Accept: "application/nostr+json" },
@@ -813,10 +848,11 @@ async function probeRelayKinds(url) {
           try { ws.send(JSON.stringify(["CLOSE", id])); } catch { /* fermeture */ }
         }
       }
-      ws.close();
+      ws.onmessage = ws.onclose = ws.onerror = null;
+      closeSocket(ws);
       resolve({ observed: [...observed].sort((a,b) => a-b), available: true });
     };
-    const timer = setTimeout(finish, 4000);
+    const timer = setTimeout(finish, TIMEOUT.nipProbe);
     ws.onmessage = ({ data }) => {
       const msg = parseMessage(data);
       const [type, id, event] = msg;
@@ -1183,11 +1219,11 @@ function renderSuggestions(list) {
   const chips = $("chips");
   chips.innerHTML = "";
   const groups = list === LISTS.pub ? [
-    ["Relais publics populaires", list.suggestions],
-    ["Relais publics francophones", list.french],
-    ["Relais pour les articles longs (NIP-23)", list.longform],
-    ["Relais payants populaires", list.paid],
-  ] : [[list === LISTS.search ? "Relais publics compatibles NIP-50" : "Relais publics compatibles NIP-17", list.suggestions]];
+    ["Relais publics populaires suggérés", list.suggestions],
+    ["Relais publics francophones suggérés", list.french],
+    ["Relais suggérés pour les articles longs (NIP-23)", list.longform],
+    ["Relais payant accessible en lecture", list.paid],
+  ] : [[list === LISTS.search ? "Relais suggérés pour la recherche (NIP-50)" : "Relais suggérés pour la réception des messages privés (NIP-17)", list.suggestions]];
   for (const [label, urls] of groups) {
     const available = (urls || []).filter(u => !list.relays.some(r => r.url === u));
     if (!available.length) continue;
@@ -1261,7 +1297,7 @@ async function showNip05(profile) {
   if (!identifier) return;
   element.textContent = identifier;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT.nip05);
   try {
     const verified = await verifyNip05(identifier, pubkey, controller.signal);
     if (sequence !== nip05VerificationSequence || !verified) return;
@@ -1411,7 +1447,7 @@ function commitRelay(list, url, mode = "rw") {
 function openRelayModeSelection(list, url) {
   pendingRelay = { list, url };
   $("relayModeUrl").textContent = url;
-  selectRelayMode("rw");
+  selectRelayMode(list === LISTS.pub && url === "wss://nostr.wine" ? "r" : "rw");
   $("relayModeDialog").showModal();
   $("relayModeAdd").focus();
 }
@@ -1520,7 +1556,7 @@ async function getPublicKeyWithTimeout(signer, cancelled) {
     return await Promise.race([
       Promise.resolve().then(() => signer.getPublicKey()),
       new Promise((_, reject) => {
-        timer = setTimeout(() => reject(new Error("NIP07_TIMEOUT")), LOGIN_TIMEOUT_MS);
+        timer = setTimeout(() => reject(new Error("NIP07_TIMEOUT")), SIGNER_TIMEOUT.login);
       }),
       ...(cancelled ? [cancelled] : [])
     ]);
@@ -1622,7 +1658,9 @@ async function loadAccount() {
   const events = [...boot.events];
   let responded = boot.responded, total = boot.total;
   const nip65 = latestEvent(events, LISTS.pub.kind);
-  const extra = (nip65 ? relaysFromEvent(nip65, LISTS.pub) : []).map(r => r.url).filter(url => !BOOT_RELAYS.includes(url));
+  const bootUrls = new Set(BOOT_RELAYS);
+  const extra = [...new Set((nip65 ? relaysFromEvent(nip65, LISTS.pub) : []).map(r => r.url))]
+    .filter(url => !bootUrls.has(url));
   if (extra.length) {
     const more = await fetchFromRelays(extra, kinds).catch(() => null);
     total += extra.length;
@@ -1641,6 +1679,11 @@ async function loadAccount() {
   }
   render();
   void testAll();
+}
+
+// Utilisé par toutes les publications pour déterminer les relais d’écriture.
+function writableRelayUrls(relays) {
+  return relays.filter(relay => relay.write).map(relay => relay.url);
 }
 
 // Traduit les réponses techniques les plus fréquentes des relais.
@@ -1685,7 +1728,7 @@ async function signEventWithTimeout(signer, unsignedEvent, cancelled) {
     return await Promise.race([
       Promise.resolve().then(() => signer.signEvent(unsignedEvent)),
       new Promise((_, reject) => {
-        timer = setTimeout(() => reject(new Error("NIP07_SIGN_TIMEOUT")), SIGN_TIMEOUT_MS);
+        timer = setTimeout(() => reject(new Error("NIP07_SIGN_TIMEOUT")), SIGNER_TIMEOUT.sign);
       }),
       ...(cancelled ? [cancelled] : [])
     ]);
@@ -1735,10 +1778,13 @@ async function publishOnce(key, signedEvent = null) {
     await waitForMinimumDisplay(progressStartedAt);
     progressStartedAt = performance.now();
     showMessage({ tone: "busy", title: "Publication de la liste en cours…", text: `${list.title} : envoi aux relais en cours.` });
-    const writeRelays = relays => relays.filter(r => r.write).map(r => r.url);
-    // Relais de l’utilisateur + relais de diffusion (relais de démarrage de l’outil, toujours sollicités).
-    const own = [...new Set([...(list.rw ? writeRelays(list.relays) : []), ...writeRelays(LISTS.pub.relays)])];
-    const broadcast = BOOT_RELAYS.filter(url => !own.includes(url));
+    // Relais de l’utilisateur + relais de diffusion, sans doublons.
+    const own = [...new Set([
+      ...(list.rw ? writableRelayUrls(list.relays) : []),
+      ...writableRelayUrls(LISTS.pub.relays)
+    ])];
+    const ownSet = new Set(own);
+    const broadcast = BOOT_RELAYS.filter(url => !ownSet.has(url));
     const results = await Promise.all([...own, ...broadcast].map(url => publishTo(url, event)));
     await waitForMinimumDisplay(progressStartedAt);
     const accepted = results.filter(r => r.ok).length;
