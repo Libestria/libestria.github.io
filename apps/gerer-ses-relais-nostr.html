@@ -618,6 +618,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const LISTS = {
   pub: {
     kind: 10002, rw: true, tag: "r",
+    notice: { title: "Relais de lecture et d’écriture : à vérifier", text: "Certains clients Nostr gardent leur propre liste locale de relais et ne reprendront pas automatiquement celle que tu viens de publier.\nÀ vérifier : ouvre les réglages de relais de ton client et ajuste-les manuellement si rien n’a changé.\nCette liste est remplaçable : si un autre client publie sa liste après toi, elle remplacera celle-ci." },
     tab: "Configuration des relais de lecture (R) et d’écriture (W)", title: "Liste des relais de lecture et d’écriture",
     hint: "Lecture (R) : relais sur lesquels les autres peuvent publier les événements qui te mentionnent, notamment les réponses et notifications.\n\nÉcriture (W) : relais sur lesquels tu publies tes événements et où les autres peuvent retrouver tes publications.\n\nUn même relais peut être configuré en lecture, en écriture ou dans les deux modes (R+W).\n\nPréconisation de la NIP-65 : 2 à 4 relais de lecture et 2 à 4 relais d’écriture.",
     suggestions: ["wss://relay.primal.net", "wss://nos.lol", "wss://relay.damus.io", "wss://relay.ditto.pub", "wss://purplepag.es", "wss://nostr.mom", "wss://relay.snort.social", "wss://relay.nostr.net", "wss://nostr.bitcoiner.social", "wss://offchain.pub", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.nos.social", "wss://relay.nostrmap.net", "wss://relay.decentralia.fr", "wss://relay.noeudlibre.fr"],
@@ -627,12 +628,14 @@ const LISTS = {
   },
   search: {
     kind: 10007, rw: false, tag: "relay",
+    notice: { title: "Relais de recherche : à vérifier", text: "Certains clients Nostr gardent leur propre liste locale de relais de recherche et ne reprendront pas automatiquement celle que tu viens de publier.\nÀ vérifier : ouvre les réglages de recherche de ton client et ajuste-les manuellement si rien n’a changé.\nCette liste est remplaçable : si un autre client publie sa liste après toi, elle remplacera celle-ci." },
     tab: "Configuration des relais de recherche (S)", title: "Liste des relais de recherche",
     hint: "Les relais prenant en charge la NIP-50 permettent de rechercher des événements Nostr, notamment par mots-clés.\n\nIls peuvent également proposer d’autres fonctionnalités, comme la publication et la consultation d’événements.\n\nLa NIP-50 ne fixe aucun nombre précis de relais.\n\nConseil pratique : 2 à 3 relais compatibles.",
     suggestions: ["wss://search.nos.today", "wss://relay.noswhere.com", "wss://nostr.wine", "wss://relay.ditto.pub", "wss://profiles.nostrver.se"],
   },
   dm: {
     kind: 10050, rw: false, tag: "relay",
+    notice: { title: "Relais de messages privés : à vérifier", text: "Certains clients Nostr gardent leur propre liste locale de relais pour les messages privés et ne reprendront pas automatiquement celle que tu viens de publier.\nÀ vérifier : ouvre les réglages de messagerie de ton client et ajuste-les manuellement si tu ne reçois pas tes messages.\nCette liste est remplaçable : si un autre client publie sa liste après toi, elle remplacera celle-ci." },
     tab: "Configuration des relais de messagerie privée (DM)", title: "Liste des relais de messagerie privée",
     hint: "Ces relais sont destinés à recevoir tes messages privés chiffrés (NIP-17), transmis sous forme d’enveloppes chiffrées (gift wraps, NIP-59).\n\nIls peuvent être distincts de tes relais publics pour mieux protéger tes métadonnées.\n\nPréconisation de la NIP-17 : 1 à 3 relais de réception des messages privés.\n\nPrivilégie des relais fiables, idéalement avec authentification et contrôle d’accès.",
     suggestions: ["wss://auth.nostr1.com", "wss://nip17.com", "wss://relay.decentralia.fr", "wss://nos.lol", "wss://relay.primal.net", "wss://relay.damus.io"],
@@ -1816,6 +1819,8 @@ async function publishOnce(key, signedEvent = null) {
         (ownWarning ? " Attention : aucun de tes relais d’écriture n’a confirmé la publication." : ""),
       details, actions: OK_ACTION
     });
+    // Avertissement systématique après toute publication acceptée par au moins un relais.
+    await showMessage({ tone: "alert", title: list.notice.title, text: list.notice.text, actions: OK_ACTION });
     return null;
   } catch (error) {
     if (error?.message === "USER_CANCELLED") { hideMessage(); return null; }
